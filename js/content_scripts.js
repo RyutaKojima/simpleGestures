@@ -25,12 +25,16 @@ GESTURE_START_DISTANCE = 16;
 trailCanvas			= null;
 actionNameCanvas	= null;
 
+initialized			= false;
+
 // option variables
 optTrailColor		= "FF0000";
 optTrailWidth		= 3;
 optDrawTrailOn		= true;
 optDrawActionNameOn	= true;
 optDrawCommandOn	= true;
+
+options_instance	= null;
 
 // temporary variables
 link_url			= null;
@@ -256,13 +260,16 @@ function debug_log(str) {
  * When initialization, return true.
  */
 function initializeExtensionOnce() {
-	if( typeof initialized == "undefined" ) {
+	if( !initialized ) {
 		debug_log("initialize run!!");
 
 		// initialize complete flag.
 		initialized = true;
 
+		loadOption();
+
 		// create canvas.
+		debug_log("create canvas");
 		createTrailCanvas();
 		createActionNameCanvas();
 
@@ -273,7 +280,7 @@ function initializeExtensionOnce() {
 }
 
 /**
- *
+ * create canvas & update style
  */
 function createTrailCanvas() {
 	if(!trailCanvas) {
@@ -301,7 +308,7 @@ function createTrailCanvas() {
 
 
 /**
- *
+ * create canvas & update style
  */
 function createActionNameCanvas() {
 	if(!actionNameCanvas) {
@@ -488,7 +495,7 @@ function exeAction(action_name) {
 			if(link_url == null) {
 				chrome.extension.sendMessage({msg: "newtab"}, function(response) {
 					if(response != null) {
-						debug_log(response.resp);
+						debug_log("message: " + response.message);
 					}
 					else {
 						debug_log('problem executing open tab');
@@ -515,8 +522,8 @@ function exeAction(action_name) {
 			chrome.extension.sendMessage({msg: "reloadall"});
 			break;
 
-		case "closeall":
-			chrome.extension.sendMessage({msg: "closeall"});
+		case "close_all":
+			chrome.extension.sendMessage({msg: "close_all"});
 			break;
 
 		case "nexttab":
@@ -537,4 +544,18 @@ function exeAction(action_name) {
  *
  */
 function loadOption() {
+
+	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
+		if(response) {
+			console.log('message: ' + response.message);
+			console.log('option: ' + response.options_json);
+
+			options_instance = JSON.parse(response.options_json);
+
+			optTrailColor = options_instance["color_r"] + options_instance["color_g"] + options_instance["color_b"];
+
+			createTrailCanvas();
+			createActionNameCanvas();
+		}
+	});
 }

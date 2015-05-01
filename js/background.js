@@ -3,6 +3,10 @@
  *
  *
  */
+
+// localStorage save key
+var localStrageKey = "options";
+ 
 chrome.extension.onMessage.addListener(
 	function onMessage_handler(request, sender, sendResponse) {
 
@@ -92,7 +96,7 @@ chrome.extension.onMessage.addListener(
 				responseString = "background closed";
 				break;
 
-			case "closeall":
+			case "close_all":
 				chrome.tabs.getAllInWindow(null, function(tabs) {
 					for(var i = 0; i < tabs.length; i++) {
 						chrome.tabs.remove(tabs[i].id);
@@ -100,9 +104,13 @@ chrome.extension.onMessage.addListener(
 		  		});
 				responseString = "all tabs closed";
 				break;
+
+			case "load_options":
+				sendResponse({message: "yes", "options_json": JSON.stringify(loadOptions()) });
+				return;
 		}
 
-		sendResponse({resp: responseString});
+		sendResponse({message: responseString});
 	}
 );
 

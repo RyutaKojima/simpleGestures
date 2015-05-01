@@ -9,7 +9,8 @@
   ],
   "background": {
     "scripts": [
-      "background.js"
+      "js/lib_option.js",
+      "js/background.js"
     ]
   },
   "content_scripts": [
@@ -18,8 +19,8 @@
         "<all_urls>"
       ],
       "js": [
-        "jquery-1.11.2.min.js",
-        "content_scripts.js"
+        "js/jquery-1.11.2.min.js",
+        "js/content_scripts.js"
       ],
       "all_frames": true,
       "run_at": "document_start"

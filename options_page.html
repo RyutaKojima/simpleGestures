@@ -2,25 +2,52 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>オプションページ</title>
-<script>
-function $(id){
-    return document.getElementById(id);
+<script src="js/jquery-1.11.2.min.js"></script>
+<script src="js/lib_option.js"></script>
+<script src="js/options.js"></script>
+<style>
+.gesture_option {
+	clear:both;
 }
 
-function load(){
-    $("message_txt").value = localStorage["message_txt"] ? localStorage["message_txt"] : "";
+.box_red, .box_green, .box_blue {
+	clear:both;
 }
 
-function save(){
-    localStorage["message_txt"] = $("message_txt").value;
+.note_red, .note_green, .note_blue {
+	width: 120px;
+	float: left;
 }
-</script>
 
-
+.input_red, .input_green, .input_blue {
+	float: left;
+}
+</style>
 </head>
-<body onload="load();">
+<body>
 <h1>Option</h1>
-<div><input id="message_txt" type="text" maxLength="20" /></div>
-<div><button id="close_btn" onClick="save();">保存</button></div>
+
+<div id="general_option" class="general_option">
+  Set draw trail color.
+  <div class="box_red">
+    <div class="note_red" >RED (0～FF)</div>
+    <div class="input_red"><input type="text" id="color_r" /></div>
+  </div>
+  <div class="box_green">
+    <div class="note_green" >GREEN (0～FF)</div>
+    <div class="input_green"><input type="text" id="color_g" /></div>
+  </div>
+  <div class="box_blue">
+    <div class="note_blue" >BLUE (0～FF)</div>
+    <div class="input_blue"><input type="text" id="color_b" /></div>
+  </div>
+</div>
+
+<div id="gesture_option" class="gesture_option"></div>
+
+<div id="box_reset">
+  <input type="button" id="reset_all" value="reset all options" />
+</div>
+
 </body>
 </html>
