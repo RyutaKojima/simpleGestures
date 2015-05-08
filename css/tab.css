@@ -22,9 +22,9 @@ p.tabs a {
 	border-radius: 12px 12px 0px 0px;
 }
 /* ▼(B-3)each tab color */
-p.tabs a.tab1 { background-color: #0000ff; color: white; }
-p.tabs a.tab2 { background-color: #aaaa00; color: white; }
-p.tabs a.tab3 { background-color: #ff0000; color: white; }
+p.tabs a.tab_btn1 { background-color: #0000ff; color: white; }
+p.tabs a.tab_btn2 { background-color: #aaaa00; color: white; }
+p.tabs a.tab_btn3 { background-color: #ff0000; color: white; }
 p.tabs a:hover { color: yellow; }
 
 /* ▼(C)タブ中身のボックス */
@@ -35,8 +35,8 @@ div.tab {
 	clear: left;
 }
 /* ▼(C-3)各ボックスの配色 */
-div#tab1 { border: 2px solid #0000ff; background-color: #ccffff; }
-div#tab2 { border: 2px solid #aaaa00; background-color: #ffffcc; }
-div#tab3 { border: 2px solid #ff0000; background-color: #ffcccc; }
+div#tab_body1 { border: 2px solid #0000ff; background-color: #ccffff; }
+div#tab_body2 { border: 2px solid #aaaa00; background-color: #ffffcc; }
+div#tab_body3 { border: 2px solid #ff0000; background-color: #ffcccc; }
 div.tab p { margin: 10px; }
 

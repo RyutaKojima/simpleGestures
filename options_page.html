@@ -1,24 +1,24 @@
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>オプションページ</title>
-  <link rel="stylesheet" type="text/css" href="css/tab.css">
-  <link rel="stylesheet" type="text/css" href="css/options.css">
-  <script src="js/jquery-1.11.2.min.js"></script>
-  <script src="js/lib_option.js"></script>
-  <script src="js/options.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>オプションページ</title>
+<link rel="stylesheet" type="text/css" href="css/tab.css">
+<link rel="stylesheet" type="text/css" href="css/options.css">
+<script src="js/jquery-1.11.2.min.js"></script>
+<script src="js/lib_option.js"></script>
+<script src="js/options.js"></script>
 </head>
 <body>
 <h1>Option</h1>
 
 <div class="tabbox">
    <p class="tabs">
-      <a href="#tab1" class="tab1" onclick="ChangeTab('tab1'); return false;">General Settings</a>
-      <a href="#tab2" class="tab2" onclick="ChangeTab('tab2'); return false;">Gesture Settings</a>
-      <a href="#tab3" class="tab3" onclick="ChangeTab('tab3'); return false;">Unsupported</a>
+      <a href="#tab1" id="tab_btn1" class="tab_btn1" >General Settings</a>
+      <a href="#tab2" id="tab_btn2" class="tab_btn2" >Gesture Settings</a>
+      <a href="#tab3" id="tab_btn3" class="tab_btn3" >Unsupported</a>
    </p>
 
-   <div id="tab1" class="tab">
+   <div id="tab_body1" class="tab">
       <div id="general_option" class="general_option">
         Set draw trail color.
 
@@ -42,21 +42,18 @@
       </div>
    </div>
 
-   <div id="tab2" class="tab">
+   <div id="tab_body2" class="tab">
       <div id="gesture_option" class="gesture_option">
-        <div id="gesture_list"></div>
-        <div class="box_gesture_close">
-          <div class="note_gesture_close" >close</div>
-          <div class="input_gesture_close"><input type="text" id="gesture_close" /></div>
-        </div>
-        <div class="box_gesture_newtab">
-          <div class="note_gesture_newtab" >new tab</div>
-          <div class="input_gesture_newtab"><input type="text" id="gesture_newtab" /></div>
-        </div>
+
+        close<br/>
+        <input type="text" id="gesture_close" /><br/>
+        new tab<br/>
+        <input type="text" id="gesture_newtab" /><br/>
+
       </div>
    </div>
 
-   <div id="tab3" class="tab">
+   <div id="tab_body3" class="tab">
       Unsupported.
    </div>
 </div>

@@ -9,8 +9,19 @@ trailCanvas = null;
 //$(document).ready(function(){});
 $(function(){
 
+	// for tab 
+	$('#tab_btn1').click(function() {
+		ChangeTab('tab_body1');
+		return false;
+	});
+
+	$('#tab_btn2').click(function() {
+		ChangeTab('tab_body2');
+		return false;
+	});
+
 	// change view tab
-	ChangeTab("tab1");
+	ChangeTab("tab_body1");
 
 	// load option data.
 	if( options_instance == null ) {
@@ -105,7 +116,7 @@ function createActionNameCanvas() {
 	var ctx = trailCanvas.getContext('2d');
 	ctx.font = "bold 30px 'Arial'";
 	ctx.textBaseline = 'top';
-	ctx.fillStyle = "#FF0000"
+	ctx.fillStyle = "#FF0000";
 }
 
 /**
@@ -114,9 +125,9 @@ function createActionNameCanvas() {
 function ChangeTab(tabname) {
 
    // all tab body clear.
-   $('#tab1').hide();
-   $('#tab2').hide();
-   $('#tab3').hide();
+   $('#tab_body1').hide();
+   $('#tab_body2').hide();
+   $('#tab_body3').hide();
 
    // select tab body display.
    $('#'+tabname).show();
