@@ -2,28 +2,21 @@
 	clear:both;
 }
 
-.box_red, .box_green, .box_blue {
-	clear:both;
-}
-
-.note_red, .note_green, .note_blue {
-	width: 80px;
-	float: left;
-}
-
-.input_red, .input_green, .input_blue {
-	float: left;
-}
-
+.box_language, 
+.box_red, .box_green, .box_blue, 
 .box_trail_width {
 	clear:both;
 }
 
+.note_language,
+.note_red, .note_green, .note_blue, 
 .note_trail_width {
-	float: left;
 	width: 80px;
+	float: left;
 }
 
+.input_language,
+.input_red, .input_green, .input_blue, 
 .input_trail_width {
 	float: left;
 }
@@ -37,7 +30,30 @@
 	text-align: right;
 }
 
+/* space tag style */
 .space_20px {
+	clear:both;
 	margin: 10px;
 	padding: 5px;
+}
+
+/* gesture table style */
+.gesture_table {
+	width: 100%;
+	border-collapse: collapse;
+}
+.gesture_table th {
+	width: 25%;
+	padding: 6px;
+	text-align: left;
+	vertical-align: top;
+	color: #333;
+	background-color: #eee;
+	border: 1px solid #b9b9b9;
+}
+
+.gesture_table td {
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #b9b9b9;
 }

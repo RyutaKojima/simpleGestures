@@ -45,17 +45,6 @@ drawn_gesture_command = "";
 
 // gesture list
 gesture_table			= new Array();
-/*
-gesture_table["L"]		= "back";
-gesture_table["R"]		= "forward";
-gesture_table["D"]		= "new_tab";
-gesture_table["UL"]		= "prev_tab";
-gesture_table["UR"]		= "next_tab";
-gesture_table["DR"]		= "close_tab";
-gesture_table["DU"]		= "reload_all";
-gesture_table["DRD"]	= "close_all_background";
-*/
-gesture_table["RDLU"]	= "open_option";
 
 //-------------------------------------------------------------------------------------------------- 
 // Event Handler
@@ -109,6 +98,9 @@ document.onmousedown = function onmousedown_handler(event) {
 
 //		// canvas clear
 //		clear();
+
+		// setting 
+		loadOption();
 
 		// addChild
 		if( trailCanvas ) {
@@ -283,6 +275,65 @@ function initializeExtensionOnce() {
 	}
 
 	return false;
+}
+
+/**
+ *
+ */
+function initGestureTable() {
+
+	gesture_table = new Array();
+	gesture_table["RDLU"]	= "open_option";
+}
+
+/**
+ *
+ */
+function loadOption() {
+
+	options_instance = null;
+
+	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
+		if(response) {
+			console.log('message: ' + response.message);
+			console.log('option: ' + response.options_json);
+
+			options_instance = JSON.parse(response.options_json);
+
+			// general setting
+			optTrailColor = options_instance["color_r"] + options_instance["color_g"] + options_instance["color_b"];
+			optTrailWidth = options_instance["line_width"];
+
+			// gesture
+			initGestureTable();
+
+			if( options_instance["gesture_close_tab"] ) {
+				gesture_table[options_instance["gesture_close_tab"]]	= "close_tab";
+			}
+			if( options_instance["gesture_reload"] ) {
+				gesture_table[options_instance["gesture_reload"]]		= "reload";
+			}
+			if( options_instance["gesture_back"] ) {
+				gesture_table[options_instance["gesture_back"]]			= "back";
+			}
+			if( options_instance["gesture_forward"] ) {
+				gesture_table[options_instance["gesture_forward"]]		= "forward";
+			}
+			if( options_instance["gesture_scroll_top"] ) {
+				gesture_table[options_instance["gesture_scroll_top"]]	= "scroll_top";
+			}
+			if( options_instance["gesture_scroll_bottom"] ) {
+				gesture_table[options_instance["gesture_scroll_bottom"]] = "scroll_bottom";
+			}
+			if( options_instance["gesture_new_tab"] ) {
+				gesture_table[options_instance["gesture_new_tab"]]		= "new_tab";
+			}
+
+			// reload setting for canvas.
+			createTrailCanvas();
+			createActionNameCanvas();
+		}
+	});
 }
 
 /**
@@ -480,20 +531,20 @@ function exeAction(action_name) {
 			window.history.forward();
 			break;
 
-		case "scroll_top":
-			window.scrollTo(0, 0);
-			break;
-
-		case "scroll_bottom":
-			window.scrollTo(0, $(window).scrollHeight());
-			break;
-
 		case "reload":
 			window.location.reload();
 			break;
 
 		case "stop":
 			window.stop();
+			break;
+
+		case "scroll_top":
+			window.scrollTo(0, 0);
+			break;
+
+		case "scroll_bottom":
+			window.scrollTo(0, $(window).scrollHeight());
 			break;
 
 		case "new_tab":
@@ -519,34 +570,4 @@ function exeAction(action_name) {
 			chrome.extension.sendMessage({msg: action_name});
 			break;
 	}
-}
-
-/**
- *
- */
-function loadOption() {
-
-	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
-		if(response) {
-			console.log('message: ' + response.message);
-			console.log('option: ' + response.options_json);
-
-			options_instance = JSON.parse(response.options_json);
-
-			// general setting
-			optTrailColor = options_instance["color_r"] + options_instance["color_g"] + options_instance["color_b"];
-			optTrailWidth = options_instance["line_width"];
-
-			// gesture
-			if( options_instance["gesture_close"] ) {
-				gesture_table[options_instance["gesture_close"]] = "close_tab";
-			}
-			if( options_instance["gesture_newtab"] ) {
-				gesture_table[options_instance["gesture_newtab"]] = "new_tab";
-			}
-
-			createTrailCanvas();
-			createActionNameCanvas();
-		}
-	});
 }

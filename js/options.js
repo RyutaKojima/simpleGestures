@@ -9,19 +9,7 @@ trailCanvas = null;
 //$(document).ready(function(){});
 $(function(){
 
-	// for tab 
-	$('#tab_btn1').click(function() {
-		ChangeTab('tab_body1');
-		return false;
-	});
-
-	$('#tab_btn2').click(function() {
-		ChangeTab('tab_body2');
-		return false;
-	});
-
-	// change view tab
-	ChangeTab("tab_body1");
+	initializeTab();
 
 	// load option data.
 	if( options_instance == null ) {
@@ -31,34 +19,48 @@ $(function(){
 	createActionNameCanvas();
 
 	// オプションデータの表示
-	$('#color_r').val(options_instance['color_r']);
-	$('#color_g').val(options_instance['color_g']);
-	$('#color_b').val(options_instance['color_b']);
-	$('#line_width').val(options_instance['line_width']);
-
-	$('#gesture_close').val(options_instance['gesture_close']);
-	$('#gesture_newtab').val(options_instance['gesture_newtab']);
-
-	// text is changed
 	var option_id_list = [
 		"color_r",
 		"color_g",
 		"color_b",
 		"line_width",
-		"gesture_close",
-		"gesture_newtab",
+		"gesture_close_tab",
+		"gesture_new_tab",
+		"gesture_reload",
+		"gesture_forward",
+		"gesture_back",
+		"gesture_scroll_top",
+		"gesture_scroll_bottom",
 	];
 
+	var id_name = "";
 	var i=0;
 	var len = option_id_list.length;
 	for( i=0; i < len; i++ ) {
+		id_name = option_id_list[i];
+
+		// textbox value set.
+		$('#'+id_name).val(options_instance[id_name]);
+
 		// textbox value change event
-		$('#'+option_id_list[i]).change(function() {
+		$('#'+id_name).change(function() {
 			saveOptions();
 		});
 	}
 
-	$('#gesture_close').click(function() {
+	$('[name=language]').change(function() {
+
+		// 選択されているvalue属性値を取り出す
+		var val = $('[name=language]').val();
+		console.log(val);
+
+		// 選択されている表示文字列を取り出す
+//		var txt = $('[name=language] option:selected').text();
+//		console.log(txt);
+	});
+
+	// test code
+	$('#gesture_close_tab').click(function() {
 
 		if( trailCanvas ) {
 			document.body.appendChild(trailCanvas);
@@ -68,7 +70,6 @@ $(function(){
 		}
 	});
 
-//	$('#gesture_close').blur(function() {
 	$('#gestureActionNameCanvas').click(function() {
 
 		if( trailCanvas ) {
@@ -120,6 +121,31 @@ function createActionNameCanvas() {
 }
 
 /**
+ *
+ */
+function initializeTab() {
+
+	// default open tab
+	ChangeTab("tab_body2");
+
+	// for tab 
+	$('#tab_btn1').click(function() {
+		ChangeTab('tab_body1');
+		return false;
+	});
+
+	$('#tab_btn2').click(function() {
+		ChangeTab('tab_body2');
+		return false;
+	});
+
+	$('#tab_btn3').click(function() {
+		ChangeTab('tab_body3');
+		return false;
+	});
+}
+
+/**
  * change view tab.
  */
 function ChangeTab(tabname) {
@@ -131,10 +157,4 @@ function ChangeTab(tabname) {
 
    // select tab body display.
    $('#'+tabname).show();
-
-//   document.getElementById('tab1').style.display = 'none';
-//   document.getElementById('tab2').style.display = 'none';
-//   document.getElementById('tab3').style.display = 'none';
-
-//   document.getElementById(tabname).style.display = 'block';
 }

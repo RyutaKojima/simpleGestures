@@ -36,8 +36,9 @@ function createDefaultOptions() {
 	tmp_obj["color_b"] = "00";
 	tmp_obj["line_width"] = "3";
 
-	tmp_obj["gesture_close"] = "";
-	tmp_obj["gesture_newtab"] = "";
+//	tmp_obj["gesture_close_tab"] = "";
+//	tmp_obj["gesture_new_tab"] = "";
+//	tmp_obj["gesture_reload"] = "";
 
 	return tmp_obj;
 }
@@ -49,6 +50,7 @@ function saveOptions() {
 		options_instance = loadOptions();
 	}
 
+/*
 	// general setting
 	options_instance['color_r'] = $('#color_r').val();
 	options_instance['color_g'] = $('#color_g').val();
@@ -56,8 +58,31 @@ function saveOptions() {
 	options_instance['line_width'] = $('#line_width').val();
 
 	// gesture list
-	options_instance['gesture_close'] = $('#gesture_close').val();
-	options_instance['gesture_newtab'] = $('#gesture_newtab').val();
+	options_instance['gesture_close_tab'] = $('#gesture_close_tab').val();
+*/
+	// オプションデータの表示
+	var option_id_list = [
+		"color_r",
+		"color_g",
+		"color_b",
+		"line_width",
+		"gesture_close_tab",
+		"gesture_new_tab",
+		"gesture_reload",
+		"gesture_forward",
+		"gesture_back",
+		"gesture_scroll_top",
+		"gesture_scroll_bottom",
+	];
+
+	var id_name = "";
+	var i=0;
+	var len = option_id_list.length;
+	for( i=0; i < len; i++ ) {
+		id_name = option_id_list[i];
+
+		options_instance[id_name] = $('#'+id_name).val();
+	}
 
 	// save localstrage.
 	localStorage.setItem(localStrageKey, JSON.stringify(options_instance));

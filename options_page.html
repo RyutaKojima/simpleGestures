@@ -11,51 +11,93 @@
 <body>
 <h1>Option</h1>
 
+When the focus out, option will be saved.<br/>
+
 <div class="tabbox">
-   <p class="tabs">
-      <a href="#tab1" id="tab_btn1" class="tab_btn1" >General Settings</a>
-      <a href="#tab2" id="tab_btn2" class="tab_btn2" >Gesture Settings</a>
-      <a href="#tab3" id="tab_btn3" class="tab_btn3" >Unsupported</a>
-   </p>
+  <p class="tabs">
+     <a href="#tab1" id="tab_btn1" class="tab_btn1" >General Settings</a>
+     <a href="#tab2" id="tab_btn2" class="tab_btn2" >Gesture Settings</a>
+     <a href="#tab3" id="tab_btn3" class="tab_btn3" >Unsupported</a>
+  </p>
 
-   <div id="tab_body1" class="tab">
-      <div id="general_option" class="general_option">
-        Set draw trail color.
+  <div id="tab_body1" class="tab">
+    <div id="general_option" class="general_option">
 
-        <div class="box_red">
-          <div class="note_red" >RED</div>
-          <div class="input_red"><input type="text" id="color_r" />(0～FF)</div>
-        </div>
-        <div class="box_green">
-          <div class="note_green" >GREEN</div>
-          <div class="input_green"><input type="text" id="color_g" />(0～FF)</div>
-        </div>
-        <div class="box_blue">
-          <div class="note_blue" >BLUE</div>
-          <div class="input_blue"><input type="text" id="color_b" />(0～FF)</div>
-        </div>
-        <div class="space_20px"></div>
-        <div class="box_trail_width">
-          <div class="note_trail_width" >trail line width</div>
-          <div class="input_trail_width"><input type="text" id="line_width" />px</div>
+      <div class="box_language">
+        <div class="note_language" >Use Language</div>
+        <div class="input_language">
+          <select name="language" size="1">
+            <option value="English">English</option>
+            <option value="Japanese">日本語</option>
+          </select>
         </div>
       </div>
-   </div>
-
-   <div id="tab_body2" class="tab">
-      <div id="gesture_option" class="gesture_option">
-
-        close<br/>
-        <input type="text" id="gesture_close" /><br/>
-        new tab<br/>
-        <input type="text" id="gesture_newtab" /><br/>
-
+      <div class="space_20px"></div>
+      Set draw trail color.
+      <div class="box_red">
+        <div class="note_red" >RED</div>
+        <div class="input_red"><input type="text" id="color_r" />(0～FF)</div>
       </div>
-   </div>
+      <div class="box_green">
+        <div class="note_green" >GREEN</div>
+        <div class="input_green"><input type="text" id="color_g" />(0～FF)</div>
+      </div>
+      <div class="box_blue">
+        <div class="note_blue" >BLUE</div>
+        <div class="input_blue"><input type="text" id="color_b" />(0～FF)</div>
+      </div>
+      <div class="space_20px"></div>
+      <div class="box_trail_width">
+        <div class="note_trail_width" >Trail line width</div>
+        <div class="input_trail_width"><input type="text" id="line_width" />px</div>
+      </div>
+    </div>
+  </div>
 
-   <div id="tab_body3" class="tab">
-      Unsupported.
-   </div>
+  <div id="tab_body2" class="tab">
+    <div id="gesture_option" class="gesture_option">
+      <table class="gesture_table">
+        <tr>
+          <th>action name</td>
+          <th>gesture command</td>
+        </tr>
+
+        <tr>
+          <td>close</td>
+          <td><input type="text" id="gesture_close_tab" /></td>
+        </tr>
+        <tr>
+          <td>new tab</td>
+          <td><input type="text" id="gesture_new_tab" /></td>
+        </tr>
+        <tr>
+          <td>reload</td>
+          <td><input type="text" id="gesture_reload" /></td>
+        </tr>
+        <tr>
+          <td>forward</td>
+          <td><input type="text" id="gesture_forward" /></td>
+        </tr>
+        <tr>
+          <td>back</td>
+          <td><input type="text" id="gesture_back" /></td>
+        </tr>
+        <tr>
+          <td>scroll_top</td>
+          <td><input type="text" id="gesture_scroll_top" /></td>
+        </tr>
+        <tr>
+          <td>scroll_bottom</td>
+          <td><input type="text" id="gesture_scroll_bottom" /></td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+
+  <div id="tab_body3" class="tab">
+     Unsupported.
+  </div>
 </div>
 
 <div id="box_reset">
