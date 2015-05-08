@@ -1,13 +1,7 @@
 /**
  * 
+ * http://www.koikikukan.com/archives/2012/01/17-015555.php
  */
-
-//-------------------------------------------------------------------------------------------------- 
-// debug out
-//-------------------------------------------------------------------------------------------------- 
-//debug_log("Hello World!");
-//debug_log("window size(" + $(window).width() + "," + $(window).height() + ")");
-//debug_log("scroll position(" + $(window).scrollLeft() + "," + $(window).scrollTop() + ")");
 
 //-------------------------------------------------------------------------------------------------- 
 // Const Variables
@@ -134,11 +128,10 @@ document.onmousemove = function onmousemove_handler(event) {
 		var distance = Math.sqrt( Math.pow(tmp_x-last_x, 2) + Math.pow(tmp_y-last_y, 2) );
 
 //		debug_log("distance: " + distance);
-		if(distance > GESTURE_START_DISTANCE)
-		{
+		if(distance > GESTURE_START_DISTANCE) {
 			radian = Math.atan2(tmp_y-last_y, tmp_x-last_x);
 			rot    = radian * 180 / Math.PI;
-//			debug_log( "radian: " + radian + ", " + rot );
+//			debug_log( "radian: " + radian + ", rotate: " + rot );
 
 			var vector = null;
 			if( rot >= -45.0 && rot < 45.0 ) {
@@ -267,7 +260,7 @@ function initializeExtensionOnce() {
 		loadOption();
 
 		// create canvas.
-		debug_log("create canvas");
+//		debug_log("create canvas");
 		createTrailCanvas();
 		createActionNameCanvas();
 
@@ -295,8 +288,8 @@ function loadOption() {
 
 	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
 		if(response) {
-			console.log('message: ' + response.message);
-			console.log('option: ' + response.options_json);
+//			debug_log('message: ' + response.message);
+//			debug_log('option: ' + response.options_json);
 
 			options_instance = JSON.parse(response.options_json);
 
@@ -470,7 +463,7 @@ function draw(x, y) {
 				}
 
 				if( optDrawCommandOn ) {
-					ctx.fillText(gesture_command, 0, 30);
+					ctx.fillText( gesture_command, 0, 30);
 
 					drawn_gesture_command = gesture_command;
 				}
