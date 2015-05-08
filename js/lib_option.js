@@ -4,8 +4,8 @@ var localStrageKey = "options";
 
 var options_instance = null;
 
-//------------------------------------------------------------------------------ 
-//------------------------------------------------------------------------------ 
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // option all clear
 function resetOptions() {
 //	localStorage.removeItem(localStrageKey);
@@ -34,6 +34,10 @@ function createDefaultOptions() {
 	tmp_obj["color_r"] = "FF";
 	tmp_obj["color_g"] = "00";
 	tmp_obj["color_b"] = "00";
+	tmp_obj["line_width"] = "3";
+
+	tmp_obj["gesture_close"] = "";
+	tmp_obj["gesture_newtab"] = "";
 
 	return tmp_obj;
 }
@@ -45,9 +49,16 @@ function saveOptions() {
 		options_instance = loadOptions();
 	}
 
+	// general setting
 	options_instance['color_r'] = $('#color_r').val();
 	options_instance['color_g'] = $('#color_g').val();
 	options_instance['color_b'] = $('#color_b').val();
+	options_instance['line_width'] = $('#line_width').val();
 
+	// gesture list
+	options_instance['gesture_close'] = $('#gesture_close').val();
+	options_instance['gesture_newtab'] = $('#gesture_newtab').val();
+
+	// save localstrage.
 	localStorage.setItem(localStrageKey, JSON.stringify(options_instance));
 }

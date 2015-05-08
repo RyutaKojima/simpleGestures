@@ -3,10 +3,6 @@
  *
  *
  */
-
-// localStorage save key
-var localStrageKey = "options";
- 
 chrome.extension.onMessage.addListener(
 	function onMessage_handler(request, sender, sendResponse) {
 
@@ -17,35 +13,35 @@ chrome.extension.onMessage.addListener(
 				responseString= "unknown command";
 				break;
 
-			case "newtab":
+			case "new_tab":
 				chrome.tabs.create({})
-				responseString= "tab open";
+				responseString= "new tab open";
 				break;
 
-			case "closetab":
+			case "close_tab":
 				chrome.tabs.getSelected(null, function(tab) {
 					chrome.tabs.remove(tab.id);
 				});
 				responseString= "tab closed";
 				break;
 
-			case "lasttab":
+			case "last_tab":
 				chrome.storage.local.get('lasturl', function(result){
 					chrome.tabs.create({'url':result.lasturl}, function(tab){})
 				});
 				responseString = "last tab open";
 				break;
 
-			case "reloadall":
+			case "reload_all":
 				chrome.tabs.getAllInWindow(null, function(tabs) {
 					for(var i = 0; i < tabs.length; i++) {
 						chrome.tabs.update(tabs[i].id, {url: tabs[i].url});
 					}
 				});
-				responseString = "tabs reloaded";
+				responseString = "all tabs reloaded";
 				break;
 
-			case "nexttab":
+			case "next_tab":
 				chrome.tabs.getSelected(null, function(tab) {
 					chrome.tabs.getAllInWindow(null, function(tabs) {
 						for(var i = 0; i < tabs.length; i++) {
@@ -64,7 +60,7 @@ chrome.extension.onMessage.addListener(
 				responseString = "tab switched";
 				break;
 
-			case "prevtab":
+			case "prev_tab":
 				chrome.tabs.getSelected(null, function(tab) {
 					chrome.tabs.getAllInWindow(null, function(tabs) {
 						for(var i = 0; i < tabs.length; i++) {
@@ -108,6 +104,12 @@ chrome.extension.onMessage.addListener(
 			case "load_options":
 				sendResponse({message: "yes", "options_json": JSON.stringify(loadOptions()) });
 				return;
+
+			case "open_option":
+				chrome.tabs.create({
+				    "url": chrome.extension.getURL("options_page.html"),
+				});
+				break;;
 		}
 
 		sendResponse({message: responseString});

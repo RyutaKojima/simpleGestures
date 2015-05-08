@@ -1,0 +1,43 @@
+.gesture_option {
+	clear:both;
+}
+
+.box_red, .box_green, .box_blue {
+	clear:both;
+}
+
+.note_red, .note_green, .note_blue {
+	width: 80px;
+	float: left;
+}
+
+.input_red, .input_green, .input_blue {
+	float: left;
+}
+
+.box_trail_width {
+	clear:both;
+}
+
+.note_trail_width {
+	float: left;
+	width: 80px;
+}
+
+.input_trail_width {
+	float: left;
+}
+
+#color_r, #color_g, #color_b {
+	width: 30px;
+}
+
+#line_width {
+	width: 30px;
+	text-align: right;
+}
+
+.space_20px {
+	margin: 10px;
+	padding: 5px;
+}

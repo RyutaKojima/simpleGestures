@@ -1,8 +1,5 @@
 /**
  * 
- * 
- * 
- * 
  */
 
 //-------------------------------------------------------------------------------------------------- 
@@ -48,14 +45,17 @@ drawn_gesture_command = "";
 
 // gesture list
 gesture_table			= new Array();
+/*
 gesture_table["L"]		= "back";
 gesture_table["R"]		= "forward";
-gesture_table["D"]		= "newtab";
-gesture_table["UL"]		= "prevtab";
-gesture_table["UR"]		= "nexttab";
-gesture_table["DR"]		= "closetab";
-gesture_table["DU"]		= "reloadall";
+gesture_table["D"]		= "new_tab";
+gesture_table["UL"]		= "prev_tab";
+gesture_table["UR"]		= "next_tab";
+gesture_table["DR"]		= "close_tab";
+gesture_table["DU"]		= "reload_all";
 gesture_table["DRD"]	= "close_all_background";
+*/
+gesture_table["RDLU"]	= "open_option";
 
 //-------------------------------------------------------------------------------------------------- 
 // Event Handler
@@ -63,6 +63,12 @@ gesture_table["DRD"]	= "close_all_background";
 /**
  * entory point.
  */
+$(window).ready(function onload_handler() {
+	debug_log("window.ready");
+
+	initializeExtensionOnce();
+});
+
 $(window).load(function onload_handler() {
 	debug_log("window.onload");
 
@@ -94,7 +100,7 @@ document.onmousedown = function onmousedown_handler(event) {
 		if(event.target.href) {
 			link_url = event.target.href;
 		}
-		else if(event.target.parentElement.href) {
+		else if(event.target.parentElement && event.target.parentElement.href) {
 			link_url = event.target.parentElement.href;
 		}
 		else {
@@ -382,7 +388,6 @@ function draw(x, y) {
 			var tmp_redraw_on = false;
 			var tmp_action_name = null;
 
-
 			// debug_log( drawn_gesture_command + " , " + gesture_command );
 			if( drawn_gesture_command !== gesture_command ) {
 
@@ -475,11 +480,11 @@ function exeAction(action_name) {
 			window.history.forward();
 			break;
 
-		case "scrolltop":
+		case "scroll_top":
 			window.scrollTo(0, 0);
 			break;
 
-		case "scrollbottom":
+		case "scroll_bottom":
 			window.scrollTo(0, $(window).scrollHeight());
 			break;
 
@@ -491,9 +496,9 @@ function exeAction(action_name) {
 			window.stop();
 			break;
 
-		case "newtab":
+		case "new_tab":
 			if(link_url == null) {
-				chrome.extension.sendMessage({msg: "newtab"}, function(response) {
+				chrome.extension.sendMessage({msg: "new_tab"}, function(response) {
 					if(response != null) {
 						debug_log("message: " + response.message);
 					}
@@ -510,32 +515,8 @@ function exeAction(action_name) {
 			}
 			break;
 
-		case "closetab":
-			chrome.extension.sendMessage({msg: "closetab"});
-			break;
-
-		case "lasttab":
-			chrome.extension.sendMessage({msg: "lasttab"});
-			break;
-
-		case "reloadall":
-			chrome.extension.sendMessage({msg: "reloadall"});
-			break;
-
-		case "close_all":
-			chrome.extension.sendMessage({msg: "close_all"});
-			break;
-
-		case "nexttab":
-			chrome.extension.sendMessage({msg: "nexttab"});
-			break;
-
-		case "prevtab":
-			chrome.extension.sendMessage({msg: "prevtab"});
-			break;
-
-		case "close_all_background":
-			chrome.extension.sendMessage({msg: "close_all_background"});
+		default:
+			chrome.extension.sendMessage({msg: action_name});
 			break;
 	}
 }
@@ -552,7 +533,17 @@ function loadOption() {
 
 			options_instance = JSON.parse(response.options_json);
 
+			// general setting
 			optTrailColor = options_instance["color_r"] + options_instance["color_g"] + options_instance["color_b"];
+			optTrailWidth = options_instance["line_width"];
+
+			// gesture
+			if( options_instance["gesture_close"] ) {
+				gesture_table[options_instance["gesture_close"]] = "close_tab";
+			}
+			if( options_instance["gesture_newtab"] ) {
+				gesture_table[options_instance["gesture_newtab"]] = "new_tab";
+			}
 
 			createTrailCanvas();
 			createActionNameCanvas();
