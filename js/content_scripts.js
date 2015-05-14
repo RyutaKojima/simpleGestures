@@ -1,6 +1,5 @@
 /**
  * 
- * http://www.koikikukan.com/archives/2012/01/17-015555.php
  */
 
 //-------------------------------------------------------------------------------------------------- 
@@ -8,7 +7,7 @@
 //-------------------------------------------------------------------------------------------------- 
 COMMAND_MAX_LENGTH = 14;
 
-GESTURE_START_DISTANCE = 16;
+GESTURE_START_DISTANCE = 10;
 
 //-------------------------------------------------------------------------------------------------- 
 // Global Variables
@@ -46,16 +45,22 @@ gesture_table			= new Array();
 /**
  * entory point.
  */
-$(window).ready(function onload_handler() {
+$(window).ready(function onready_handler() {
 	debug_log("window.ready");
+//	initializeExtensionOnce();
 
-	initializeExtensionOnce();
+	debug_log("frames=" + window.frames.length);
 });
 
 $(window).load(function onload_handler() {
 	debug_log("window.onload");
+//	initializeExtensionOnce();
+});
 
-	initializeExtensionOnce();
+/**
+ * window resize
+ */
+$(window).resize(function(){
 });
 
 /**
@@ -63,6 +68,7 @@ $(window).load(function onload_handler() {
  */
 document.onmousedown = function onmousedown_handler(event) {
 	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
+	debug_log("frames=" + window.frames.length);
 
 	initializeExtensionOnce();
 
@@ -90,9 +96,6 @@ document.onmousedown = function onmousedown_handler(event) {
 			link_url = null;
 		}
 
-//		// canvas clear
-//		clear();
-
 		// setting 
 		loadOption();
 
@@ -115,7 +118,7 @@ document.onmousedown = function onmousedown_handler(event) {
  *
  */
 document.onmousemove = function onmousemove_handler(event) {
-//	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
+	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
 
 	var tmp_x;
 	var tmp_y;
@@ -191,18 +194,14 @@ document.onmouseup = function onmouseup_handler(event) {
 			exeAction(tmp_action_name);
 		}
 
-		if( trailCanvas ) {
-			tmp_canvas = document.getElementById('gestureTrailCanvas');
-			if( tmp_canvas ) {
-				document.body.removeChild(trailCanvas);
-			}
+		// removeChild
+		tmp_canvas = document.getElementById('gestureTrailCanvas');
+		if( tmp_canvas ) {
+			document.body.removeChild(tmp_canvas);
 		}
-		if( actionNameCanvas ) {
-
-			tmp_canvas = document.getElementById('gestureActionNameCanvas');
-			if( tmp_canvas ) {
-				document.body.removeChild(actionNameCanvas);
-			}
+		tmp_canvas = document.getElementById('gestureActionNameCanvas');
+		if( tmp_canvas ) {
+			document.body.removeChild(tmp_canvas);
 		}
 	}
 
@@ -216,8 +215,9 @@ document.onmouseup = function onmouseup_handler(event) {
 document.onmousewheel = function onmousewheel_handler(event) {
 	debug_log(arguments.callee.name);
 
-	adjustCanvasPosition();
+//	adjustCanvasPosition();
 }
+
 
 /**
  *
@@ -253,6 +253,18 @@ function debug_log(str) {
 function initializeExtensionOnce() {
 	if( !initialized ) {
 		debug_log("initialize run!!");
+
+		debug_log( "$(window).height()      = " +  $(window).height() );
+		debug_log( "$(window).innerHeight() = " +  $(window).innerHeight() );
+
+		debug_log( "window.innerHeight      = " +  window.innerHeight );
+		debug_log( "screen.height           = " +  screen.height );
+		debug_log( "screen.availHeight      = " +  screen.availHeight );
+		debug_log( "document.height         = " +  document.height );
+		debug_log( "document.body.scrollHeight             = " +  document.body.scrollHeight );
+		debug_log( "document.body.clientHeight             = " +  document.body.clientHeight );
+		debug_log( "document.documentElement.scrollHeight  = " +  document.documentElement.scrollHeight );
+		debug_log( "document.documentElement.clientHeight  = " +  document.documentElement.clientHeight );
 
 		// initialize complete flag.
 		initialized = true;
@@ -300,26 +312,32 @@ function loadOption() {
 			// gesture
 			initGestureTable();
 
-			if( options_instance["gesture_close_tab"] ) {
-				gesture_table[options_instance["gesture_close_tab"]]	= "close_tab";
-			}
-			if( options_instance["gesture_reload"] ) {
-				gesture_table[options_instance["gesture_reload"]]		= "reload";
-			}
-			if( options_instance["gesture_back"] ) {
-				gesture_table[options_instance["gesture_back"]]			= "back";
-			}
-			if( options_instance["gesture_forward"] ) {
-				gesture_table[options_instance["gesture_forward"]]		= "forward";
-			}
-			if( options_instance["gesture_scroll_top"] ) {
-				gesture_table[options_instance["gesture_scroll_top"]]	= "scroll_top";
-			}
-			if( options_instance["gesture_scroll_bottom"] ) {
-				gesture_table[options_instance["gesture_scroll_bottom"]] = "scroll_bottom";
-			}
-			if( options_instance["gesture_new_tab"] ) {
-				gesture_table[options_instance["gesture_new_tab"]]		= "new_tab";
+			var option_id_list = [
+				"gesture_close_tab",
+				"gesture_new_tab",
+				"gesture_reload",
+				"gesture_forward",
+				"gesture_back",
+				"gesture_scroll_top",
+				"gesture_scroll_bottom",
+				"gesture_last_tab",
+				"gesture_reload_all",
+				"gesture_next_tab",
+				"gesture_prev_tab",
+				"gesture_close_all_background",
+				"gesture_close_all",
+				"gesture_open_option",
+			];
+
+			var id_name = "";
+			var i=0;
+			var len = option_id_list.length;
+			for( i=0; i < len; i++ ) {
+				id_name = option_id_list[i];
+
+				if( options_instance[id_name] ) {
+					gesture_table[options_instance[id_name]]		= id_name.replace("gesture_", "");
+				}
 			}
 
 			// reload setting for canvas.
@@ -338,18 +356,30 @@ function createTrailCanvas() {
 		trailCanvas.id = "gestureTrailCanvas";
 	}
 
-	trailCanvas.width    = $(window).width();
-	trailCanvas.height   = $(window).height();
+	var set_width	= window.innerWidth;
+	var set_height	= window.innerHeight;
+
+	trailCanvas.width    = set_width;
+	trailCanvas.height   = set_height
 
 	// style setting.
-	trailCanvas.style.left     = "0px";
+	trailCanvas.style.width    = set_width;
+	trailCanvas.style.height   = set_height;
+
+	// center position.
 	trailCanvas.style.top      = "0px";
-	trailCanvas.style.width    = $(window).width();
-	trailCanvas.style.height   = $(window).height();
+	trailCanvas.style.left     = "0px";
+	trailCanvas.style.right    = "0px";
+	trailCanvas.style.bottom    = "0px";
+	trailCanvas.style.margin   = "auto";
+	trailCanvas.style.position = 'fixed';
 
 	trailCanvas.style.overflow = 'visible';
-	trailCanvas.style.position = 'absolute';
-	trailCanvas.style.zIndex   = "99998";
+//	trailCanvas.style.display  = 'block';
+//	trailCanvas.style.border   = 'none';
+//	trailCanvas.style.background = 'transparent';
+
+	trailCanvas.style.zIndex   = "1000000";
 
 	var ctx = trailCanvas.getContext('2d');
     ctx.strokeStyle = "#" + optTrailColor;
@@ -374,12 +404,22 @@ function createActionNameCanvas() {
 	// style setting.
 	actionNameCanvas.width          = set_width;
 	actionNameCanvas.height         = set_height;
+
 	actionNameCanvas.style.width    = set_width;
 	actionNameCanvas.style.height   = set_height;
 
+	// center position.
+	actionNameCanvas.style.top      = "0px";
+	actionNameCanvas.style.left     = "0px";
+	actionNameCanvas.style.right    = "0px";
+	actionNameCanvas.style.bottom    = "0px";
+	actionNameCanvas.style.margin   = "auto";
+	actionNameCanvas.style.position = 'fixed';
+
+
 	actionNameCanvas.style.overflow = 'visible';
-	actionNameCanvas.style.position = 'absolute';
-	actionNameCanvas.style.zIndex   ="99999";
+//	actionNameCanvas.style.background = 'transparent';
+	actionNameCanvas.style.zIndex   ="10000";
 
 	var ctx = actionNameCanvas.getContext('2d');
 	ctx.font = "bold 30px 'Arial'";
@@ -394,17 +434,26 @@ function clear() {
 	var ctx = null;
 
 	if( trailCanvas ) {
-		ctx = trailCanvas.getContext('2d');
 
+		// canvas clear
+		trailCanvas.width = trailCanvas.width;
+
+/*
+		ctx = trailCanvas.getContext('2d');
 		// clear canvas
 		ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+*/
 	}
 
 	if( actionNameCanvas ) {
-		ctx = actionNameCanvas.getContext('2d');
 
+		actionNameCanvas.width = actionNameCanvas.width;
+
+/*
+		ctx = actionNameCanvas.getContext('2d');
 		// clear canvas
 		ctx.clearRect(0, 0, actionNameCanvas.width, actionNameCanvas.height);
+*/
 	}
 }
 
@@ -449,6 +498,7 @@ function draw(x, y) {
 			}
 
 			if( tmp_redraw_on ) {
+
 				ctx = actionNameCanvas.getContext('2d');
 
 				// clear canvas
@@ -472,13 +522,14 @@ function draw(x, y) {
 		}
 	}
 
-	adjustCanvasPosition();
+//	adjustCanvasPosition();
 }
 
 /**
  *
  */
 function adjustCanvasPosition() {
+/*
 	// display position: full window
 	if( trailCanvas ) {
 	    trailCanvas.style.top  = $(window).scrollTop()  + "px";
@@ -487,11 +538,14 @@ function adjustCanvasPosition() {
 
 	// display position: center
 	if( actionNameCanvas ) {
-		var top  = ( $(window).height() - actionNameCanvas.height ) / 2 + $(window).scrollTop();
-		var left = ( $(window).width()  - actionNameCanvas.width  ) / 2 + $(window).scrollLeft();
+		var top  = ( window.innerHeight - actionNameCanvas.height ) / 2 + $(window).scrollTop();
+		var left = ( window.innerWidth  - actionNameCanvas.width  ) / 2 + $(window).scrollLeft();
 		actionNameCanvas.style.top  = top  + "px";
 		actionNameCanvas.style.left = left + "px";
+
+//		debug_log( top  + "px" + left + "px" );
 	}
+*/
 }
 
 /**

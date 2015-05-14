@@ -37,8 +37,6 @@ function createDefaultOptions() {
 	tmp_obj["line_width"] = "3";
 
 //	tmp_obj["gesture_close_tab"] = "";
-//	tmp_obj["gesture_new_tab"] = "";
-//	tmp_obj["gesture_reload"] = "";
 
 	return tmp_obj;
 }
@@ -73,6 +71,13 @@ function saveOptions() {
 		"gesture_back",
 		"gesture_scroll_top",
 		"gesture_scroll_bottom",
+		"gesture_last_tab",
+		"gesture_reload_all",
+		"gesture_next_tab",
+		"gesture_prev_tab",
+		"gesture_close_all_background",
+		"gesture_close_all",
+		"gesture_open_option",
 	];
 
 	var id_name = "";
