@@ -1,14 +1,6 @@
 /**
  * 
  */
-
-//-------------------------------------------------------------------------------------------------- 
-// Const Variables
-//-------------------------------------------------------------------------------------------------- 
-COMMAND_MAX_LENGTH = 14;
-
-GESTURE_START_DISTANCE = 10;
-
 //-------------------------------------------------------------------------------------------------- 
 // Global Variables
 //-------------------------------------------------------------------------------------------------- 
@@ -18,26 +10,26 @@ actionNameCanvas	= null;
 initialized			= false;
 
 // option variables
+options_instance	= null;
+
 optTrailColor		= "FF0000";
 optTrailWidth		= 3;
 optDrawTrailOn		= true;
 optDrawActionNameOn	= true;
 optDrawCommandOn	= true;
 
-options_instance	= null;
+// gesture list
+optGesture_table	= new Array();
 
 // temporary variables
+gesture_man = new lib_gesture();
+
 link_url			= null;
 lmousedown			= false;
 rmousedown			= false;
-last_x				= 0;
-last_y				= 0;
-last_vector			= null;
-gesture_command		= "";
 drawn_gesture_command = "";
 
-// gesture list
-gesture_table			= new Array();
+debug_count			= 0;
 
 //-------------------------------------------------------------------------------------------------- 
 // Event Handler
@@ -67,8 +59,9 @@ $(window).resize(function(){
  *
  */
 document.onmousedown = function onmousedown_handler(event) {
-	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
-	debug_log("frames=" + window.frames.length);
+	debug_log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+//	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
+//	debug_log("frames=" + window.frames.length);
 
 	initializeExtensionOnce();
 
@@ -79,10 +72,9 @@ document.onmousedown = function onmousedown_handler(event) {
 	else if(event.which == 3) {
 		rmousedown = true;
 
-		last_x = event.pageX - $(window).scrollLeft();
-		last_y = event.pageY - $(window).scrollTop();
-		last_vector = null;
-		gesture_command = "";
+		gesture_man.clear();
+		gesture_man.startGestrue(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop() );
+
 		drawn_gesture_command = "";
 
 		// select link url copy
@@ -95,6 +87,7 @@ document.onmousedown = function onmousedown_handler(event) {
 		else {
 			link_url = null;
 		}
+		debug_log("select link: " + link_url );
 
 		// setting 
 		loadOption();
@@ -102,23 +95,28 @@ document.onmousedown = function onmousedown_handler(event) {
 		// addChild
 		if( trailCanvas ) {
 			document.body.appendChild(trailCanvas);
+//			window.top.document.body.appendChild(trailCanvas);
 		}
 
 		if( actionNameCanvas ) {
 			document.body.appendChild(actionNameCanvas);
+//			window.top.document.body.appendChild(actionNameCanvas);
 		}
 
 		adjustCanvasPosition();
 	}
 
-	debug_log("select link: " + link_url );
+	debug_count++;
+	debug_count %= 100;
 }
 
 /**
  *
  */
 document.onmousemove = function onmousemove_handler(event) {
-	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
+	debug_log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length + ",cnt="+debug_count);
+//	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
+//	debug_log("frames=" + window.frames.length);
 
 	var tmp_x;
 	var tmp_y;
@@ -128,48 +126,8 @@ document.onmousemove = function onmousemove_handler(event) {
 		tmp_x = event.pageX - $(window).scrollLeft();
 		tmp_y = event.pageY - $(window).scrollTop();
 
-		var distance = Math.sqrt( Math.pow(tmp_x-last_x, 2) + Math.pow(tmp_y-last_y, 2) );
-
-//		debug_log("distance: " + distance);
-		if(distance > GESTURE_START_DISTANCE) {
-			radian = Math.atan2(tmp_y-last_y, tmp_x-last_x);
-			rot    = radian * 180 / Math.PI;
-//			debug_log( "radian: " + radian + ", rotate: " + rot );
-
-			var vector = null;
-			if( rot >= -45.0 && rot < 45.0 ) {
-				vector = "R";
-			}
-			else if( rot >= 45.0 && rot < 135.0 ) {
-				vector = "D";
-			}
-			else if( rot >= -135.0 && rot < -45.0) {
-				vector = "U";
-			}
-			else {
-				vector = "L";
-			}
-//			debug_log(vector);
-
-			if( last_vector != vector ) {
-
-				if( gesture_command.length < COMMAND_MAX_LENGTH ) {
-					gesture_command += vector;
-				}
-				else {
-					gesture_command = "";
-					for(var i=0; i < COMMAND_MAX_LENGTH; i++ ) {
-						gesture_command += "-";
-					}
-				}
-
-				last_vector = vector;
-			}
-
-			draw(tmp_x, tmp_y);
-
-			last_x = tmp_x;
-			last_y = tmp_y;
+		if( gesture_man.registPoint(tmp_x, tmp_y) ) {
+			draw();
 		}
 	}
 }
@@ -178,7 +136,9 @@ document.onmousemove = function onmousemove_handler(event) {
  *
  */
 document.onmouseup = function onmouseup_handler(event) {
-	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
+	debug_log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+//	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
+//	debug_log("frames=" + window.frames.length);
 
 	var tmp_canvas;
 
@@ -189,6 +149,7 @@ document.onmouseup = function onmouseup_handler(event) {
 	else if(event.which == 3) {
 		rmousedown = false;
 
+		// gesture action run !
 		var tmp_action_name = getNowGestureActionName();
 		if( tmp_action_name != null ) {
 			exeAction(tmp_action_name);
@@ -203,10 +164,21 @@ document.onmouseup = function onmouseup_handler(event) {
 		if( tmp_canvas ) {
 			document.body.removeChild(tmp_canvas);
 		}
-	}
 
-	link_url = null;
-	clear();
+// test code ...>>>
+		tmp_canvas = window.top.document.getElementById('gestureTrailCanvas');
+		if( tmp_canvas ) {
+			window.top.document.body.removeChild(tmp_canvas);
+		}
+		tmp_canvas = window.top.document.getElementById('gestureActionNameCanvas');
+		if( tmp_canvas ) {
+			window.top.document.body.removeChild(tmp_canvas);
+		}
+// <<<
+
+		link_url = null;
+		clear();
+	}
 }
 
 /**
@@ -218,24 +190,23 @@ document.onmousewheel = function onmousewheel_handler(event) {
 //	adjustCanvasPosition();
 }
 
-
 /**
  *
  */
 document.oncontextmenu = function oncontextmenu_handler() {
 	debug_log(arguments.callee.name);
 
-	if( gesture_command === "" ) {
+	if( gesture_man.gesture_command === "" ) {
 		// debug_log("open it");
 		return true;
 	}
 	else {
-	// Whdn return "false", the context menu is not open.
+		// Whdn return "false", the context menu is not open.
 		return false;
 	}
 
 	return true;
-};
+}
 
 //-------------------------------------------------------------------------------------------------- 
 // original method
@@ -287,8 +258,8 @@ function initializeExtensionOnce() {
  */
 function initGestureTable() {
 
-	gesture_table = new Array();
-	gesture_table["RDLU"]	= "open_option";
+	optGesture_table = new Array();
+	optGesture_table["RDLU"]	= "open_option";
 }
 
 /**
@@ -336,7 +307,7 @@ function loadOption() {
 				id_name = option_id_list[i];
 
 				if( options_instance[id_name] ) {
-					gesture_table[options_instance[id_name]]		= id_name.replace("gesture_", "");
+					optGesture_table[options_instance[id_name]]		= id_name.replace("gesture_", "");
 				}
 			}
 
@@ -370,9 +341,10 @@ function createTrailCanvas() {
 	trailCanvas.style.top      = "0px";
 	trailCanvas.style.left     = "0px";
 	trailCanvas.style.right    = "0px";
-	trailCanvas.style.bottom    = "0px";
+	trailCanvas.style.bottom   = "0px";
 	trailCanvas.style.margin   = "auto";
 	trailCanvas.style.position = 'fixed';
+//	trailCanvas.style.position = 'absolute';
 
 	trailCanvas.style.overflow = 'visible';
 //	trailCanvas.style.display  = 'block';
@@ -460,7 +432,7 @@ function clear() {
 /**
  *
  */
-function draw(x, y) {
+function draw() {
 	var ctx = null;
 
 	if( trailCanvas ) {
@@ -469,8 +441,8 @@ function draw(x, y) {
 
 			// draw trail line
 			ctx.beginPath();
-			ctx.moveTo(last_x, last_y);
-			ctx.lineTo(x, y);
+			ctx.moveTo(gesture_man.last_x, gesture_man.last_y);
+			ctx.lineTo(gesture_man.now_x, gesture_man.now_y);
 			ctx.stroke();
 		}
 	}
@@ -481,8 +453,8 @@ function draw(x, y) {
 			var tmp_redraw_on = false;
 			var tmp_action_name = null;
 
-			// debug_log( drawn_gesture_command + " , " + gesture_command );
-			if( drawn_gesture_command !== gesture_command ) {
+			// debug_log( drawn_gesture_command + " , " + gesture_man.gesture_command );
+			if( drawn_gesture_command !== gesture_man.gesture_command ) {
 
 				tmp_action_name = getNowGestureActionName();
 
@@ -513,9 +485,9 @@ function draw(x, y) {
 				}
 
 				if( optDrawCommandOn ) {
-					ctx.fillText( gesture_command, 0, 30);
+					ctx.fillText( gesture_man.gesture_command, 0, 30);
 
-					drawn_gesture_command = gesture_command;
+					drawn_gesture_command = gesture_man.gesture_command;
 				}
 				ctx.stroke();
 			}
@@ -553,12 +525,12 @@ function adjustCanvasPosition() {
  */
 function getNowGestureActionName() {
 
-	if( gesture_command == "" ) {
+	if( gesture_man.gesture_command == "" ) {
 		return null;
 	}
 
-	if( typeof gesture_table[gesture_command] != "undefined" ) {
-		return gesture_table[gesture_command];
+	if( typeof optGesture_table[gesture_man.gesture_command] != "undefined" ) {
+		return optGesture_table[gesture_man.gesture_command];
 	}
 
 	return null;

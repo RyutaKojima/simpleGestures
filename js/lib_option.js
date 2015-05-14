@@ -1,7 +1,6 @@
 
 // localStorage save key
 var localStrageKey = "options";
-
 var options_instance = null;
 
 //-----------------------------------------------------------------------------
@@ -10,6 +9,8 @@ var options_instance = null;
 function resetOptions() {
 //	localStorage.removeItem(localStrageKey);
 	localStorage.clear();
+
+	options_instance = null;
 }
 
 // Load option in the saved "localStorage"
