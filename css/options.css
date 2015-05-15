@@ -3,26 +3,26 @@
 }
 
 .box_language, 
-.box_red, .box_green, .box_blue, 
+.box_color, 
 .box_trail_width {
 	clear:both;
 }
 
 .note_language,
-.note_red, .note_green, .note_blue, 
+.note_color, 
 .note_trail_width {
 	width: 80px;
 	float: left;
 }
 
 .input_language,
-.input_red, .input_green, .input_blue, 
+.input_color, 
 .input_trail_width {
 	float: left;
 }
 
-#color_r, #color_g, #color_b {
-	width: 30px;
+#color_code {
+	width: 60px;
 }
 
 #line_width {

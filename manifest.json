@@ -2,11 +2,14 @@
   "name": "simpleGestures",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "This is simple mouse gestures extension.",
+  "description": "simple mouse gestures.",
   "permissions": [
       "tabs",
       "storage"
   ],
+  "icons" : {
+    "128": "icon.png"
+  },
   "background": {
     "scripts": [
       "js/lib_option.js",

@@ -32,9 +32,7 @@ function loadOptions() {
 function createDefaultOptions() {
 	var tmp_obj = new Object();
 
-	tmp_obj["color_r"] = "FF";
-	tmp_obj["color_g"] = "00";
-	tmp_obj["color_b"] = "00";
+	tmp_obj["color_code"] = "FF0000";
 	tmp_obj["line_width"] = "3";
 
 //	tmp_obj["gesture_close_tab"] = "";
@@ -51,9 +49,7 @@ function saveOptions() {
 
 /*
 	// general setting
-	options_instance['color_r'] = $('#color_r').val();
-	options_instance['color_g'] = $('#color_g').val();
-	options_instance['color_b'] = $('#color_b').val();
+	options_instance['color_code'] = $('#color_code').val();
 	options_instance['line_width'] = $('#line_width').val();
 
 	// gesture list
@@ -61,9 +57,7 @@ function saveOptions() {
 */
 	// オプションデータの表示
 	var option_id_list = [
-		"color_r",
-		"color_g",
-		"color_b",
+		"color_code",
 		"line_width",
 		"gesture_close_tab",
 		"gesture_new_tab",

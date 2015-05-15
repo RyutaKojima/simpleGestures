@@ -1,11 +1,8 @@
 
 optionCanvas = null;
 optionGestureMan = new lib_gesture();
-
 var option_id_list = [
-	"color_r",
-	"color_g",
-	"color_b",
+	"color_code",
 	"line_width",
 ];
 var gesture_id_list = [

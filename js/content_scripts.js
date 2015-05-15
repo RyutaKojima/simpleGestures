@@ -277,7 +277,7 @@ function loadOption() {
 			options_instance = JSON.parse(response.options_json);
 
 			// general setting
-			optTrailColor = options_instance["color_r"] + options_instance["color_g"] + options_instance["color_b"];
+			optTrailColor = options_instance["color_code"];
 			optTrailWidth = options_instance["line_width"];
 
 			// gesture
