@@ -1,26 +1,6 @@
 
 optionCanvas = null;
 optionGestureMan = new lib_gesture();
-var option_id_list = [
-	"color_code",
-	"line_width",
-];
-var gesture_id_list = [
-	"gesture_close_tab",
-	"gesture_new_tab",
-	"gesture_reload",
-	"gesture_forward",
-	"gesture_back",
-	"gesture_scroll_top",
-	"gesture_scroll_bottom",
-	"gesture_last_tab",
-	"gesture_reload_all",
-	"gesture_next_tab",
-	"gesture_prev_tab",
-	"gesture_close_all_background",
-	"gesture_close_all",
-	"gesture_open_option",
-];
 
 /**
  * entory point.
@@ -44,9 +24,9 @@ $(function ready_handler(){
 
 	var id_name = "";
 	var i=0;
-	var len = option_id_list.length;
+	var len = OPTION_ID_LIST.length;
 	for( i=0; i < len; i++ ) {
-		id_name = option_id_list[i];
+		id_name = OPTION_ID_LIST[i];
 
 		// textbox value change event
 		$('#'+id_name).change(function() {
@@ -54,10 +34,10 @@ $(function ready_handler(){
 		});
 	}
 
-	len = gesture_id_list.length;
+	len = GESTURE_ID_LIST.length;
 	for(i=0; i < len; i++) {
 
-		id_name = gesture_id_list[i];
+		id_name = GESTURE_ID_LIST[i];
 
 		// textbox value change event
 		$('#'+id_name).change(function() {
@@ -210,18 +190,18 @@ function createOptionCanvas() {
 function initOptionView() {
 	var id_name = "";
 	var i=0;
-	var len = option_id_list.length;
+	var len = OPTION_ID_LIST.length;
 	for( i=0; i < len; i++ ) {
-		id_name = option_id_list[i];
+		id_name = OPTION_ID_LIST[i];
 
 		// textbox value set.
 		$('#'+id_name).val(options_instance[id_name]);
 	}
 
-	len = gesture_id_list.length;
+	len = GESTURE_ID_LIST.length;
 	for(i=0; i < len; i++) {
 
-		id_name = gesture_id_list[i];
+		id_name = GESTURE_ID_LIST[i];
 
 		// textbox value set.
 		$('#'+id_name).val(options_instance[id_name]);

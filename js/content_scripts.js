@@ -7,8 +7,6 @@
 trailCanvas			= null;
 actionNameCanvas	= null;
 
-initialized			= false;
-
 // option variables
 options_instance	= null;
 
@@ -21,15 +19,14 @@ optDrawCommandOn	= true;
 // gesture list
 optGesture_table	= new Array();
 
-// temporary variables
+// work variables
 gesture_man = new lib_gesture();
 
+initialized			= false;
 link_url			= null;
 lmousedown			= false;
 rmousedown			= false;
 drawn_gesture_command = "";
-
-debug_count			= 0;
 
 //-------------------------------------------------------------------------------------------------- 
 // Event Handler
@@ -39,14 +36,14 @@ debug_count			= 0;
  */
 $(window).ready(function onready_handler() {
 	debug_log("window.ready");
-//	initializeExtensionOnce();
+	initializeExtensionOnce();
 
 	debug_log("frames=" + window.frames.length);
 });
 
 $(window).load(function onload_handler() {
 	debug_log("window.onload");
-//	initializeExtensionOnce();
+	initializeExtensionOnce();
 });
 
 /**
@@ -59,9 +56,7 @@ $(window).resize(function(){
  *
  */
 document.onmousedown = function onmousedown_handler(event) {
-	debug_log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-//	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
-//	debug_log("frames=" + window.frames.length);
+//	debug_log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
 	initializeExtensionOnce();
 
@@ -105,29 +100,20 @@ document.onmousedown = function onmousedown_handler(event) {
 
 		adjustCanvasPosition();
 	}
-
-	debug_count++;
-	debug_count %= 100;
 }
 
 /**
  *
  */
 document.onmousemove = function onmousemove_handler(event) {
-	debug_log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length + ",cnt="+debug_count);
-//	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
-//	debug_log("frames=" + window.frames.length);
-
-	var tmp_x;
-	var tmp_y;
+//	debug_log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
 	if( rmousedown ) {
-
-		tmp_x = event.pageX - $(window).scrollLeft();
-		tmp_y = event.pageY - $(window).scrollTop();
+		var tmp_x = event.pageX - $(window).scrollLeft();
+		var tmp_y = event.pageY - $(window).scrollTop();
 
 		if( gesture_man.registPoint(tmp_x, tmp_y) ) {
-			draw();
+			drawCanvas();
 		}
 	}
 }
@@ -136,9 +122,7 @@ document.onmousemove = function onmousemove_handler(event) {
  *
  */
 document.onmouseup = function onmouseup_handler(event) {
-	debug_log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-//	debug_log(arguments.callee.name + ": " + event.which + ", (" + event.pageX + ", " + event.pageY + ")");
-//	debug_log("frames=" + window.frames.length);
+//	debug_log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
 	var tmp_canvas;
 
@@ -177,7 +161,7 @@ document.onmouseup = function onmouseup_handler(event) {
 // <<<
 
 		link_url = null;
-		clear();
+		clearCanvas();
 	}
 }
 
@@ -185,8 +169,7 @@ document.onmouseup = function onmouseup_handler(event) {
  *
  */
 document.onmousewheel = function onmousewheel_handler(event) {
-	debug_log(arguments.callee.name);
-
+//	debug_log(arguments.callee.name);
 //	adjustCanvasPosition();
 }
 
@@ -283,30 +266,16 @@ function loadOption() {
 			// gesture
 			initGestureTable();
 
-			var option_id_list = [
-				"gesture_close_tab",
-				"gesture_new_tab",
-				"gesture_reload",
-				"gesture_forward",
-				"gesture_back",
-				"gesture_scroll_top",
-				"gesture_scroll_bottom",
-				"gesture_last_tab",
-				"gesture_reload_all",
-				"gesture_next_tab",
-				"gesture_prev_tab",
-				"gesture_close_all_background",
-				"gesture_close_all",
-				"gesture_open_option",
-			];
+			var GESTURE_ID_LIST = options_instance["gesture_id_list"];
 
 			var id_name = "";
 			var i=0;
-			var len = option_id_list.length;
+			var len = GESTURE_ID_LIST.length;
 			for( i=0; i < len; i++ ) {
-				id_name = option_id_list[i];
+				id_name = GESTURE_ID_LIST[i];
 
 				if( options_instance[id_name] ) {
+					// cut "gesture_" word
 					optGesture_table[options_instance[id_name]]		= id_name.replace("gesture_", "");
 				}
 			}
@@ -402,7 +371,7 @@ function createActionNameCanvas() {
 /**
  *
  */
-function clear() {
+function clearCanvas() {
 	var ctx = null;
 
 	if( trailCanvas ) {
@@ -432,12 +401,14 @@ function clear() {
 /**
  *
  */
-function draw() {
+function drawCanvas() {
 	var ctx = null;
 
-	if( trailCanvas ) {
+	tmp_canvas = document.getElementById('gestureTrailCanvas');
+	if( tmp_canvas ) {
+//	if( trailCanvas ) {
 		if( optDrawTrailOn ) {
-			ctx = trailCanvas.getContext('2d');
+			ctx = tmp_canvas.getContext('2d');
 
 			// draw trail line
 			ctx.beginPath();
@@ -447,7 +418,9 @@ function draw() {
 		}
 	}
 
-	if( actionNameCanvas ) {
+	tmp_canvas = document.getElementById('gestureActionNameCanvas');
+	if( tmp_canvas ) {
+//	if( actionNameCanvas ) {
 		if( optDrawActionNameOn || optDrawCommandOn ) {
 
 			var tmp_redraw_on = false;
@@ -471,10 +444,10 @@ function draw() {
 
 			if( tmp_redraw_on ) {
 
-				ctx = actionNameCanvas.getContext('2d');
+				ctx = tmp_canvas.getContext('2d');
 
 				// clear canvas
-				ctx.clearRect(0, 0, actionNameCanvas.width, actionNameCanvas.height);
+				ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
 
 				// draw text
 				ctx.beginPath();

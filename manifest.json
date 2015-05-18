@@ -7,9 +7,6 @@
       "tabs",
       "storage"
   ],
-  "icons" : {
-    "128": "icon.png"
-  },
   "background": {
     "scripts": [
       "js/lib_option.js",

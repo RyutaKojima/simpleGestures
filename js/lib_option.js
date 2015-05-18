@@ -3,6 +3,30 @@
 var localStrageKey = "options";
 var options_instance = null;
 
+var OPTION_ID_LIST = [
+	"color_code",
+	"line_width",
+];
+
+var GESTURE_ID_LIST = [
+	"gesture_close_tab",
+	"gesture_new_tab",
+	"gesture_reload",
+	"gesture_forward",
+	"gesture_back",
+	"gesture_scroll_top",
+	"gesture_scroll_bottom",
+	"gesture_last_tab",
+	"gesture_reload_all",
+	"gesture_next_tab",
+	"gesture_prev_tab",
+	"gesture_close_all_background",
+	"gesture_close_all",
+	"gesture_open_option",
+	"gesture_open_extension",
+	"gesture_restart",
+];
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 // option all clear
@@ -14,8 +38,16 @@ function resetOptions() {
 }
 
 // Load option in the saved "localStorage"
-function loadOptions() {
+function loadOptionsString() {
 	var str = localStorage.getItem(localStrageKey);
+	if( str === null ) {
+		str = JSON.stringify( createDefaultOptions() );
+	}
+	return str;
+}
+function loadOptions() {
+//	var str = localStorage.getItem(localStrageKey);
+	var str = loadOptionsString();
 	var retObj = null;
 
 	if( str === null ) {
@@ -56,33 +88,25 @@ function saveOptions() {
 	options_instance['gesture_close_tab'] = $('#gesture_close_tab').val();
 */
 	// オプションデータの表示
-	var option_id_list = [
-		"color_code",
-		"line_width",
-		"gesture_close_tab",
-		"gesture_new_tab",
-		"gesture_reload",
-		"gesture_forward",
-		"gesture_back",
-		"gesture_scroll_top",
-		"gesture_scroll_bottom",
-		"gesture_last_tab",
-		"gesture_reload_all",
-		"gesture_next_tab",
-		"gesture_prev_tab",
-		"gesture_close_all_background",
-		"gesture_close_all",
-		"gesture_open_option",
-	];
-
 	var id_name = "";
 	var i=0;
-	var len = option_id_list.length;
+	var len = null;
+
+	len = OPTION_ID_LIST.length;
 	for( i=0; i < len; i++ ) {
-		id_name = option_id_list[i];
+		id_name = OPTION_ID_LIST[i];
 
 		options_instance[id_name] = $('#'+id_name).val();
 	}
+
+	len = GESTURE_ID_LIST.length;
+	for( i=0; i < len; i++ ) {
+		id_name = GESTURE_ID_LIST[i];
+
+		options_instance[id_name] = $('#'+id_name).val();
+	}
+
+	options_instance["gesture_id_list"] = GESTURE_ID_LIST;
 
 	// save localstrage.
 	localStorage.setItem(localStrageKey, JSON.stringify(options_instance));

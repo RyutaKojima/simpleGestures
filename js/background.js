@@ -15,21 +15,18 @@ chrome.extension.onMessage.addListener(
 
 			case "new_tab":
 				chrome.tabs.create({})
-				responseString= "new tab open";
 				break;
 
 			case "close_tab":
 				chrome.tabs.getSelected(null, function(tab) {
 					chrome.tabs.remove(tab.id);
 				});
-				responseString= "tab closed";
 				break;
 
 			case "last_tab":
 				chrome.storage.local.get('lasturl', function(result){
 					chrome.tabs.create({'url':result.lasturl}, function(tab){})
 				});
-				responseString = "last tab open";
 				break;
 
 			case "reload_all":
@@ -38,7 +35,6 @@ chrome.extension.onMessage.addListener(
 						chrome.tabs.update(tabs[i].id, {url: tabs[i].url});
 					}
 				});
-				responseString = "all tabs reloaded";
 				break;
 
 			case "next_tab":
@@ -57,7 +53,6 @@ chrome.extension.onMessage.addListener(
 						}
 					});
 				});
-				responseString = "tab switched";
 				break;
 
 			case "prev_tab":
@@ -76,7 +71,6 @@ chrome.extension.onMessage.addListener(
 						}
 					});
 				});
-				responseString = "tab switched";
 				break;
 
 			case "close_all_background":
@@ -89,7 +83,6 @@ chrome.extension.onMessage.addListener(
 						}
 					});
 				});
-				responseString = "background closed";
 				break;
 
 			case "close_all":
@@ -98,18 +91,34 @@ chrome.extension.onMessage.addListener(
 						chrome.tabs.remove(tabs[i].id);
 					}
 		  		});
-				responseString = "all tabs closed";
 				break;
 
 			case "load_options":
-				sendResponse({message: "yes", "options_json": JSON.stringify(loadOptions()) });
+				sendResponse({message: "yes", "options_json": loadOptionsString() });
 				return;
 
 			case "open_option":
 				chrome.tabs.create({
 				    "url": chrome.extension.getURL("options_page.html"),
 				});
-				break;;
+				break;
+
+			case "open_extension":
+				var chromeExtURL="chrome://extensions/";
+				chrome.tabs.getAllInWindow(null, function(tabs) {
+					for (var i = 0; i < tabs.length; i++) {
+						if(tabs[i].url == chromeExtURL) {
+							chrome.tabs.update(tabs[i].id, {selected:true});
+							return;
+						}
+					}
+					chrome.tabs.create({url:chromeExtURL,selected:true});
+				});
+				break;
+
+			case "restart":
+				chrome.tabs.create({url:"chrome://restart",selected:true});
+				break;
 		}
 
 		sendResponse({message: responseString});
