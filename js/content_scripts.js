@@ -12,7 +12,7 @@ actionNameDiv		= null;
 // option variables
 options_instance	= null;
 
-optTrailColor		= "FF0000";
+optTrailColor		= "#FF0000";
 optTrailWidth		= 3;
 optDrawTrailOn		= true;
 optDrawActionNameOn	= true;
@@ -28,7 +28,6 @@ initialized			= false;
 link_url			= null;
 lmousedown			= false;
 rmousedown			= false;
-drawn_gesture_command = "";
 
 //-------------------------------------------------------------------------------------------------- 
 // Event Handler
@@ -74,8 +73,6 @@ document.onmousedown = function onmousedown_handler(event) {
 
 		gesture_man.clear();
 		gesture_man.startGestrue(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop() );
-
-		drawn_gesture_command = "";
 
 		// select link url copy
 		if(event.target.href) {
@@ -232,7 +229,7 @@ function initializeExtensionOnce() {
 		// create canvas.
 //		debug_log("create canvas");
 		createTrailCanvas();
-		createActionNameDiv();
+		createInfoDiv();
 
 		return true;
 	}
@@ -241,16 +238,15 @@ function initializeExtensionOnce() {
 }
 
 /**
- *
+ * initialize gesture list table.
  */
 function initGestureTable() {
-
 	optGesture_table = new Array();
 	optGesture_table["RDLU"]	= "open_option";
 }
 
 /**
- *
+ * load option values.
  */
 function loadOption() {
 
@@ -286,7 +282,7 @@ function loadOption() {
 
 			// reload setting for canvas.
 			createTrailCanvas();
-			createActionNameDiv();
+			createInfoDiv();
 		}
 	});
 }
@@ -327,14 +323,14 @@ function createTrailCanvas() {
 	trailCanvas.style.zIndex   = "1000000";
 
 	var ctx = trailCanvas.getContext('2d');
-    ctx.strokeStyle = "#" + optTrailColor;
+    ctx.strokeStyle = optTrailColor;
     ctx.lineWidth   = optTrailWidth;
 }
 
 /**
- *
+ * create infomation div & update style.
  */
-function createActionNameDiv() {
+function createInfoDiv() {
 
 	if( !commandDiv ) {
 		commandDiv = document.createElement('div');
@@ -380,7 +376,7 @@ function createActionNameDiv() {
 
 	infoDiv.style.fontFamily = 'Arial';
 	infoDiv.style.fontSize = 30 + "px";
-	infoDiv.style.color = "#" + optTrailColor;
+	infoDiv.style.color      = optTrailColor;
 	infoDiv.style.fontWeight = "bold";
 }
 
@@ -428,28 +424,24 @@ function drawCanvas() {
 	if( infoDiv ) {
 		tmp_canvas = document.getElementById('infoDiv');
 		if( tmp_canvas ) {
-			if( optDrawActionNameOn || optDrawCommandOn ) {
 
-				// debug_log( drawn_gesture_command + " , " + gesture_man.gesture_command );
-				if( drawn_gesture_command !== gesture_man.gesture_command ) {
+			// draw text
+			if( optDrawActionNameOn ) {
+				var tmp_action_name = getNowGestureActionName();
 
-					// draw text
-					if( optDrawActionNameOn ) {
-						var tmp_action_name = getNowGestureActionName();
-
-						if( tmp_action_name != null ) {
-							document.getElementById("gestureCommandDiv").innerHTML = tmp_action_name;
-						}
-						else {
-							document.getElementById("gestureCommandDiv").innerHTML = "";
-						}
+				if( tmp_action_name != document.getElementById("gestureCommandDiv").innerHTML ) {
+					if( tmp_action_name != null ) {
+						document.getElementById("gestureCommandDiv").innerHTML = tmp_action_name;
 					}
-
-					if( optDrawCommandOn ) {
-						document.getElementById("gestureActionNameDiv").innerHTML = gesture_man.gesture_command;
+					else {
+						document.getElementById("gestureCommandDiv").innerHTML = "";
 					}
+				}
+			}
 
-					drawn_gesture_command = gesture_man.gesture_command;
+			if( optDrawCommandOn ) {
+				if( gesture_man.gesture_command != document.getElementById("gestureActionNameDiv").innerHTML ) {
+					document.getElementById("gestureActionNameDiv").innerHTML = gesture_man.gesture_command;
 				}
 			}
 		}

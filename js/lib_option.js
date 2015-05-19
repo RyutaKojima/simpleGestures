@@ -64,7 +64,7 @@ function loadOptions() {
 function createDefaultOptions() {
 	var tmp_obj = new Object();
 
-	tmp_obj["color_code"] = "FF0000";
+	tmp_obj["color_code"] = "#FF0000";
 	tmp_obj["line_width"] = "3";
 
 //	tmp_obj["gesture_close_tab"] = "";

@@ -1,6 +1,7 @@
 
 optionCanvas = null;
 optionGestureMan = new lib_gesture();
+cw = null;
 
 /**
  * entory point.
@@ -128,6 +129,18 @@ $(function ready_handler(){
 		}
 	});
 
+	// color wheel
+	cw = Raphael.colorwheel($("#input_example")[0],100);
+	cw.input($("#color_code")[0]);
+//	cw.color("#FF0000");
+	cw.color(options_instance["color_code"]);
+
+	cw.onchange(function(color) {
+//	      var colors = [parseInt(color.r), parseInt(color.g), parseInt(color.b)]
+//	      onchange_el.css("background", color.hex).text("RGB:"+colors.join(", "))
+//			color.hex;
+			saveOptions();
+	    })
 });
 
 document.oncontextmenu = function oncontextmenu_handler() {
