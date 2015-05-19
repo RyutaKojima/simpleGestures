@@ -5,7 +5,9 @@
 // Global Variables
 //-------------------------------------------------------------------------------------------------- 
 trailCanvas			= null;
-actionNameCanvas	= null;
+infoDiv				= null;
+commandDiv			= null;
+actionNameDiv		= null;
 
 // option variables
 options_instance	= null;
@@ -49,12 +51,15 @@ $(window).load(function onload_handler() {
 /**
  * window resize
  */
+/*
 $(window).resize(function(){
 });
+*/
 
 /**
  *
  */
+// $(document).mousedown(function onmousedown_handler(){ });
 document.onmousedown = function onmousedown_handler(event) {
 //	debug_log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
@@ -93,9 +98,11 @@ document.onmousedown = function onmousedown_handler(event) {
 //			window.top.document.body.appendChild(trailCanvas);
 		}
 
-		if( actionNameCanvas ) {
-			document.body.appendChild(actionNameCanvas);
-//			window.top.document.body.appendChild(actionNameCanvas);
+		if( infoDiv ) {
+			document.body.appendChild(infoDiv);
+
+			document.getElementById("gestureCommandDiv").innerHTML = "";
+			document.getElementById("gestureActionNameDiv").innerHTML = "";
 		}
 
 		adjustCanvasPosition();
@@ -144,17 +151,14 @@ document.onmouseup = function onmouseup_handler(event) {
 		if( tmp_canvas ) {
 			document.body.removeChild(tmp_canvas);
 		}
-		tmp_canvas = document.getElementById('gestureActionNameCanvas');
+
+		tmp_canvas = document.getElementById('infoDiv');
 		if( tmp_canvas ) {
 			document.body.removeChild(tmp_canvas);
 		}
 
 // test code ...>>>
 		tmp_canvas = window.top.document.getElementById('gestureTrailCanvas');
-		if( tmp_canvas ) {
-			window.top.document.body.removeChild(tmp_canvas);
-		}
-		tmp_canvas = window.top.document.getElementById('gestureActionNameCanvas');
 		if( tmp_canvas ) {
 			window.top.document.body.removeChild(tmp_canvas);
 		}
@@ -228,7 +232,7 @@ function initializeExtensionOnce() {
 		// create canvas.
 //		debug_log("create canvas");
 		createTrailCanvas();
-		createActionNameCanvas();
+		createActionNameDiv();
 
 		return true;
 	}
@@ -282,7 +286,7 @@ function loadOption() {
 
 			// reload setting for canvas.
 			createTrailCanvas();
-			createActionNameCanvas();
+			createActionNameDiv();
 		}
 	});
 }
@@ -300,11 +304,11 @@ function createTrailCanvas() {
 	var set_height	= window.innerHeight;
 
 	trailCanvas.width    = set_width;
-	trailCanvas.height   = set_height
+	trailCanvas.height   = set_height;
 
 	// style setting.
-	trailCanvas.style.width    = set_width;
-	trailCanvas.style.height   = set_height;
+//	trailCanvas.style.width    = set_width + "px";
+//	trailCanvas.style.height   = set_height + "px";
 
 	// center position.
 	trailCanvas.style.top      = "0px";
@@ -327,45 +331,57 @@ function createTrailCanvas() {
     ctx.lineWidth   = optTrailWidth;
 }
 
-
 /**
- * create canvas & update style
+ *
  */
-function createActionNameCanvas() {
-	if(!actionNameCanvas) {
-		actionNameCanvas = document.createElement('canvas');
-		actionNameCanvas.id = "gestureActionNameCanvas";
+function createActionNameDiv() {
+
+	if( !commandDiv ) {
+		commandDiv = document.createElement('div');
+		commandDiv.id = "gestureCommandDiv";
 	}
 
-//	var set_width	= $(window).width();
-//	var set_height	= $(window).height();
+	if( !actionNameDiv ) {
+		actionNameDiv = document.createElement('div');
+		actionNameDiv.id = "gestureActionNameDiv";
+	}
+	if( !infoDiv ) {
+		infoDiv = document.createElement('div');
+		infoDiv.id = "infoDiv";
+
+		infoDiv.appendChild(commandDiv);
+		infoDiv.appendChild(actionNameDiv);
+	}
+
 	var set_width	= 300;
 	var set_height	= 80;
 
 	// style setting.
-	actionNameCanvas.width          = set_width;
-	actionNameCanvas.height         = set_height;
-
-	actionNameCanvas.style.width    = set_width;
-	actionNameCanvas.style.height   = set_height;
+	infoDiv.style.width    = set_width + "px";
+	infoDiv.style.height   = set_height + "px";
 
 	// center position.
-	actionNameCanvas.style.top      = "0px";
-	actionNameCanvas.style.left     = "0px";
-	actionNameCanvas.style.right    = "0px";
-	actionNameCanvas.style.bottom    = "0px";
-	actionNameCanvas.style.margin   = "auto";
-	actionNameCanvas.style.position = 'fixed';
+	infoDiv.style.top      = "0px";
+	infoDiv.style.left     = "0px";
+	infoDiv.style.right    = "0px";
+	infoDiv.style.bottom    = "0px";
+	infoDiv.style.margin   = "auto";
+	infoDiv.style.position = 'fixed';
 
 
-	actionNameCanvas.style.overflow = 'visible';
-//	actionNameCanvas.style.background = 'transparent';
-	actionNameCanvas.style.zIndex   ="10000";
+//	infoDiv.style.borderRadius = "3px";
+//	infoDiv.style.backgroundColor = "#FFFFEE";
 
-	var ctx = actionNameCanvas.getContext('2d');
-	ctx.font = "bold 30px 'Arial'";
-	ctx.textBaseline = 'top';
-	ctx.fillStyle = "#" + optTrailColor;
+//	infoDiv.style.overflow = 'visible';
+//	infoDiv.style.overflow = 'block';
+	infoDiv.style.textAlign = "center";
+	infoDiv.style.background = 'transparent';
+	infoDiv.style.zIndex   ="10001";
+
+	infoDiv.style.fontFamily = 'Arial';
+	infoDiv.style.fontSize = 30 + "px";
+	infoDiv.style.color = "#" + optTrailColor;
+	infoDiv.style.fontWeight = "bold";
 }
 
 /**
@@ -385,84 +401,56 @@ function clearCanvas() {
 		ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
 */
 	}
-
-	if( actionNameCanvas ) {
-
-		actionNameCanvas.width = actionNameCanvas.width;
-
-/*
-		ctx = actionNameCanvas.getContext('2d');
-		// clear canvas
-		ctx.clearRect(0, 0, actionNameCanvas.width, actionNameCanvas.height);
-*/
-	}
 }
 
 /**
  *
  */
 function drawCanvas() {
+	var tmp_canvas = null;
 	var ctx = null;
 
-	tmp_canvas = document.getElementById('gestureTrailCanvas');
-	if( tmp_canvas ) {
-//	if( trailCanvas ) {
-		if( optDrawTrailOn ) {
-			ctx = tmp_canvas.getContext('2d');
+	if( trailCanvas ) {
+		tmp_canvas = document.getElementById('gestureTrailCanvas');
+		if( tmp_canvas ) {
+			if( optDrawTrailOn ) {
+				ctx = tmp_canvas.getContext('2d');
 
-			// draw trail line
-			ctx.beginPath();
-			ctx.moveTo(gesture_man.last_x, gesture_man.last_y);
-			ctx.lineTo(gesture_man.now_x, gesture_man.now_y);
-			ctx.stroke();
+				// draw trail line
+				ctx.beginPath();
+				ctx.moveTo(gesture_man.last_x, gesture_man.last_y);
+				ctx.lineTo(gesture_man.now_x, gesture_man.now_y);
+				ctx.stroke();
+			}
 		}
 	}
 
-	tmp_canvas = document.getElementById('gestureActionNameCanvas');
-	if( tmp_canvas ) {
-//	if( actionNameCanvas ) {
-		if( optDrawActionNameOn || optDrawCommandOn ) {
+	if( infoDiv ) {
+		tmp_canvas = document.getElementById('infoDiv');
+		if( tmp_canvas ) {
+			if( optDrawActionNameOn || optDrawCommandOn ) {
 
-			var tmp_redraw_on = false;
-			var tmp_action_name = null;
+				// debug_log( drawn_gesture_command + " , " + gesture_man.gesture_command );
+				if( drawn_gesture_command !== gesture_man.gesture_command ) {
 
-			// debug_log( drawn_gesture_command + " , " + gesture_man.gesture_command );
-			if( drawn_gesture_command !== gesture_man.gesture_command ) {
+					// draw text
+					if( optDrawActionNameOn ) {
+						var tmp_action_name = getNowGestureActionName();
 
-				tmp_action_name = getNowGestureActionName();
-
-				if( optDrawActionNameOn ) {
-					if( tmp_action_name != null ) {
-						tmp_redraw_on = true;
+						if( tmp_action_name != null ) {
+							document.getElementById("gestureCommandDiv").innerHTML = tmp_action_name;
+						}
+						else {
+							document.getElementById("gestureCommandDiv").innerHTML = "";
+						}
 					}
-				}
 
-				if( optDrawCommandOn ) {
-					tmp_redraw_on = true;
-				}
-			}
-
-			if( tmp_redraw_on ) {
-
-				ctx = tmp_canvas.getContext('2d');
-
-				// clear canvas
-				ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-
-				// draw text
-				ctx.beginPath();
-				if( optDrawActionNameOn ) {
-					if( tmp_action_name != null ) {
-						ctx.fillText(getNowGestureActionName(), 0, 0);
+					if( optDrawCommandOn ) {
+						document.getElementById("gestureActionNameDiv").innerHTML = gesture_man.gesture_command;
 					}
-				}
-
-				if( optDrawCommandOn ) {
-					ctx.fillText( gesture_man.gesture_command, 0, 30);
 
 					drawn_gesture_command = gesture_man.gesture_command;
 				}
-				ctx.stroke();
 			}
 		}
 	}
@@ -480,21 +468,11 @@ function adjustCanvasPosition() {
 	    trailCanvas.style.top  = $(window).scrollTop()  + "px";
 	    trailCanvas.style.left = $(window).scrollLeft() + "px";
 	}
-
-	// display position: center
-	if( actionNameCanvas ) {
-		var top  = ( window.innerHeight - actionNameCanvas.height ) / 2 + $(window).scrollTop();
-		var left = ( window.innerWidth  - actionNameCanvas.width  ) / 2 + $(window).scrollLeft();
-		actionNameCanvas.style.top  = top  + "px";
-		actionNameCanvas.style.left = left + "px";
-
-//		debug_log( top  + "px" + left + "px" );
-	}
 */
 }
 
 /**
- *
+ * exchange "gesture command" to "action name".
  */
 function getNowGestureActionName() {
 
