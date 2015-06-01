@@ -45,6 +45,9 @@ $(window).ready(function onready_handler() {
 $(window).load(function onload_handler() {
 	debug_log("window.onload");
 	initializeExtensionOnce();
+
+	// setting 
+	loadOption();
 });
 
 /**
@@ -98,8 +101,8 @@ document.onmousedown = function onmousedown_handler(event) {
 		if( infoDiv ) {
 			document.body.appendChild(infoDiv);
 
-			document.getElementById("gestureCommandDiv").innerHTML = "";
-			document.getElementById("gestureActionNameDiv").innerHTML = "";
+			$("#gestureCommandDiv").html("");
+			$("#gestureActionNameDiv").html("");
 		}
 
 		adjustCanvasPosition();
@@ -429,19 +432,19 @@ function drawCanvas() {
 			if( optDrawActionNameOn ) {
 				var tmp_action_name = getNowGestureActionName();
 
-				if( tmp_action_name != document.getElementById("gestureCommandDiv").innerHTML ) {
+				if( tmp_action_name != $("#gestureCommandDiv").html() ) {
 					if( tmp_action_name != null ) {
-						document.getElementById("gestureCommandDiv").innerHTML = tmp_action_name;
+						$("#gestureCommandDiv").html(tmp_action_name);
 					}
 					else {
-						document.getElementById("gestureCommandDiv").innerHTML = "";
+						$("#gestureCommandDiv").html("");
 					}
 				}
 			}
 
 			if( optDrawCommandOn ) {
-				if( gesture_man.gesture_command != document.getElementById("gestureActionNameDiv").innerHTML ) {
-					document.getElementById("gestureActionNameDiv").innerHTML = gesture_man.gesture_command;
+				if( gesture_man.gesture_command != $("#gestureActionNameDiv").html() ) {
+					$("#gestureActionNameDiv").html(gesture_man.gesture_command);
 				}
 			}
 		}
