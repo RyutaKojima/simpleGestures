@@ -66,8 +66,9 @@ function createDefaultOptions() {
 
 	tmp_obj["color_code"] = "#FF0000";
 	tmp_obj["line_width"] = "3";
+	tmp_obj["gesture_id_list"] = GESTURE_ID_LIST;
 
-//	tmp_obj["gesture_close_tab"] = "";
+	tmp_obj["gesture_open_option"] = "RDLU";
 
 	return tmp_obj;
 }
@@ -79,19 +80,14 @@ function saveOptions() {
 		options_instance = loadOptions();
 	}
 
-/*
-	// general setting
-	options_instance['color_code'] = $('#color_code').val();
-	options_instance['line_width'] = $('#line_width').val();
-
-	// gesture list
-	options_instance['gesture_close_tab'] = $('#gesture_close_tab').val();
-*/
 	// オプションデータの表示
 	var id_name = "";
 	var i=0;
 	var len = null;
 
+	// color_code
+	// line_width
+	// ...
 	len = OPTION_ID_LIST.length;
 	for( i=0; i < len; i++ ) {
 		id_name = OPTION_ID_LIST[i];
@@ -99,6 +95,7 @@ function saveOptions() {
 		options_instance[id_name] = $('#'+id_name).val();
 	}
 
+	// "gesture_xxxxxx"
 	len = GESTURE_ID_LIST.length;
 	for( i=0; i < len; i++ ) {
 		id_name = GESTURE_ID_LIST[i];

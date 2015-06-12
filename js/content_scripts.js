@@ -23,6 +23,8 @@ optGesture_table	= new Array();
 
 // work variables
 gesture_man = new lib_gesture();
+locker_on			= false;
+next_menu_skip		= true;
 
 initialized			= false;
 link_url			= null;
@@ -70,9 +72,25 @@ document.onmousedown = function onmousedown_handler(event) {
 	// down button type
 	if(event.which == 1) {
 		lmousedown = true;
+
+		// locker gesture
+		if( lmousedown & rmousedown ) {
+			locker_on = true;
+
+			exeAction("back");
+		}
 	}
 	else if(event.which == 3) {
 		rmousedown = true;
+
+		next_menu_skip = false;
+
+		// locker gesture
+		if( lmousedown & rmousedown ) {
+			locker_on = true;
+
+			exeAction("forward");
+		}
 
 		gesture_man.clear();
 		gesture_man.startGestrue(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop() );
@@ -141,9 +159,14 @@ document.onmouseup = function onmouseup_handler(event) {
 		rmousedown = false;
 
 		// gesture action run !
-		var tmp_action_name = getNowGestureActionName();
-		if( tmp_action_name != null ) {
-			exeAction(tmp_action_name);
+		if( locker_on ) {
+			next_menu_skip = true;
+		}
+		else {
+			var tmp_action_name = getNowGestureActionName();
+			if( tmp_action_name != null ) {
+				exeAction(tmp_action_name);
+			}
 		}
 
 		// removeChild
@@ -166,6 +189,7 @@ document.onmouseup = function onmouseup_handler(event) {
 
 		link_url = null;
 		clearCanvas();
+		locker_on = false;
 	}
 }
 
@@ -183,7 +207,15 @@ document.onmousewheel = function onmousewheel_handler(event) {
 document.oncontextmenu = function oncontextmenu_handler() {
 	debug_log(arguments.callee.name);
 
-	if( gesture_man.gesture_command === "" ) {
+	if( next_menu_skip ) {
+		next_menu_skip = false;
+		return false;
+	}
+	else if( lmousedown || rmousedown ) {
+		// Whdn return "false", the context menu is not open.
+		return false;
+	}
+	else if( gesture_man.gesture_command === "" ) {
 		// debug_log("open it");
 		return true;
 	}
@@ -245,7 +277,7 @@ function initializeExtensionOnce() {
  */
 function initGestureTable() {
 	optGesture_table = new Array();
-	optGesture_table["RDLU"]	= "open_option";
+//	optGesture_table["RDLU"]	= "open_option";
 }
 
 /**
