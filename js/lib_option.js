@@ -4,6 +4,7 @@ var localStrageKey = "options";
 var options_instance = null;
 
 var OPTION_ID_LIST = [
+	"language",
 	"color_code",
 	"line_width",
 ];
@@ -64,6 +65,7 @@ function loadOptions() {
 function createDefaultOptions() {
 	var tmp_obj = new Object();
 
+	tmp_obj["language"]   = "English";
 	tmp_obj["color_code"] = "#FF0000";
 	tmp_obj["line_width"] = "3";
 	tmp_obj["gesture_id_list"] = GESTURE_ID_LIST;
@@ -85,6 +87,7 @@ function saveOptions() {
 	var i=0;
 	var len = null;
 
+	// language
 	// color_code
 	// line_width
 	// ...

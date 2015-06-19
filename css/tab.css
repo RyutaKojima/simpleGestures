@@ -1,4 +1,4 @@
-
+﻿
 /* ▼(A)表示領域全体 */
 div.tabbox {
 	margin: 0px;
@@ -30,7 +30,7 @@ p.tabs a:hover { color: yellow; }
 /* ▼(C)タブ中身のボックス */
 div.tab {
    /* ▼(C-2)ボックス共通の装飾 */
-	height: 600px;
+	height: 800px;
 	overflow: auto;
 	clear: left;
 }

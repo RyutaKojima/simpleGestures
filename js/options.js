@@ -12,6 +12,10 @@ $(function ready_handler(){
 
 	initTabView();
 
+	// 英語表示にする
+	$('.class_English').show();
+	$('.class_Japanese').hide();
+
 	// load option data.
 	if( options_instance == null ) {
 		options_instance = loadOptions();
@@ -31,7 +35,11 @@ $(function ready_handler(){
 
 		// textbox value change event
 		$('#'+id_name).change(function() {
+			// 設定の保存
 			saveOptions();
+
+			// 言語設定の変更
+			changeLanguage();
 		});
 	}
 
@@ -106,17 +114,6 @@ $(function ready_handler(){
 		});
 	}
 
-	$('[name=language]').change(function() {
-
-		// 選択されているvalue属性値を取り出す
-		var val = $('[name=language]').val();
-		console.log(val);
-
-		// 選択されている表示文字列を取り出す
-//		var txt = $('[name=language] option:selected').text();
-//		console.log(txt);
-	});
-
 	// 
 	$('#reset_all').click(function() {
 		resetOptions();
@@ -128,6 +125,10 @@ $(function ready_handler(){
 			initOptionView();
 		}
 	});
+
+	// language selector
+	$('#language').val(options_instance["language"]);
+	changeLanguage();
 
 	// color wheel
 	cw = Raphael.colorwheel($("#input_example")[0],100);
@@ -258,4 +259,23 @@ function ChangeTab(tabname) {
 
    // select tab body display.
    $('#'+tabname).show();
+}
+
+/**
+ * change Language View.
+ */
+function changeLanguage() {
+	if( options_instance["language"] == "English" ) {
+		$('.class_English').show();
+		$('.class_Japanese').hide();
+	}
+	else if( options_instance["language"] == "Japanese" ) {
+		$('.class_English').hide();
+		$('.class_Japanese').show();
+	}
+	else {
+		// 英語がデフォルト
+		$('.class_English').show();
+		$('.class_Japanese').hide();
+	}
 }
