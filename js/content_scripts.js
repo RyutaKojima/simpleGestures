@@ -234,7 +234,7 @@ document.oncontextmenu = function oncontextmenu_handler() {
  *
  */
 function debug_log(str) {
-	console.log(str);
+//	console.log(str);
 }
 
 /**

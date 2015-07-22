@@ -80,7 +80,9 @@ $(function ready_handler(){
 
 					var tmp_x = e.pageX - $('#gestureOptionCanvas').offset().left;
 					var tmp_y = e.pageY - $('#gestureOptionCanvas').offset().top;
-					console.log("('#gestureOptionCanvas').mousemove,   " + tmp_x + ", " + tmp_y);
+
+//					console.log("('#gestureOptionCanvas').mousemove,   " + tmp_x + ", " + tmp_y);
+
 					if( optionGestureMan.registPoint(tmp_x, tmp_y) ) {
 
 						var ctx = optionCanvas.getContext('2d');
