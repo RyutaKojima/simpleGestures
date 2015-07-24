@@ -43,6 +43,21 @@ $(function ready_handler(){
 		});
 	}
 
+	// チェックボックス
+	$('#command_text_on').change(function() {
+		// 設定の保存
+		saveOptions();
+	});
+	$('#action_text_on').change(function() {
+		// 設定の保存
+		saveOptions();
+	});
+	$('#trail_on').change(function() {
+		// 設定の保存
+		saveOptions();
+	});
+
+	// ジェスチャ入力欄
 	len = GESTURE_ID_LIST.length;
 	for(i=0; i < len; i++) {
 
@@ -201,11 +216,13 @@ function createOptionCanvas() {
 }
 
 /**
- *
+ * オプション表示の初期化をする
  */
 function initOptionView() {
 	var id_name = "";
 	var i=0;
+
+	// "textbox"の初期化
 	var len = OPTION_ID_LIST.length;
 	for( i=0; i < len; i++ ) {
 		id_name = OPTION_ID_LIST[i];
@@ -214,6 +231,12 @@ function initOptionView() {
 		$('#'+id_name).val(options_instance[id_name]);
 	}
 
+	// checkboxの初期化
+	$('#command_text_on').prop("checked", options_instance["command_text_on"]);
+	$('#action_text_on').prop("checked", options_instance["action_text_on"]);
+	$('#trail_on').prop("checked", options_instance["trail_on"]);
+
+	// ジェスチャー
 	len = GESTURE_ID_LIST.length;
 	for(i=0; i < len; i++) {
 
@@ -225,7 +248,7 @@ function initOptionView() {
 }
 
 /**
- *
+ * タブ表示の初期化をする
  */
 function initTabView() {
 

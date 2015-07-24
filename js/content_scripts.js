@@ -16,7 +16,7 @@ optTrailColor		= "#FF0000";
 optTrailWidth		= 3;
 optDrawTrailOn		= true;
 optDrawActionNameOn	= true;
-optDrawCommandOn	= true;
+optDrawCommandOn	= false;
 
 // gesture list
 optGesture_table	= new Array();
@@ -448,10 +448,12 @@ function drawCanvas() {
 				ctx = tmp_canvas.getContext('2d');
 
 				// draw trail line
-				ctx.beginPath();
-				ctx.moveTo(gesture_man.last_x, gesture_man.last_y);
-				ctx.lineTo(gesture_man.now_x, gesture_man.now_y);
-				ctx.stroke();
+				if( options_instance["trail_on"] ) {
+					ctx.beginPath();
+					ctx.moveTo(gesture_man.last_x, gesture_man.last_y);
+					ctx.lineTo(gesture_man.now_x, gesture_man.now_y);
+					ctx.stroke();
+				}
 			}
 		}
 	}
@@ -461,7 +463,8 @@ function drawCanvas() {
 		if( tmp_canvas ) {
 
 			// draw text
-			if( optDrawActionNameOn ) {
+//			if( optDrawActionNameOn ) {
+			if( options_instance["action_text_on"] ) {
 				var tmp_action_name = getNowGestureActionName();
 
 				if( tmp_action_name != $("#gestureCommandDiv").html() ) {
@@ -474,7 +477,8 @@ function drawCanvas() {
 				}
 			}
 
-			if( optDrawCommandOn ) {
+//			if( optDrawCommandOn ) {
+			if( options_instance["command_text_on"] ) {
 				if( gesture_man.gesture_command != $("#gestureActionNameDiv").html() ) {
 					$("#gestureActionNameDiv").html(gesture_man.gesture_command);
 				}

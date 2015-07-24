@@ -15,6 +15,11 @@
 	float: left;
 }
 
+.note_gestrue_visible {
+	width: 120px;
+	float: left;
+}
+
 .input_language,
 .input_color, 
 .input_trail_width {

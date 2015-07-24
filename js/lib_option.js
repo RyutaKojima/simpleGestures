@@ -68,8 +68,11 @@ function createDefaultOptions() {
 	tmp_obj["language"]   = "English";
 	tmp_obj["color_code"] = "#FF0000";
 	tmp_obj["line_width"] = "3";
-	tmp_obj["gesture_id_list"] = GESTURE_ID_LIST;
+	tmp_obj["command_text_on"] = true;
+	tmp_obj["action_text_on"] = true;
+	tmp_obj["trail_on"] = true;
 
+	tmp_obj["gesture_id_list"] = GESTURE_ID_LIST;
 	tmp_obj["gesture_open_option"] = "RDLU";
 
 	return tmp_obj;
@@ -97,6 +100,11 @@ function saveOptions() {
 
 		options_instance[id_name] = $('#'+id_name).val();
 	}
+
+	// チェックボタンがONになっているか受け取る
+	options_instance["command_text_on"] = $('#command_text_on:checked').val();
+	options_instance["action_text_on"] = $('#action_text_on:checked').val();
+	options_instance["trail_on"] = $('#trail_on:checked').val();
 
 	// "gesture_xxxxxx"
 	len = GESTURE_ID_LIST.length;
