@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 //-------------------------------------------------------------------------------------------------- 
 // Global Variables
 //-------------------------------------------------------------------------------------------------- 
@@ -37,19 +35,13 @@ rmousedown			= false;
 /**
  * entory point.
  */
-$(window).ready(function onready_handler() {
-	debug_log("window.ready");
-	initializeExtensionOnce();
-
-	debug_log("frames=" + window.frames.length);
-});
+//$(window).ready(function onready_handler() {
+//	debug_log("window.ready");
+//	debug_log("frames=" + window.frames.length);
+//});
 
 $(window).load(function onload_handler() {
-	debug_log("window.onload");
-	initializeExtensionOnce();
-
-	// setting 
-	loadOption();
+//	debug_log("window.onload");
 });
 
 /**
@@ -67,6 +59,7 @@ $(window).resize(function(){
 document.onmousedown = function onmousedown_handler(event) {
 //	debug_log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
+	// 初回の初期化
 	initializeExtensionOnce();
 
 	// down button type
@@ -238,6 +231,7 @@ function debug_log(str) {
 }
 
 /**
+ * 拡張機能の準備. ２回目移行の呼び出しは無視される
  * When initialization, return true.
  */
 function initializeExtensionOnce() {
