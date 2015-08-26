@@ -106,7 +106,9 @@ document.onmousedown = function onmousedown_handler(event) {
 		// addChild
 		if( trailCanvas ) {
 			document.body.appendChild(trailCanvas);
+//			window.document.documentElement.appendChild(trailCanvas);
 //			window.top.document.body.appendChild(trailCanvas);
+//			getParent(window).document.documentElement.appendChild(trailCanvas);
 		}
 
 		if( infoDiv ) {
@@ -174,10 +176,14 @@ document.onmouseup = function onmouseup_handler(event) {
 		}
 
 // test code ...>>>
-		tmp_canvas = window.top.document.getElementById('gestureTrailCanvas');
-		if( tmp_canvas ) {
-			window.top.document.body.removeChild(tmp_canvas);
-		}
+//		tmp_canvas = window.top.document.getElementById('gestureTrailCanvas');
+//		if( tmp_canvas ) {
+//			window.top.document.body.removeChild(tmp_canvas);
+//		}
+//		tmp_canvas = getParent(window).document.documentElement.getElementById('gestureTrailCanvas');
+//		if( tmp_canvas ) {
+//			getParent(window).document.documentElement.removeChild(tmp_canvas);
+//		}
 // <<<
 
 		link_url = null;
@@ -437,6 +443,9 @@ function drawCanvas() {
 
 	if( trailCanvas ) {
 		tmp_canvas = document.getElementById('gestureTrailCanvas');
+//		tmp_canvas = trailCanvas;
+//		tmp_canvas = getParent(window).document.documentElement.getElementById('gestureTrailCanvas');
+//		tmp_canvas = getParent(window).document.getElementById('gestureTrailCanvas');
 		if( tmp_canvas ) {
 			if( optDrawTrailOn ) {
 				ctx = tmp_canvas.getContext('2d');
@@ -564,5 +573,16 @@ function exeAction(action_name) {
 		default:
 			chrome.extension.sendMessage({msg: action_name});
 			break;
+	}
+}
+
+/**
+ *
+ */
+var getParent=function(win){
+	if(win.parent&&win.parent!=win){
+		return arguments.callee(win.parent);
+	}else{
+		return win
 	}
 }
