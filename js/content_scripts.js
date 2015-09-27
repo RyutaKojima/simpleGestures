@@ -1,4 +1,6 @@
 
+const KEY_CTRL = 17;
+
 //-------------------------------------------------------------------------------------------------- 
 // Global Variables
 //-------------------------------------------------------------------------------------------------- 
@@ -29,6 +31,9 @@ link_url			= null;
 lmousedown			= false;
 rmousedown			= false;
 
+// キーボードの入力状態を記録する配列
+var input_key_buffer = new Array();
+
 //-------------------------------------------------------------------------------------------------- 
 // Event Handler
 //-------------------------------------------------------------------------------------------------- 
@@ -53,6 +58,29 @@ $(window).resize(function(){
 */
 
 /**
+ * キーボードを押したときに実行されるイベント
+ */
+
+document.onkeydown = function (e){
+	// InternetExplorer 用
+	if (!e)	e = window.event;
+
+	debug_log("onkeydown: "+ e.keyCode);
+
+	input_key_buffer[e.keyCode] = true;
+};
+
+/**
+ * キーボードを離したときに実行されるイベント
+ */
+document.onkeyup = function (e){
+	// InternetExplorer 用
+	if (!e)	e = window.event;
+
+	input_key_buffer[e.keyCode] = false;
+};
+
+/**
  *
  */
 // $(document).mousedown(function onmousedown_handler(){ });
@@ -61,6 +89,11 @@ document.onmousedown = function onmousedown_handler(event) {
 
 	// 初回の初期化
 	initializeExtensionOnce();
+
+	// Ctrlが押された状態だと、マウスジェスチャを開始しない。
+	if( input_key_buffer[KEY_CTRL] == true ) {
+		return;
+	}
 
 	// down button type
 	if(event.which == 1) {
@@ -192,13 +225,12 @@ document.onmouseup = function onmouseup_handler(event) {
 	}
 }
 
-/**
- *
- */
+/*
 document.onmousewheel = function onmousewheel_handler(event) {
 //	debug_log(arguments.callee.name);
 //	adjustCanvasPosition();
 }
+*/
 
 /**
  *
@@ -211,15 +243,15 @@ document.oncontextmenu = function oncontextmenu_handler() {
 		return false;
 	}
 	else if( lmousedown || rmousedown ) {
-		// Whdn return "false", the context menu is not open.
+		// when return "false", the context menu is not open.
 		return false;
 	}
 	else if( gesture_man.gesture_command === "" ) {
-		// debug_log("open it");
+		// debug_log("context menu open it");
 		return true;
 	}
 	else {
-		// Whdn return "false", the context menu is not open.
+		// when return "false", the context menu is not open.
 		return false;
 	}
 
@@ -233,7 +265,7 @@ document.oncontextmenu = function oncontextmenu_handler() {
  *
  */
 function debug_log(str) {
-//	console.log(str);
+	console.log(str);
 }
 
 /**
