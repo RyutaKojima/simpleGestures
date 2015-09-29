@@ -1,11 +1,8 @@
-/*
- *
- *
+/**
  *
  */
 chrome.extension.onMessage.addListener(
 	function onMessage_handler(request, sender, sendResponse) {
-
 		var responseString = "";
 
 		switch(request.msg) {
@@ -14,70 +11,73 @@ chrome.extension.onMessage.addListener(
 				break;
 
 			case "new_tab":
-				chrome.tabs.create({})
+				chrome.tabs.getSelected(null, function(current_tab) {
+					if(request.url == null) {
+						chrome.tabs.create({index:current_tab.index+1});
+					}
+					else {
+						chrome.tabs.create({url:request.url, index:current_tab.index+1});
+					}
+				});
 				break;
 
 			case "close_tab":
-				chrome.tabs.getSelected(null, function(tab) {
-					chrome.tabs.remove(tab.id);
+				chrome.tabs.getSelected(null, function(current_tab) {
+					chrome.tabs.remove(current_tab.id);
 				});
 				break;
 
 			case "last_tab":
 				chrome.storage.local.get('lasturl', function(result){
-					chrome.tabs.create({'url':result.lasturl}, function(tab){})
+					chrome.tabs.create({'url':result.lasturl})
+				});
+				break;
+
+			case "reload":
+				chrome.tabs.getSelected(null, function(current_tab) {
+					chrome.tabs.reload(current_tab.id);
 				});
 				break;
 
 			case "reload_all":
 				chrome.tabs.getAllInWindow(null, function(tabs) {
 					for(var i = 0; i < tabs.length; i++) {
-						chrome.tabs.update(tabs[i].id, {url: tabs[i].url});
+						chrome.tabs.reload(tabs[i].id);
 					}
 				});
 				break;
 
 			case "next_tab":
-				chrome.tabs.getSelected(null, function(tab) {
+				chrome.tabs.getSelected(null, function(current_tab) {
 					chrome.tabs.getAllInWindow(null, function(tabs) {
-						for(var i = 0; i < tabs.length; i++) {
-							if(tabs[i].id == tab.id) {
-								if(i == tabs.length-1) {
-									chrome.tabs.update(tabs[0].id,{active:true});
-								}
-								else {
-									chrome.tabs.update(tabs[i+1].id,{active:true});
-								}
-								break;
-							}
+						if(current_tab.index == tabs.length-1) {
+							chrome.tabs.update(tabs[0].id,{active:true});
+						}
+						else {
+							chrome.tabs.update(tabs[current_tab.index+1].id,{active:true});
 						}
 					});
 				});
 				break;
 
 			case "prev_tab":
-				chrome.tabs.getSelected(null, function(tab) {
+				chrome.tabs.getSelected(null, function(current_tab) {
 					chrome.tabs.getAllInWindow(null, function(tabs) {
-						for(var i = 0; i < tabs.length; i++) {
-							if(tabs[i].id == tab.id) {
-								if(i == 0) {
-									chrome.tabs.update(tabs[tabs.length-1].id,{active:true});
-								}
-								else {
-									chrome.tabs.update(tabs[i-1].id,{active:true});
-								}
-								break;
-							}
+						if(current_tab.index == 0) {
+							chrome.tabs.update(tabs[tabs.length-1].id,{active:true});
+						}
+						else {
+							chrome.tabs.update(tabs[current_tab.index-1].id,{active:true});
 						}
 					});
 				});
 				break;
 
 			case "close_all_background":
-				chrome.tabs.getSelected(null, function(tab) {
+				chrome.tabs.getSelected(null, function(current_tab) {
 					chrome.tabs.getAllInWindow(null, function(tabs) {
 						for(var i = 0; i < tabs.length; i++) {
-							if(tabs[i].id != tab.id) {
+							if(tabs[i].id != current_tab.id) {
 								chrome.tabs.remove(tabs[i].id);
 							}
 						}

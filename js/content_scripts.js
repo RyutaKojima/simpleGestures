@@ -1,5 +1,6 @@
 
-const KEY_CTRL = 17;
+var DEBUG_ON = false;
+var KEY_CTRL = 17;
 
 //-------------------------------------------------------------------------------------------------- 
 // Global Variables
@@ -17,9 +18,7 @@ optTrailWidth		= 3;
 optDrawTrailOn		= true;
 optDrawActionNameOn	= true;
 optDrawCommandOn	= false;
-
-// gesture list
-optGesture_table	= new Array();
+optGesture_table	= new Array();	// gesture list
 
 // work variables
 gesture_man = new lib_gesture();
@@ -30,9 +29,7 @@ initialized			= false;
 link_url			= null;
 lmousedown			= false;
 rmousedown			= false;
-
-// キーボードの入力状態を記録する配列
-var input_key_buffer = new Array();
+input_key_buffer	= new Array();	// キーボードの入力状態を記録する配列
 
 //-------------------------------------------------------------------------------------------------- 
 // Event Handler
@@ -40,27 +37,20 @@ var input_key_buffer = new Array();
 /**
  * entory point.
  */
-//$(window).ready(function onready_handler() {
+$(window).ready(function onready_handler() {
 //	debug_log("window.ready");
 //	debug_log("frames=" + window.frames.length);
-//});
+	input_key_buffer = new Array();
+});
 
 $(window).load(function onload_handler() {
-//	debug_log("window.onload");
+//	debug_log("window.onload");	
+	input_key_buffer = new Array();
 });
-
-/**
- * window resize
- */
-/*
-$(window).resize(function(){
-});
-*/
 
 /**
  * キーボードを押したときに実行されるイベント
  */
-
 document.onkeydown = function (e){
 	// InternetExplorer 用
 	if (!e)	e = window.event;
@@ -81,7 +71,7 @@ document.onkeyup = function (e){
 };
 
 /**
- *
+ * いずれかのマウスボタンを押したときに実行されるイベント
  */
 // $(document).mousedown(function onmousedown_handler(){ });
 document.onmousedown = function onmousedown_handler(event) {
@@ -150,13 +140,11 @@ document.onmousedown = function onmousedown_handler(event) {
 			$("#gestureCommandDiv").html("");
 			$("#gestureActionNameDiv").html("");
 		}
-
-		adjustCanvasPosition();
 	}
 }
 
 /**
- *
+ * マウスが移動したときに実行されるイベント
  */
 document.onmousemove = function onmousemove_handler(event) {
 //	debug_log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
@@ -172,7 +160,7 @@ document.onmousemove = function onmousemove_handler(event) {
 }
 
 /**
- *
+ * いずれかのマウスボタンを離したときに実行されるイベント
  */
 document.onmouseup = function onmouseup_handler(event) {
 //	debug_log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
@@ -208,32 +196,15 @@ document.onmouseup = function onmouseup_handler(event) {
 			document.body.removeChild(tmp_canvas);
 		}
 
-// test code ...>>>
-//		tmp_canvas = window.top.document.getElementById('gestureTrailCanvas');
-//		if( tmp_canvas ) {
-//			window.top.document.body.removeChild(tmp_canvas);
-//		}
-//		tmp_canvas = getParent(window).document.documentElement.getElementById('gestureTrailCanvas');
-//		if( tmp_canvas ) {
-//			getParent(window).document.documentElement.removeChild(tmp_canvas);
-//		}
-// <<<
-
 		link_url = null;
 		clearCanvas();
 		locker_on = false;
 	}
 }
 
-/*
-document.onmousewheel = function onmousewheel_handler(event) {
-//	debug_log(arguments.callee.name);
-//	adjustCanvasPosition();
-}
-*/
-
 /**
- *
+ * コンテキストメニューの呼び出しをされたときに実行されるイベント。 
+ * falseを返すと、コンテキストメニューを無効にする。
  */
 document.oncontextmenu = function oncontextmenu_handler() {
 	debug_log(arguments.callee.name);
@@ -243,15 +214,12 @@ document.oncontextmenu = function oncontextmenu_handler() {
 		return false;
 	}
 	else if( lmousedown || rmousedown ) {
-		// when return "false", the context menu is not open.
 		return false;
 	}
 	else if( gesture_man.gesture_command === "" ) {
-		// debug_log("context menu open it");
 		return true;
 	}
 	else {
-		// when return "false", the context menu is not open.
 		return false;
 	}
 
@@ -262,10 +230,12 @@ document.oncontextmenu = function oncontextmenu_handler() {
 // original method
 //-------------------------------------------------------------------------------------------------- 
 /**
- *
+ * デバッグ用のログをコンソールに出力する
  */
 function debug_log(str) {
-	console.log(str);
+	if( DEBUG_ON ) {
+		console.log(str);
+	}
 }
 
 /**
@@ -448,18 +418,14 @@ function createInfoDiv() {
 }
 
 /**
- *
+ * ジェスチャの軌道を消す
  */
 function clearCanvas() {
-	var ctx = null;
-
 	if( trailCanvas ) {
-
 		// canvas clear
 		trailCanvas.width = trailCanvas.width;
-
 /*
-		ctx = trailCanvas.getContext('2d');
+		var ctx = trailCanvas.getContext('2d');
 		// clear canvas
 		ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
 */
@@ -475,9 +441,6 @@ function drawCanvas() {
 
 	if( trailCanvas ) {
 		tmp_canvas = document.getElementById('gestureTrailCanvas');
-//		tmp_canvas = trailCanvas;
-//		tmp_canvas = getParent(window).document.documentElement.getElementById('gestureTrailCanvas');
-//		tmp_canvas = getParent(window).document.getElementById('gestureTrailCanvas');
 		if( tmp_canvas ) {
 			if( optDrawTrailOn ) {
 				ctx = tmp_canvas.getContext('2d');
@@ -520,21 +483,6 @@ function drawCanvas() {
 			}
 		}
 	}
-
-//	adjustCanvasPosition();
-}
-
-/**
- *
- */
-function adjustCanvasPosition() {
-/*
-	// display position: full window
-	if( trailCanvas ) {
-	    trailCanvas.style.top  = $(window).scrollTop()  + "px";
-	    trailCanvas.style.left = $(window).scrollLeft() + "px";
-	}
-*/
 }
 
 /**
@@ -567,10 +515,6 @@ function exeAction(action_name) {
 			window.history.forward();
 			break;
 
-		case "reload":
-			window.location.reload();
-			break;
-
 		case "stop":
 			window.stop();
 			break;
@@ -584,8 +528,7 @@ function exeAction(action_name) {
 			break;
 
 		case "new_tab":
-			if(link_url == null) {
-				chrome.extension.sendMessage({msg: "new_tab"}, function(response) {
+			chrome.extension.sendMessage({msg: action_name, url:link_url}, function(response) {
 					if(response != null) {
 						debug_log("message: " + response.message);
 					}
@@ -596,10 +539,6 @@ function exeAction(action_name) {
 						}
 					}
 				});
-			}
-			else {
-				window.open(link_url);
-			}
 			break;
 
 		default:
@@ -611,10 +550,10 @@ function exeAction(action_name) {
 /**
  *
  */
-var getParent=function(win){
-	if(win.parent&&win.parent!=win){
+var getParent=function(win) {
+	if(win.parent && win.parent!=win) {
 		return arguments.callee(win.parent);
 	}else{
-		return win
+		return win;
 	}
 }
