@@ -524,7 +524,7 @@ function exeAction(action_name) {
 			break;
 
 		case "scroll_bottom":
-			window.scrollTo(0, $(window).scrollHeight());
+			window.scrollTo(0, $(document).height());
 			break;
 
 		case "new_tab":
