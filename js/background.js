@@ -11,7 +11,8 @@ chrome.extension.onMessage.addListener(
 				break;
 
 			case "new_tab":
-				chrome.tabs.getSelected(null, function(current_tab) {
+				chrome.tabs.query({active: true}, function(tabs) {
+					var current_tab = tabs[0];
 					if(request.url == null) {
 						chrome.tabs.create({index:current_tab.index+1});
 					}
@@ -22,7 +23,8 @@ chrome.extension.onMessage.addListener(
 				break;
 
 			case "close_tab":
-				chrome.tabs.getSelected(null, function(current_tab) {
+				chrome.tabs.query({active: true}, function(tabs) {
+					var current_tab = tabs[0];
 					chrome.tabs.remove(current_tab.id);
 				});
 				break;
@@ -34,7 +36,8 @@ chrome.extension.onMessage.addListener(
 				break;
 
 			case "reload":
-				chrome.tabs.getSelected(null, function(current_tab) {
+				chrome.tabs.query({active: true}, function(tabs) {
+					var current_tab = tabs[0];
 					chrome.tabs.reload(current_tab.id);
 				});
 				break;
@@ -48,7 +51,8 @@ chrome.extension.onMessage.addListener(
 				break;
 
 			case "next_tab":
-				chrome.tabs.getSelected(null, function(current_tab) {
+				chrome.tabs.query({active: true}, function(tabs) {
+					var current_tab = tabs[0];
 					chrome.tabs.getAllInWindow(null, function(tabs) {
 						if(current_tab.index == tabs.length-1) {
 							chrome.tabs.update(tabs[0].id,{active:true});
@@ -61,7 +65,8 @@ chrome.extension.onMessage.addListener(
 				break;
 
 			case "prev_tab":
-				chrome.tabs.getSelected(null, function(current_tab) {
+				chrome.tabs.query({active: true}, function(tabs) {
+					var current_tab = tabs[0];
 					chrome.tabs.getAllInWindow(null, function(tabs) {
 						if(current_tab.index == 0) {
 							chrome.tabs.update(tabs[tabs.length-1].id,{active:true});
@@ -74,11 +79,12 @@ chrome.extension.onMessage.addListener(
 				break;
 
 			case "close_all_background":
-				chrome.tabs.getSelected(null, function(current_tab) {
-					chrome.tabs.getAllInWindow(null, function(tabs) {
-						for(var i = 0; i < tabs.length; i++) {
-							if(tabs[i].id != current_tab.id) {
-								chrome.tabs.remove(tabs[i].id);
+				chrome.tabs.query({active: true}, function(tabs) {
+					var current_tab = tabs[0];
+					chrome.tabs.getAllInWindow(null, function(all_tabs) {
+						for(var i = 0; i < all_tabs.length; i++) {
+							if(all_tabs[i].id != current_tab.id) {
+								chrome.tabs.remove(all_tabs[i].id);
 							}
 						}
 					});
