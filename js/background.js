@@ -14,13 +14,13 @@ var gesture_function = {
 		});
 	},
 	"close_tab": function() {
-		chrome.tabs.query({active: true}, function(tabs) {
+		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
 			chrome.tabs.remove(current_tab.id);
 		});
 	},
 	"reload": function() {
-		chrome.tabs.query({active: true}, function(tabs) {
+		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
 			chrome.tabs.reload(current_tab.id);
 		});
@@ -33,7 +33,7 @@ var gesture_function = {
 		});
 	},
 	"next_tab": function() {
-		chrome.tabs.query({active: true}, function(tabs) {
+		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
 				if(current_tab.index == tabs.length-1) {
@@ -46,7 +46,7 @@ var gesture_function = {
 		});
 	},
 	"prev_tab": function() {
-		chrome.tabs.query({active: true}, function(tabs) {
+		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
 				if(current_tab.index == 0) {
@@ -59,7 +59,7 @@ var gesture_function = {
 		});
 	},
 	"close_all_background": function() {
-		chrome.tabs.query({active: true}, function(tabs) {
+		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(all_tabs) {
 				for(var i = 0; i < all_tabs.length; i++) {
