@@ -44,7 +44,3 @@ SOFTWARE.
 Google JavaScript Style Guide に準拠します。(現状は対応していません)  
 英語：https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml  
 日本語：http://www38.atwiki.jp/aias-jsstyleguide2/pages/1.html  
-
-### Tips
-Online Markdown Editor  
-http://www.ctrlshift.net/project/markdowneditor/
