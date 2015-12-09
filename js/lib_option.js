@@ -41,7 +41,8 @@ function resetOptions() {
 // Load option in the saved "localStorage"
 function loadOptionsString() {
 	var str = localStorage.getItem(localStrageKey);
-	if( str === null ) {
+
+	if (str === null) {
 		str = JSON.stringify( createDefaultOptions() );
 	}
 	return str;
@@ -51,7 +52,7 @@ function loadOptions() {
 	var str = loadOptionsString();
 	var retObj = null;
 
-	if( str === null ) {
+	if (str === null) {
 		retObj = createDefaultOptions();
 	}
 	else {
@@ -81,7 +82,7 @@ function createDefaultOptions() {
 // Save option to "localStorage"
 function saveOptions() {
 
-	if( options_instance == null ) {
+	if (options_instance == null) {
 		options_instance = loadOptions();
 	}
 
@@ -95,7 +96,7 @@ function saveOptions() {
 	// line_width
 	// ...
 	len = OPTION_ID_LIST.length;
-	for( i=0; i < len; i++ ) {
+	for (i=0; i < len; i++) {
 		id_name = OPTION_ID_LIST[i];
 
 		options_instance[id_name] = $('#'+id_name).val();
@@ -108,7 +109,7 @@ function saveOptions() {
 
 	// "gesture_xxxxxx"
 	len = GESTURE_ID_LIST.length;
-	for( i=0; i < len; i++ ) {
+	for ( i=0; i < len; i++) {
 		id_name = GESTURE_ID_LIST[i];
 
 		options_instance[id_name] = $('#'+id_name).val();

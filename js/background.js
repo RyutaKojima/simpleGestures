@@ -5,7 +5,7 @@ var gesture_function = {
 		chrome.tabs.query({active: true}, function(tabs) {
 			var current_tab = tabs[0];
 			var append_index = current_tab.index+1;
-			if(url == null) {
+			if (url == null) {
 				chrome.tabs.create({index:append_index});
 			}
 			else {
@@ -27,7 +27,7 @@ var gesture_function = {
 	},
 	"reload_all": function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			for(var i = 0; i < tabs.length; i++) {
+			for (var i = 0; i < tabs.length; i++) {
 				chrome.tabs.reload(tabs[i].id);
 			}
 		});
@@ -36,11 +36,11 @@ var gesture_function = {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
-				if(current_tab.index == tabs.length-1) {
-					chrome.tabs.update(tabs[0].id,{active:true});
+				if (current_tab.index == tabs.length-1) {
+					chrome.tabs.update(tabs[0].id, {active:true});
 				}
 				else {
-					chrome.tabs.update(tabs[current_tab.index+1].id,{active:true});
+					chrome.tabs.update(tabs[current_tab.index+1].id, {active:true});
 				}
 			});
 		});
@@ -49,11 +49,11 @@ var gesture_function = {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
-				if(current_tab.index == 0) {
-					chrome.tabs.update(tabs[tabs.length-1].id,{active:true});
+				if (current_tab.index == 0) {
+					chrome.tabs.update(tabs[tabs.length-1].id, {active:true});
 				}
 				else {
-					chrome.tabs.update(tabs[current_tab.index-1].id,{active:true});
+					chrome.tabs.update(tabs[current_tab.index-1].id, {active:true});
 				}
 			});
 		});
@@ -62,8 +62,8 @@ var gesture_function = {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(all_tabs) {
-				for(var i = 0; i < all_tabs.length; i++) {
-					if(all_tabs[i].id != current_tab.id) {
+				for (var i = 0; i < all_tabs.length; i++) {
+					if (all_tabs[i].id != current_tab.id) {
 						chrome.tabs.remove(all_tabs[i].id);
 					}
 				}
@@ -72,7 +72,7 @@ var gesture_function = {
 	},
 	"close_all": function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			for(var i = 0; i < tabs.length; i++) {
+			for (var i = 0; i < tabs.length; i++) {
 				chrome.tabs.remove(tabs[i].id);
 			}
 		});
@@ -86,7 +86,7 @@ var gesture_function = {
 		var chromeExtURL="chrome://extensions/";
 		chrome.tabs.getAllInWindow(null, function(tabs) {
 			for (var i = 0; i < tabs.length; i++) {
-				if(tabs[i].url == chromeExtURL) {
+				if (tabs[i].url == chromeExtURL) {
 					chrome.tabs.update(tabs[i].id, {selected:true});
 					return;
 				}
@@ -111,9 +111,11 @@ chrome.extension.onMessage.addListener(
 		if ("load_options" == request.msg) {
 			sendResponse({message: "yes", "options_json": loadOptionsString() });
 			return;
-		} else if (request.msg in gesture_function) {
+		}
+		else if (request.msg in gesture_function) {
 			gesture_function[request.msg](request);
-		} else {
+		}
+		else {
 			responseString= "unknown command";
 		}
 

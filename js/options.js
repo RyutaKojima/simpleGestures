@@ -8,7 +8,7 @@ cw = null;
  * ready
  */
 //$(document).ready(function(){});
-$(function ready_handler(){
+$(function ready_handler() {
 
 	initTabView();
 
@@ -17,7 +17,7 @@ $(function ready_handler(){
 	$('.class_Japanese').hide();
 
 	// load option data.
-	if( options_instance == null ) {
+	if (options_instance == null) {
 		options_instance = loadOptions();
 
 		initOptionView();
@@ -30,7 +30,7 @@ $(function ready_handler(){
 	var id_name = "";
 	var i=0;
 	var len = OPTION_ID_LIST.length;
-	for( i=0; i < len; i++ ) {
+	for (i=0; i < len; i++) {
 		id_name = OPTION_ID_LIST[i];
 
 		// textbox value change event
@@ -59,7 +59,7 @@ $(function ready_handler(){
 
 	// ジェスチャ入力欄
 	len = GESTURE_ID_LIST.length;
-	for(i=0; i < len; i++) {
+	for (i=0; i < len; i++) {
 
 		id_name = GESTURE_ID_LIST[i];
 
@@ -73,7 +73,7 @@ $(function ready_handler(){
 
 			select_instance = $(this);
 
-			if( optionCanvas ) {
+			if (optionCanvas) {
 				document.body.appendChild(optionCanvas);
 
 				optionGestureMan.clear();
@@ -92,14 +92,10 @@ $(function ready_handler(){
 				});
 
 				$('#gestureOptionCanvas').mousemove(function(e) {
-
 					var tmp_x = e.pageX - $('#gestureOptionCanvas').offset().left;
 					var tmp_y = e.pageY - $('#gestureOptionCanvas').offset().top;
 
-//					console.log("('#gestureOptionCanvas').mousemove,   " + tmp_x + ", " + tmp_y);
-
-					if( optionGestureMan.registPoint(tmp_x, tmp_y) ) {
-
+					if (optionGestureMan.registPoint(tmp_x, tmp_y)) {
 						var ctx = optionCanvas.getContext('2d');
 						ctx.globalAlpha = 1.0;
 						ctx.beginPath();
@@ -112,9 +108,9 @@ $(function ready_handler(){
 				});
 
 				$('#gestureOptionCanvas').mouseup(function(e) {
-					if( optionCanvas ) {
+					if (optionCanvas) {
 						tmp_canvas = document.getElementById('gestureOptionCanvas');
-						if( tmp_canvas ) {
+						if (tmp_canvas) {
 							document.body.removeChild(tmp_canvas);
 						}
 					}
@@ -136,7 +132,7 @@ $(function ready_handler(){
 		resetOptions();
 
 		// load option data.
-		if( options_instance == null ) {
+		if (options_instance == null) {
 			options_instance = loadOptions();
 
 			initOptionView();
@@ -169,7 +165,7 @@ document.oncontextmenu = function oncontextmenu_handler() {
  * create canvas & update style
  */
 function createOptionCanvas() {
-	if(!optionCanvas) {
+	if (!optionCanvas) {
 		optionCanvas = document.createElement('canvas');
 		optionCanvas.id = "gestureOptionCanvas";
 	}
@@ -224,7 +220,7 @@ function initOptionView() {
 
 	// "textbox"の初期化
 	var len = OPTION_ID_LIST.length;
-	for( i=0; i < len; i++ ) {
+	for (i=0; i < len; i++) {
 		id_name = OPTION_ID_LIST[i];
 
 		// textbox value set.
@@ -238,7 +234,7 @@ function initOptionView() {
 
 	// ジェスチャー
 	len = GESTURE_ID_LIST.length;
-	for(i=0; i < len; i++) {
+	for (i=0; i < len; i++) {
 
 		id_name = GESTURE_ID_LIST[i];
 
@@ -290,17 +286,17 @@ function ChangeTab(tabname) {
  * change Language View.
  */
 function changeLanguage() {
-	if( options_instance["language"] == "English" ) {
-		$('.class_English').show();
-		$('.class_Japanese').hide();
-	}
-	else if( options_instance["language"] == "Japanese" ) {
-		$('.class_English').hide();
-		$('.class_Japanese').show();
-	}
-	else {
-		// 英語がデフォルト
-		$('.class_English').show();
-		$('.class_Japanese').hide();
+	switch (options_instance['language'])
+	{
+		default:
+			// no break;
+		case 'English':
+			$('.class_English').show();
+			$('.class_Japanese').hide();
+			break;
+		case 'Japanese':
+			$('.class_English').hide();
+			$('.class_Japanese').show();
+			break;
 	}
 }
