@@ -4,9 +4,9 @@
 	"manifest_version": 2,
 	"description": "simple mouse gestures.",
 	"icons": {
-		"16": "SG16.png",
-		"48": "SG48.png",
-		"128": "SG128.png"
+		"16": "img/SG16.png",
+		"48": "img/SG48.png",
+		"128": "img/SG128.png"
 	},
 	"permissions": [
 		"tabs",
@@ -30,5 +30,5 @@
 		"all_frames": true,
 		"run_at": "document_start"
 	}],
-	"options_page": "options_page.html"
+	"options_page": "html/options_page.html"
 }
