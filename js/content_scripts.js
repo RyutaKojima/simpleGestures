@@ -123,14 +123,6 @@ document.onmousedown = function onmousedown_handler(event) {
 		// setting 
 		loadOption();
 
-		// addChild
-		if (trailCanvas) {
-			document.body.appendChild(trailCanvas);
-//			window.document.documentElement.appendChild(trailCanvas);
-//			window.top.document.body.appendChild(trailCanvas);
-//			getParent(window).document.documentElement.appendChild(trailCanvas);
-		}
-
 		if (infoDiv) {
 			document.body.appendChild(infoDiv);
 
@@ -151,6 +143,11 @@ document.onmousemove = function onmousemove_handler(event) {
 		var tmp_y = event.pageY - $(window).scrollTop();
 
 		if (gesture_man.registPoint(tmp_x, tmp_y)) {
+			
+			if (trailCanvas) {
+				document.body.appendChild(trailCanvas);
+			}
+
 			drawCanvas();
 		}
 	}
