@@ -79,7 +79,7 @@ var gesture_function = {
 	},
 	"open_option": function() {
 		chrome.tabs.create({
-			"url": chrome.extension.getURL("options_page.html"),
+			"url": chrome.extension.getURL("html/options_page.html"),
 		});
 	},
 	"open_extension": function() {
