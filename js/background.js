@@ -1,4 +1,7 @@
-var gesture_function = {
+
+var opt = new LibOption();
+
+var gestureFunction = {
 	"new_tab": function(options) {
 		var url = options.url;
 
@@ -109,11 +112,11 @@ chrome.extension.onMessage.addListener(
 		var responseString = "";
 
 		if ("load_options" == request.msg) {
-			sendResponse({message: "yes", "options_json": loadOptionsString() });
+			sendResponse({message: "yes", "options_json": opt.loadOptionsString() });
 			return;
 		}
-		else if (request.msg in gesture_function) {
-			gesture_function[request.msg](request);
+		else if (request.msg in gestureFunction) {
+			gestureFunction[request.msg](request);
 		}
 		else {
 			responseString= "unknown command";

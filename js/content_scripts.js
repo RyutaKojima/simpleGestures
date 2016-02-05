@@ -1,303 +1,74 @@
-
-var DEBUG_ON = false;
-var KEY_CTRL = 17;
-
-//-------------------------------------------------------------------------------------------------- 
-// Global Variables
-//-------------------------------------------------------------------------------------------------- 
-var trailCanvas			= null;
-var infoDiv				= null;
-var commandDiv			= null;
-var actionNameDiv		= null;
-
-// option variables
-var options_instance	= null;
-
-var optTrailColor		= '#FF0000';
-var optTrailWidth		= 3;
-var optDrawTrailOn		= true;
-var optDrawActionNameOn	= true;
-var optDrawCommandOn	= false;
-var optGesture_table	= new Array();	// gesture list
-
-// work variables
-var gesture_man = new lib_gesture();
-var locker_on			= false;
-var next_menu_skip		= true;
-
-var initialized			= false;
-var link_url			= null;
-var lmousedown			= false;
-var rmousedown			= false;
-var input_key_buffer	= new Array();	// キーボードの入力状態を記録する配列
-
-//-------------------------------------------------------------------------------------------------- 
-// Event Handler
-//-------------------------------------------------------------------------------------------------- 
-/**
- * entory point.
- */
-$(window).ready(function onready_handler() {
-//	debug_log("window.ready");
-//	debug_log("frames=" + window.frames.length);
-	input_key_buffer = new Array();
-});
-
-$(window).load(function onload_handler() {
-//	debug_log("window.onload");	
-	input_key_buffer = new Array();
-});
-
-/**
- * キーボードを押したときに実行されるイベント
- */
-document.onkeydown = function (e) {
-	// InternetExplorer 用
-	if (!e)	e = window.event;
-
-	debug_log('onkeydown: ' + e.keyCode);
-
-	input_key_buffer[e.keyCode] = true;
-};
-
-/**
- * キーボードを離したときに実行されるイベント
- */
-document.onkeyup = function (e) {
-	// InternetExplorer 用
-	if (!e)	e = window.event;
-
-	input_key_buffer[e.keyCode] = false;
-};
-
-/**
- * いずれかのマウスボタンを押したときに実行されるイベント
- */
-// $(document).mousedown(function onmousedown_handler(){ });
-document.onmousedown = function onmousedown_handler(event) {
-//	debug_log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-
-	// 初回の初期化
-	initializeExtensionOnce();
-
-	// Ctrlが押された状態だと、マウスジェスチャを開始しない。
-	if (input_key_buffer[KEY_CTRL] == true) {
-		return;
-	}
-
-	// down button type
-	if (event.which == 1) {
-		lmousedown = true;
-
-		// locker gesture
-		if (lmousedown & rmousedown) {
-			locker_on = true;
-			exeAction("back");
-		}
-	}
-	else if (event.which == 3) {
-		rmousedown = true;
-		next_menu_skip = false;
-
-		// locker gesture
-		if (lmousedown & rmousedown) {
-			locker_on = true;
-			exeAction("forward");
-		}
-
-		gesture_man.clear();
-		gesture_man.startGestrue(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop() );
-
-		// select link url copy
-		if (event.target.href) {
-			link_url = event.target.href;
-		}
-		else if (event.target.parentElement && event.target.parentElement.href) {
-			link_url = event.target.parentElement.href;
-		}
-		else {
-			link_url = null;
-		}
-		debug_log("select link: " + link_url );
-
-		// setting 
-		loadOption();
-
-		if (infoDiv) {
-			document.body.appendChild(infoDiv);
-
-			$("#gestureCommandDiv").html("");
-			$("#gestureActionNameDiv").html("");
-		}
-	}
-}
-
-/**
- * マウスが移動したときに実行されるイベント
- */
-document.onmousemove = function onmousemove_handler(event) {
-//	debug_log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-
-	if (rmousedown) {
-		var tmp_x = event.pageX - $(window).scrollLeft();
-		var tmp_y = event.pageY - $(window).scrollTop();
-
-		if (gesture_man.registPoint(tmp_x, tmp_y)) {
-			
-			if (trailCanvas) {
-				document.body.appendChild(trailCanvas);
-			}
-
-			drawCanvas();
-		}
-	}
-}
-
-/**
- * いずれかのマウスボタンを離したときに実行されるイベント
- */
-document.onmouseup = function onmouseup_handler(event) {
-//	debug_log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-
-	var tmp_canvas;
-
-	// down button type
-	if (event.which == 1) {
-		lmousedown = false;
-	}
-	else if (event.which == 3) {
-		rmousedown = false;
-
-		// gesture action run !
-		if (locker_on) {
-			next_menu_skip = true;
-		}
-		else {
-			var tmp_action_name = getNowGestureActionName();
-			if( tmp_action_name != null ) {
-				exeAction(tmp_action_name);
-			}
-		}
-
-		// removeChild
-		tmp_canvas = document.getElementById('gestureTrailCanvas');
-		if (tmp_canvas) {
-			document.body.removeChild(tmp_canvas);
-		}
-
-		tmp_canvas = document.getElementById('infoDiv');
-		if (tmp_canvas) {
-			document.body.removeChild(tmp_canvas);
-		}
-
-		link_url = null;
-		clearCanvas();
-		locker_on = false;
-	}
-}
-
-/**
- * コンテキストメニューの呼び出しをされたときに実行されるイベント。 
- * falseを返すと、コンテキストメニューを無効にする。
- */
-document.oncontextmenu = function oncontextmenu_handler() {
-	debug_log(arguments.callee.name);
-
-	if (next_menu_skip) {
-		next_menu_skip = false;
-		return false;
-	}
-	else if (lmousedown || rmousedown) {
-		return false;
-	}
-	else if (gesture_man.gesture_command === "") {
-		return true;
-	}
-	else {
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------- 
-// original method
-//-------------------------------------------------------------------------------------------------- 
-/**
- * デバッグ用のログをコンソールに出力する
- */
-function debug_log(str) {
-	if (DEBUG_ON) {
-		console.log(str);
-	}
-}
-
 /**
  * 拡張機能の準備. ２回目移行の呼び出しは無視される
  * When initialization, return true.
  */
-function initializeExtensionOnce() {
-	if (!initialized) {
+var ContentScripts = function () {
+	this.initialized = false;
+}
+
+ContentScripts.prototype.initializeExtensionOnce = function() {
+	if ( ! this.initialized) {
 		debug_log("initialize run!!");
 
-		debug_log( "$(window).height()      = " +  $(window).height() );
-		debug_log( "$(window).innerHeight() = " +  $(window).innerHeight() );
-
-		debug_log( "window.innerHeight      = " +  window.innerHeight );
-		debug_log( "screen.height           = " +  screen.height );
-		debug_log( "screen.availHeight      = " +  screen.availHeight );
-		debug_log( "document.height         = " +  document.height );
-		debug_log( "document.body.scrollHeight             = " +  document.body.scrollHeight );
-		debug_log( "document.body.clientHeight             = " +  document.body.clientHeight );
-		debug_log( "document.documentElement.scrollHeight  = " +  document.documentElement.scrollHeight );
-		debug_log( "document.documentElement.clientHeight  = " +  document.documentElement.clientHeight );
+//		debug_log( "$(window).height()      = " +  $(window).height() );
+//		debug_log( "$(window).innerHeight() = " +  $(window).innerHeight() );
+//
+//		debug_log( "window.innerHeight      = " +  window.innerHeight );
+//		debug_log( "screen.height           = " +  screen.height );
+//		debug_log( "screen.availHeight      = " +  screen.availHeight );
+//		debug_log( "document.height         = " +  document.height );
+//		debug_log( "document.body.scrollHeight             = " +  document.body.scrollHeight );
+//		debug_log( "document.body.clientHeight             = " +  document.body.clientHeight );
+//		debug_log( "document.documentElement.scrollHeight  = " +  document.documentElement.scrollHeight );
+//		debug_log( "document.documentElement.clientHeight  = " +  document.documentElement.clientHeight );
 
 		// initialize complete flag.
-		initialized = true;
+		this.initialized = true;
 
-		loadOption();
+		this.loadOption();
 
 		// create canvas.
 //		debug_log("create canvas");
-		createTrailCanvas();
-		createInfoDiv();
+		this.createTrailCanvas();
+		this.createInfoDiv();
 
 		return true;
 	}
 
 	return false;
-}
+};
 
 /**
  * initialize gesture list table.
  */
-function initGestureTable() {
-	optGesture_table = new Array();
-//	optGesture_table["RDLU"]	= "open_option";
-}
+ContentScripts.prototype.initGestureHash = function () {
+	optGestureHash = new Object();
+//	optGestureHash["RDLU"]	= "open_option";
+};
 
 /**
  * load option values.
  */
-function loadOption() {
+ContentScripts.prototype.loadOption = function () {
+	optionsHash = null;
 
-	options_instance = null;
+	var tmp_contentsScript = this;
 
 	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
 		if (response) {
 //			debug_log('message: ' + response.message);
 //			debug_log('option: ' + response.options_json);
 
-			options_instance = JSON.parse(response.options_json);
+			optionsHash = JSON.parse(response.options_json);
 
 			// general setting
-			optTrailColor = options_instance["color_code"];
-			optTrailWidth = options_instance["line_width"];
+			optTrailColor = optionsHash["color_code"];
+			optTrailWidth = optionsHash["line_width"];
 
 			// gesture
-			initGestureTable();
+			tmp_contentsScript.initGestureHash();
 
-			var GESTURE_ID_LIST = options_instance["gesture_id_list"];
+			var GESTURE_ID_LIST = optionsHash["gesture_id_list"];
 
 			var id_name = "";
 			var i=0;
@@ -305,15 +76,15 @@ function loadOption() {
 			for (i=0; i < len; i++) {
 				id_name = GESTURE_ID_LIST[i];
 
-				if (options_instance[id_name]) {
+				if (optionsHash[id_name]) {
 					// cut "gesture_" word
-					optGesture_table[options_instance[id_name]]		= id_name.replace("gesture_", "");
+					optGestureHash[optionsHash[id_name]]		= id_name.replace("gesture_", "");
 				}
 			}
 
 			// reload setting for canvas.
-			createTrailCanvas();
-			createInfoDiv();
+			tmp_contentsScript.createTrailCanvas();
+			tmp_contentsScript.createInfoDiv();
 		}
 	});
 }
@@ -321,7 +92,7 @@ function loadOption() {
 /**
  * create canvas & update style
  */
-function createTrailCanvas() {
+ContentScripts.prototype.createTrailCanvas = function () {
 	if (!trailCanvas) {
 		trailCanvas = document.createElement('canvas');
 		trailCanvas.id = "gestureTrailCanvas";
@@ -361,7 +132,7 @@ function createTrailCanvas() {
 /**
  * create infomation div & update style.
  */
-function createInfoDiv() {
+ContentScripts.prototype.createInfoDiv = function () {
 
 	if (!commandDiv) {
 		commandDiv = document.createElement('div');
@@ -415,7 +186,7 @@ function createInfoDiv() {
 /**
  * ジェスチャの軌道を消す
  */
-function clearCanvas() {
+ContentScripts.prototype.clearCanvas = function () {
 	if (trailCanvas) {
 		// canvas clear
 		trailCanvas.width = trailCanvas.width;
@@ -425,12 +196,12 @@ function clearCanvas() {
 		ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
 */
 	}
-}
+};
 
 /**
  *
  */
-function drawCanvas() {
+ContentScripts.prototype.drawCanvas = function () {
 	var tmp_canvas = null;
 	var ctx = null;
 
@@ -441,7 +212,7 @@ function drawCanvas() {
 				ctx = tmp_canvas.getContext('2d');
 
 				// draw trail line
-				if (options_instance["trail_on"]) {
+				if (optionsHash["trail_on"]) {
 					ctx.beginPath();
 					ctx.moveTo(gesture_man.last_x, gesture_man.last_y);
 					ctx.lineTo(gesture_man.now_x, gesture_man.now_y);
@@ -457,8 +228,8 @@ function drawCanvas() {
 
 			// draw text
 //			if( optDrawActionNameOn ) {
-			if (options_instance["action_text_on"]) {
-				var tmp_action_name = getNowGestureActionName();
+			if (optionsHash["action_text_on"]) {
+				var tmp_action_name = this.getNowGestureActionName();
 
 				if (tmp_action_name != $("#gestureCommandDiv").html()) {
 					if (tmp_action_name != null) {
@@ -471,35 +242,35 @@ function drawCanvas() {
 			}
 
 //			if( optDrawCommandOn ) {
-			if (options_instance["command_text_on"]) {
+			if (optionsHash["command_text_on"]) {
 				if (gesture_man.gesture_command != $("#gestureActionNameDiv").html()) {
 					$("#gestureActionNameDiv").html(gesture_man.gesture_command);
 				}
 			}
 		}
 	}
-}
+};
 
 /**
  * exchange "gesture command" to "action name".
  */
-function getNowGestureActionName() {
+ContentScripts.prototype.getNowGestureActionName = function () {
 
 	if (gesture_man.gesture_command == "") {
 		return null;
 	}
 
-	if (typeof optGesture_table[gesture_man.gesture_command] != "undefined") {
-		return optGesture_table[gesture_man.gesture_command];
+	if (typeof optGestureHash[gesture_man.gesture_command] != "undefined") {
+		return optGestureHash[gesture_man.gesture_command];
 	}
 
 	return null;
-}
+};
 
 /**
  * Run the selected action.
  */
-function exeAction(action_name) {
+ContentScripts.prototype.exeAction = function (action_name) {
 
 	switch (action_name) {
 		case "back":
@@ -540,16 +311,4 @@ function exeAction(action_name) {
 			chrome.extension.sendMessage({msg: action_name});
 			break;
 	}
-}
-
-/**
- *
- */
-var getParent = function(win) {
-	if (win.parent && win.parent != win) {
-		return arguments.callee(win.parent);
-	}
-	else {
-		return win;
-	}
-}
+};

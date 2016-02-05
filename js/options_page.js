@@ -1,7 +1,8 @@
 
-optionCanvas = null;
-optionGestureMan = new lib_gesture();
-cw = null;
+var optionCanvas = null;
+var colorWheel = null;
+var optionGestureMan = new LibGesture();
+var opt = new LibOption();
 
 /**
  * entory point.
@@ -12,13 +13,12 @@ $(function ready_handler() {
 
 	initTabView();
 
-	// 英語表示にする
-	$('.class_English').show();
-	$('.class_Japanese').hide();
+	// 言語設定の変更
+	changeLanguage();
 
 	// load option data.
-	if (options_instance == null) {
-		options_instance = loadOptions();
+	if (opt.options_instance == null) {
+		opt.options_instance = opt.loadOptions();
 
 		initOptionView();
 	}
@@ -26,17 +26,16 @@ $(function ready_handler() {
 	createOptionCanvas();
 
 	// オプションデータの表示
-
 	var id_name = "";
 	var i=0;
-	var len = OPTION_ID_LIST.length;
+	var len = opt.OPTION_ID_LIST.length;
 	for (i=0; i < len; i++) {
-		id_name = OPTION_ID_LIST[i];
+		id_name = opt.OPTION_ID_LIST[i];
 
 		// textbox value change event
 		$('#'+id_name).change(function() {
 			// 設定の保存
-			saveOptions();
+			opt.saveOptions();
 
 			// 言語設定の変更
 			changeLanguage();
@@ -46,29 +45,29 @@ $(function ready_handler() {
 	// チェックボックス
 	$('#command_text_on').change(function() {
 		// 設定の保存
-		saveOptions();
+		opt.saveOptions();
 	});
 	$('#action_text_on').change(function() {
 		// 設定の保存
-		saveOptions();
+		opt.saveOptions();
 	});
 	$('#trail_on').change(function() {
 		// 設定の保存
-		saveOptions();
+		opt.saveOptions();
 	});
 
 	// ジェスチャ入力欄
-	len = GESTURE_ID_LIST.length;
+	len = opt.GESTURE_ID_LIST.length;
 	for (i=0; i < len; i++) {
 
-		id_name = GESTURE_ID_LIST[i];
+		id_name = opt.GESTURE_ID_LIST[i];
 
 		// textbox value change event
 		$('#'+id_name).change(function() {
-			saveOptions();
+			opt.saveOptions();
 		});
 
-		// 
+		//
 		$('#'+id_name).click(function() {
 
 			select_instance = $(this);
@@ -119,7 +118,7 @@ $(function ready_handler() {
 					select_instance.val(optionGestureMan.gesture_command);
 					select_instance = null;
 
-					saveOptions();
+					opt.saveOptions();
 
 					return false;
 				});
@@ -127,39 +126,35 @@ $(function ready_handler() {
 		});
 	}
 
-	// 
+	//
 	$('#reset_all').click(function() {
-		resetOptions();
+		opt.resetOptions();
 
 		// load option data.
-		if (options_instance == null) {
-			options_instance = loadOptions();
+		if (opt.options_instance == null) {
+			opt.options_instance = opt.loadOptions();
 
 			initOptionView();
 		}
 	});
 
 	// language selector
-	$('#language').val(options_instance["language"]);
+	$('#language').val(opt.options_instance["language"]);
 	changeLanguage();
 
 	// color wheel
-	cw = Raphael.colorwheel($("#input_example")[0],100);
-	cw.input($("#color_code")[0]);
-//	cw.color("#FF0000");
-	cw.color(options_instance["color_code"]);
+	colorWheel = Raphael.colorwheel($("#input_example")[0],100);
+	colorWheel.input($("#color_code")[0]);
+	colorWheel.color(opt.options_instance["color_code"]);
 
-	cw.onchange(function(color) {
-//	      var colors = [parseInt(color.r), parseInt(color.g), parseInt(color.b)]
-//	      onchange_el.css("background", color.hex).text("RGB:"+colors.join(", "))
-//			color.hex;
-			saveOptions();
-	    })
+	colorWheel.onchange(function(color) {
+		opt.saveOptions();
+	})
 });
 
-document.oncontextmenu = function oncontextmenu_handler() {
+$(document).on('contextmenu', function oncontextmenu_handler() {
 	return false;
-}
+});
 
 /**
  * create canvas & update style
@@ -219,27 +214,27 @@ function initOptionView() {
 	var i=0;
 
 	// "textbox"の初期化
-	var len = OPTION_ID_LIST.length;
+	var len = opt.OPTION_ID_LIST.length;
 	for (i=0; i < len; i++) {
-		id_name = OPTION_ID_LIST[i];
+		id_name = opt.OPTION_ID_LIST[i];
 
 		// textbox value set.
-		$('#'+id_name).val(options_instance[id_name]);
+		$('#'+id_name).val(opt.options_instance[id_name]);
 	}
 
 	// checkboxの初期化
-	$('#command_text_on').prop("checked", options_instance["command_text_on"]);
-	$('#action_text_on').prop("checked", options_instance["action_text_on"]);
-	$('#trail_on').prop("checked", options_instance["trail_on"]);
+	$('#command_text_on').prop("checked", opt.options_instance["command_text_on"]);
+	$('#action_text_on').prop("checked", opt.options_instance["action_text_on"]);
+	$('#trail_on').prop("checked", opt.options_instance["trail_on"]);
 
 	// ジェスチャー
-	len = GESTURE_ID_LIST.length;
+	len = opt.GESTURE_ID_LIST.length;
 	for (i=0; i < len; i++) {
 
-		id_name = GESTURE_ID_LIST[i];
+		id_name = opt.GESTURE_ID_LIST[i];
 
 		// textbox value set.
-		$('#'+id_name).val(options_instance[id_name]);
+		$('#'+id_name).val(opt.options_instance[id_name]);
 	}
 }
 
@@ -251,7 +246,7 @@ function initTabView() {
 	// default open tab
 	ChangeTab("tab_body2");
 
-	// for tab 
+	// for tab
 	$('#tab_btn1').click(function() {
 		ChangeTab('tab_body1');
 		return false;
@@ -285,8 +280,16 @@ function ChangeTab(tabname) {
 /**
  * change Language View.
  */
-function changeLanguage() {
-	switch (options_instance['language'])
+function changeLanguage(lang) {
+	if (lang == null) {
+		lang = 'English';
+
+		if (opt.options_instance && 'language' in opt.options_instance)
+		{
+			lang = opt.options_instance.language;
+		}
+	}
+	switch (lang)
 	{
 		default:
 			// no break;
