@@ -5,13 +5,13 @@
 /**
  * デバッグ用のログをコンソールに出力する
  */
-function debug_log(str) {
+var debug_log = function (str) {
 	if (DEBUG_ON) {
 		console.log(str);
 	}
 }
 
-function x_debug_log(str) {
+var x_debug_log = function (str) {
 	console.log(str);
 }
 

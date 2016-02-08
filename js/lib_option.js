@@ -14,7 +14,7 @@ var LibOption = function() {
 	this.OPTION_ID_LIST = [
 		"language",
 		"color_code",
-		"line_width",
+		"line_width"
 	];
 
 	/**
@@ -36,7 +36,7 @@ var LibOption = function() {
 		"gesture_close_all",
 		"gesture_open_option",
 		"gesture_open_extension",
-		"gesture_restart",
+		"gesture_restart"
 	];
 
 
@@ -52,7 +52,7 @@ LibOption.prototype.resetOptions = function () {
 	localStorage.clear();
 
 	this.options_instance = null;
-}
+};
 
 /**
  * Load option in the saved "localStorage"
@@ -65,7 +65,7 @@ LibOption.prototype.loadOptionsString = function () {
 		str = JSON.stringify( this.createDefaultOptions() );
 	}
 	return str;
-}
+};
 
 /**
  *
@@ -84,7 +84,7 @@ LibOption.prototype.loadOptions = function () {
 	}
 
 	return retObj;
-}
+};
 
 /**
  * default option setting
@@ -104,7 +104,7 @@ LibOption.prototype.createDefaultOptions = function () {
 	tmp_obj["gesture_open_option"] = "RDLU";
 
 	return tmp_obj;
-}
+};
 
 /**
  * Save option to "localStorage"
@@ -112,7 +112,7 @@ LibOption.prototype.createDefaultOptions = function () {
  */
 LibOption.prototype.saveOptions = function () {
 
-	if (this.options_instance == null) {
+	if (this.options_instance === null) {
 		this.options_instance = this.loadOptions();
 	}
 
@@ -149,4 +149,4 @@ LibOption.prototype.saveOptions = function () {
 
 	// save localstrage.
 	localStorage.setItem(this.LOCAL_STRAGE_KEY, JSON.stringify(this.options_instance));
-}
+};

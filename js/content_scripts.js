@@ -4,7 +4,7 @@
  */
 var ContentScripts = function () {
 	this.initialized = false;
-}
+};
 
 ContentScripts.prototype.initializeExtensionOnce = function() {
 	if ( ! this.initialized) {
@@ -87,7 +87,7 @@ ContentScripts.prototype.loadOption = function () {
 			tmp_contentsScript.createInfoDiv();
 		}
 	});
-}
+};
 
 /**
  * create canvas & update style
@@ -127,7 +127,7 @@ ContentScripts.prototype.createTrailCanvas = function () {
 	var ctx = trailCanvas.getContext('2d');
     ctx.strokeStyle = optTrailColor;
     ctx.lineWidth   = optTrailWidth;
-}
+};
 
 /**
  * create infomation div & update style.
@@ -181,7 +181,7 @@ ContentScripts.prototype.createInfoDiv = function () {
 	infoDiv.style.fontSize = 30 + "px";
 	infoDiv.style.color      = optTrailColor;
 	infoDiv.style.fontWeight = "bold";
-}
+};
 
 /**
  * ジェスチャの軌道を消す
@@ -260,7 +260,7 @@ ContentScripts.prototype.getNowGestureActionName = function () {
 		return null;
 	}
 
-	if (typeof optGestureHash[gesture_man.gesture_command] != "undefined") {
+	if (typeof optGestureHash[gesture_man.gesture_command] !== "undefined") {
 		return optGestureHash[gesture_man.gesture_command];
 	}
 
@@ -269,6 +269,9 @@ ContentScripts.prototype.getNowGestureActionName = function () {
 
 /**
  * Run the selected action.
+ *
+ * @param {type} action_name
+ * @returns {undefined}
  */
 ContentScripts.prototype.exeAction = function (action_name) {
 
@@ -295,7 +298,7 @@ ContentScripts.prototype.exeAction = function (action_name) {
 
 		case "new_tab":
 			chrome.extension.sendMessage({msg: action_name, url:link_url}, function(response) {
-					if (response != null) {
+					if (response !== null) {
 						debug_log("message: " + response.message);
 					}
 					else {

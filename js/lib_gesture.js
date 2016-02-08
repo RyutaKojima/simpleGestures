@@ -7,41 +7,27 @@ var LibGesture = function() {
 	/** @const */
 	this.GESTURE_START_DISTANCE = 10;
 
-	this.last_x = -1;
-	this.last_y = -1;
 	this.now_x = -1;
 	this.now_y = -1;
-
+	this.last_x = -1;
+	this.last_y = -1;
 	this.last_vector = null;
 	this.gesture_command = "";
 };
 
-LibGesture.prototype.getLastX = function() {
-	return this.last_x;
-}
-
-LibGesture.prototype.getLastY = function() {
-	return this.last_y;
-}
-
-LibGesture.prototype.getX = function() {
-	return this.now_x;
-}
-
-LibGesture.prototype.getY = function() {
-	return this.now_y;
-}
+LibGesture.prototype.getLastX = function() {	return this.last_x;	};
+LibGesture.prototype.getLastY = function() {	return this.last_y;	};
+LibGesture.prototype.getX = function() {	return this.now_x;	};
+LibGesture.prototype.getY = function() {	return this.now_y;	};
 
 LibGesture.prototype.clear = function() {
-
-	this.last_x = -1;
-	this.last_y = -1;
 	this.now_x = -1;
 	this.now_y = -1;
-
+	this.last_x = -1;
+	this.last_y = -1;
 	this.last_vector = null;
 	this.gesture_command = "";
-}
+};
 
 LibGesture.prototype.startGestrue = function(x, y) {
 	this.clear();
@@ -53,7 +39,7 @@ LibGesture.prototype.startGestrue = function(x, y) {
 };
 
 LibGesture.prototype.registPoint = function(x, y) {
-	if (this.last_x != -1 && this.last_y != -1) {
+	if (this.last_x !== -1 && this.last_y !== -1) {
 		var distance = Math.sqrt( Math.pow(x-this.last_x, 2) + Math.pow(y-this.last_y, 2) );
 //		debug_log("distance: " + distance);
 		if (distance > this.GESTURE_START_DISTANCE) {
@@ -76,7 +62,7 @@ LibGesture.prototype.registPoint = function(x, y) {
 			}
 //				debug_log(tmp_vector);
 
-			if (this.last_vector != tmp_vector) {
+			if (this.last_vector !== tmp_vector) {
 
 				if (this.gesture_command.length < this.COMMAND_MAX_LENGTH) {
 					this.gesture_command += tmp_vector;

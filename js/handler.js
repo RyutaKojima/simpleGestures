@@ -65,11 +65,6 @@ $(window).load(function onload_handler() {
  * キーボードを押したときに実行されるイベント
  */
 $(document).on('keydown', function (e) {
-	// InternetExplorer 用
-	if (!e)	e = window.event;
-
-	debug_log('onkeydown: ' + e.keyCode);
-
 	input_key_buffer[e.keyCode] = true;
 });
 
@@ -77,9 +72,6 @@ $(document).on('keydown', function (e) {
  * キーボードを離したときに実行されるイベント
  */
 $(document).on('keyup', function (e) {
-	// InternetExplorer 用
-	if (!e)	e = window.event;
-
 	input_key_buffer[e.keyCode] = false;
 });
 
@@ -173,10 +165,10 @@ $(document).on('mouseup', function onmouseup_handler(event) {
 	var tmp_canvas;
 
 	// down button type
-	if (event.which == 1) {
+	if (event.which === 1) {
 		lmousedown = false;
 	}
-	else if (event.which == 3) {
+	else if (event.which === 3) {
 		rmousedown = false;
 
 		// gesture action run !
@@ -185,7 +177,7 @@ $(document).on('mouseup', function onmouseup_handler(event) {
 		}
 		else {
 			var tmp_action_name = contentScripts.getNowGestureActionName();
-			if( tmp_action_name != null ) {
+			if( tmp_action_name !== null ) {
 				contentScripts.exeAction(tmp_action_name);
 			}
 		}

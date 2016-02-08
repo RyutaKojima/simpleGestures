@@ -1,4 +1,3 @@
-
 var optionCanvas = null;
 var colorWheel = null;
 var optionGestureMan = new LibGesture();
@@ -159,7 +158,7 @@ $(document).on('contextmenu', function oncontextmenu_handler() {
 /**
  * create canvas & update style
  */
-function createOptionCanvas() {
+var createOptionCanvas = function () {
 	if (!optionCanvas) {
 		optionCanvas = document.createElement('canvas');
 		optionCanvas.id = "gestureOptionCanvas";
@@ -209,7 +208,7 @@ function createOptionCanvas() {
 /**
  * オプション表示の初期化をする
  */
-function initOptionView() {
+var initOptionView = function () {
 	var id_name = "";
 	var i=0;
 
@@ -241,7 +240,7 @@ function initOptionView() {
 /**
  * タブ表示の初期化をする
  */
-function initTabView() {
+var initTabView = function () {
 
 	// default open tab
 	ChangeTab("tab_body2");
@@ -266,7 +265,7 @@ function initTabView() {
 /**
  * change view tab.
  */
-function ChangeTab(tabname) {
+var ChangeTab = function (tabname) {
 
    // all tab body clear.
    $('#tab_body1').hide();
@@ -280,7 +279,7 @@ function ChangeTab(tabname) {
 /**
  * change Language View.
  */
-function changeLanguage(lang) {
+var changeLanguage = function (lang) {
 	if (lang == null) {
 		lang = 'English';
 
