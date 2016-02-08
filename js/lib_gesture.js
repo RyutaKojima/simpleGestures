@@ -7,45 +7,67 @@ var LibGesture = function() {
 	/** @const */
 	this.GESTURE_START_DISTANCE = 10;
 
-	this.now_x = -1;
-	this.now_y = -1;
-	this.last_x = -1;
-	this.last_y = -1;
-	this.last_vector = null;
-	this.gesture_command = "";
+	this._nowX = -1;
+	this._nowY = -1;
+	this._lastX = -1;
+	this._lastY = -1;
+	this._lastVector = null;
+	this._strGestureCommand = "";
+	this._linkUrl = null;
+
+	this.myCanvas = null;
 };
 
-LibGesture.prototype.getLastX = function() {	return this.last_x;	};
-LibGesture.prototype.getLastY = function() {	return this.last_y;	};
-LibGesture.prototype.getX = function() {	return this.now_x;	};
-LibGesture.prototype.getY = function() {	return this.now_y;	};
+LibGesture.prototype.getLastX = function() {	return this._lastX;	};
+LibGesture.prototype.getLastY = function() {	return this._lastY;	};
+LibGesture.prototype.getX = function() {	return this._nowX;	};
+LibGesture.prototype.getY = function() {	return this._nowY;	};
+LibGesture.prototype.getURL = function() {	return this._linkUrl;	};
+LibGesture.prototype.getGestureString = function() {	return this._strGestureCommand;	};
+LibGesture.prototype.getCanvas = function() {	return this.myCanvas;	};
 
 LibGesture.prototype.clear = function() {
-	this.now_x = -1;
-	this.now_y = -1;
-	this.last_x = -1;
-	this.last_y = -1;
-	this.last_vector = null;
-	this.gesture_command = "";
+	this._nowX = -1;
+	this._nowY = -1;
+	this._lastX = -1;
+	this._lastY = -1;
+	this._lastVector = null;
+	this._strGestureCommand = "";
+	this._linkUrl = null;
 };
 
-LibGesture.prototype.startGestrue = function(x, y) {
+/**
+ * ジェスチャの開始時に呼ぶ
+ * 
+ * @param {type} x
+ * @param {type} y
+ * @param {type} url
+ * @returns {undefined}
+ */
+LibGesture.prototype.startGestrue = function(x, y, url) {
 	this.clear();
 
-	this.now_x = x;
-	this.now_y = y;
-	this.last_x = x;
-	this.last_y = y;
+	this._nowX = x;
+	this._nowY = y;
+	this._lastX = x;
+	this._lastY = y;
+	this._linkUrl = url;
 };
 
+/**
+ *
+ * @param {type} x
+ * @param {type} y
+ * @returns {Boolean}
+ */
 LibGesture.prototype.registPoint = function(x, y) {
-	if (this.last_x !== -1 && this.last_y !== -1) {
-		var distance = Math.sqrt( Math.pow(x-this.last_x, 2) + Math.pow(y-this.last_y, 2) );
+	if (this._lastX !== -1 && this._lastY !== -1) {
+		var distance = Math.sqrt( Math.pow(x-this._lastX, 2) + Math.pow(y-this._lastY, 2) );
 //		debug_log("distance: " + distance);
 		if (distance > this.GESTURE_START_DISTANCE) {
-			var radian = Math.atan2(y-this.last_y, x-this.last_x);
+			var radian = Math.atan2(y-this._lastY, x-this._lastX);
 			var rot    = radian * 180 / Math.PI;
-//				debug_log( "radian: " + radian + ", rotate: " + rot );
+//			debug_log( "radian: " + radian + ", rotate: " + rot );
 
 			var tmp_vector = null;
 			if (rot >= -45.0 && rot < 45.0) {
@@ -60,32 +82,106 @@ LibGesture.prototype.registPoint = function(x, y) {
 			else {
 				tmp_vector = "L";
 			}
-//				debug_log(tmp_vector);
+//			debug_log(tmp_vector);
 
-			if (this.last_vector !== tmp_vector) {
+			if (this._lastVector !== tmp_vector) {
+				this._lastVector = tmp_vector;
 
-				if (this.gesture_command.length < this.COMMAND_MAX_LENGTH) {
-					this.gesture_command += tmp_vector;
+				if (this._strGestureCommand.length < this.COMMAND_MAX_LENGTH) {
+					this._strGestureCommand += tmp_vector;
 				}
 				else {
 					// gesture cancel
-					this.gesture_command = "";
+					this._strGestureCommand = "";
 					for (var i=0; i < this.COMMAND_MAX_LENGTH; i++ ) {
-						this.gesture_command += "-";
+						this._strGestureCommand += "-";
 					}
 				}
-
-				this.last_vector = tmp_vector;
 			}
 
-			this.last_x = this.now_x;
-			this.last_y = this.now_y;
-			this.now_x = x;
-			this.now_y = y;
+			this._lastX = this._nowX;
+			this._lastY = this._nowY;
+			this._nowX = x;
+			this._nowY = y;
 
 			return true;
 		}
 	}
 
 	return false;
+};
+
+/**
+ * ジェスチャの終了時に呼ぶ
+ *
+ * @returns {undefined}
+ */
+LibGesture.prototype.endGesture = function () {
+	this.clear();
+	this.clearCanvas();
+};
+
+/**
+ * ジェスチャの軌跡描画用のキャンパスインスタンスを作成する
+ *
+ * @param {type} _width
+ * @param {type} _height
+ * @param {type} _zIndex
+ * @returns {this.myCanvas}
+ */
+LibGesture.prototype.createCanvas = function (_Id, _width, _height, _zIndex) {
+	if ( ! this.myCanvas) {
+		this.myCanvas = document.createElement('canvas');
+		this.myCanvas.id = _Id;
+	}
+
+	this.myCanvas.width    = _width;
+	this.myCanvas.height   = _height;
+
+	//------------------------------
+	// Style settings.
+	//------------------------------
+//	this.myCanvas.style.width    = _width + "px";
+//	this.myCanvas.style.height   = _height + "px";
+
+	// Set priority
+	this.myCanvas.style.zIndex   = _zIndex;
+
+	// Set in the center position.
+	this.myCanvas.style.top      = "0px";
+	this.myCanvas.style.left     = "0px";
+	this.myCanvas.style.right    = "0px";
+	this.myCanvas.style.bottom   = "0px";
+	this.myCanvas.style.margin   = "auto";
+	this.myCanvas.style.position = 'fixed';
+	this.myCanvas.style.overflow = 'visible';
+
+	return this.myCanvas;
+};
+
+/**
+ * 描画するラインのスタイルを設定する
+ *
+ * @param {type} _color
+ * @param {type} _width
+ * @returns {undefined}
+ */
+LibGesture.prototype.setDrawStyleLine = function (_color, _width) {
+	if (this.myCanvas) {
+		var ctx = this.myCanvas.getContext('2d');
+		ctx.strokeStyle = _color;
+		ctx.lineWidth   = _width;
+	}
+};
+
+/**
+ * ジェスチャ用キャンバスの軌道を消す
+ */
+LibGesture.prototype.clearCanvas = function () {
+	if (this.myCanvas) {
+		this.myCanvas.width = this.myCanvas.width;
+
+		var ctx = this.myCanvas.getContext('2d');
+		ctx.clearRect(0, 0, this.myCanvas.width, this.myCanvas.height);
+	}
 };

@@ -1,11 +1,28 @@
+var ContentScripts = function () {
+	this.initialized = false;
+	this.infoDiv = null;
+	this.commandDiv = null;
+	this.actionNameDiv = null;
+};
+
+ContentScripts.prototype.getOptTrailColor = function() {
+	if (optionsHash && optionsHash["color_code"]) {
+		return optionsHash["color_code"];
+	}
+	return '#FF0000';
+};
+
+ContentScripts.prototype.getOptTrailWidth = function() {
+	if (optionsHash && optionsHash["line_width"]) {
+		return optionsHash["line_width"];
+	}
+	return 3;
+};
+
 /**
  * 拡張機能の準備. ２回目移行の呼び出しは無視される
  * When initialization, return true.
  */
-var ContentScripts = function () {
-	this.initialized = false;
-};
-
 ContentScripts.prototype.initializeExtensionOnce = function() {
 	if ( ! this.initialized) {
 		debug_log("initialize run!!");
@@ -22,13 +39,10 @@ ContentScripts.prototype.initializeExtensionOnce = function() {
 //		debug_log( "document.documentElement.scrollHeight  = " +  document.documentElement.scrollHeight );
 //		debug_log( "document.documentElement.clientHeight  = " +  document.documentElement.clientHeight );
 
-		// initialize complete flag.
 		this.initialized = true;
 
 		this.loadOption();
 
-		// create canvas.
-//		debug_log("create canvas");
 		this.createTrailCanvas();
 		this.createInfoDiv();
 
@@ -51,8 +65,7 @@ ContentScripts.prototype.initGestureHash = function () {
  */
 ContentScripts.prototype.loadOption = function () {
 	optionsHash = null;
-
-	var tmp_contentsScript = this;
+	var _this = this;
 
 	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
 		if (response) {
@@ -61,12 +74,8 @@ ContentScripts.prototype.loadOption = function () {
 
 			optionsHash = JSON.parse(response.options_json);
 
-			// general setting
-			optTrailColor = optionsHash["color_code"];
-			optTrailWidth = optionsHash["line_width"];
-
 			// gesture
-			tmp_contentsScript.initGestureHash();
+			_this.initGestureHash();
 
 			var GESTURE_ID_LIST = optionsHash["gesture_id_list"];
 
@@ -83,8 +92,8 @@ ContentScripts.prototype.loadOption = function () {
 			}
 
 			// reload setting for canvas.
-			tmp_contentsScript.createTrailCanvas();
-			tmp_contentsScript.createInfoDiv();
+			_this.createTrailCanvas();
+			_this.createInfoDiv();
 		}
 	});
 };
@@ -93,40 +102,10 @@ ContentScripts.prototype.loadOption = function () {
  * create canvas & update style
  */
 ContentScripts.prototype.createTrailCanvas = function () {
-	if (!trailCanvas) {
-		trailCanvas = document.createElement('canvas');
-		trailCanvas.id = "gestureTrailCanvas";
-	}
+	mainGestureMan.createCanvas("gestureTrailCanvas", window.innerWidth, window.innerHeight, "1000000");
+	mainGestureMan.setDrawStyleLine(this.getOptTrailColor(), this.getOptTrailWidth());
 
-	var set_width	= window.innerWidth;
-	var set_height	= window.innerHeight;
-
-	trailCanvas.width    = set_width;
-	trailCanvas.height   = set_height;
-
-	// style setting.
-//	trailCanvas.style.width    = set_width + "px";
-//	trailCanvas.style.height   = set_height + "px";
-
-	// center position.
-	trailCanvas.style.top      = "0px";
-	trailCanvas.style.left     = "0px";
-	trailCanvas.style.right    = "0px";
-	trailCanvas.style.bottom   = "0px";
-	trailCanvas.style.margin   = "auto";
-	trailCanvas.style.position = 'fixed';
-//	trailCanvas.style.position = 'absolute';
-
-	trailCanvas.style.overflow = 'visible';
-//	trailCanvas.style.display  = 'block';
-//	trailCanvas.style.border   = 'none';
-//	trailCanvas.style.background = 'transparent';
-
-	trailCanvas.style.zIndex   = "1000000";
-
-	var ctx = trailCanvas.getContext('2d');
-    ctx.strokeStyle = optTrailColor;
-    ctx.lineWidth   = optTrailWidth;
+	return mainGestureMan.getCanvas();
 };
 
 /**
@@ -134,101 +113,76 @@ ContentScripts.prototype.createTrailCanvas = function () {
  */
 ContentScripts.prototype.createInfoDiv = function () {
 
-	if (!commandDiv) {
-		commandDiv = document.createElement('div');
-		commandDiv.id = "gestureCommandDiv";
+	if ( ! this.commandDiv) {
+		this.commandDiv = document.createElement('div');
+		this.commandDiv.id = "gestureCommandDiv";
 	}
 
-	if (!actionNameDiv) {
-		actionNameDiv = document.createElement('div');
-		actionNameDiv.id = "gestureActionNameDiv";
+	if ( ! this.actionNameDiv) {
+		this.actionNameDiv = document.createElement('div');
+		this.actionNameDiv.id = "gestureActionNameDiv";
 	}
 
-	if (!infoDiv) {
-		infoDiv = document.createElement('div');
-		infoDiv.id = "infoDiv";
+	if ( ! this.infoDiv) {
+		this.infoDiv = document.createElement('div');
+		this.infoDiv.id = "infoDiv";
 
-		infoDiv.appendChild(commandDiv);
-		infoDiv.appendChild(actionNameDiv);
+		this.infoDiv.appendChild(this.commandDiv);
+		this.infoDiv.appendChild(this.actionNameDiv);
 	}
 
 	var set_width	= 300;
 	var set_height	= 80;
 
 	// style setting.
-	infoDiv.style.width    = set_width + "px";
-	infoDiv.style.height   = set_height + "px";
+	this.infoDiv.style.width    = set_width + "px";
+	this.infoDiv.style.height   = set_height + "px";
 
 	// center position.
-	infoDiv.style.top      = "0px";
-	infoDiv.style.left     = "0px";
-	infoDiv.style.right    = "0px";
-	infoDiv.style.bottom    = "0px";
-	infoDiv.style.margin   = "auto";
-	infoDiv.style.position = 'fixed';
+	this.infoDiv.style.top      = "0px";
+	this.infoDiv.style.left     = "0px";
+	this.infoDiv.style.right    = "0px";
+	this.infoDiv.style.bottom    = "0px";
+	this.infoDiv.style.margin   = "auto";
+	this.infoDiv.style.position = 'fixed';
 
+//	this.infoDiv.style.borderRadius = "3px";
+//	this.infoDiv.style.backgroundColor = "#FFFFEE";
 
-//	infoDiv.style.borderRadius = "3px";
-//	infoDiv.style.backgroundColor = "#FFFFEE";
+//	this.infoDiv.style.overflow = 'visible';
+//	this.infoDiv.style.overflow = 'block';
+	this.infoDiv.style.textAlign = "center";
+	this.infoDiv.style.background = 'transparent';
+	this.infoDiv.style.zIndex   ="10001";
 
-//	infoDiv.style.overflow = 'visible';
-//	infoDiv.style.overflow = 'block';
-	infoDiv.style.textAlign = "center";
-	infoDiv.style.background = 'transparent';
-	infoDiv.style.zIndex   ="10001";
-
-	infoDiv.style.fontFamily = 'Arial';
-	infoDiv.style.fontSize = 30 + "px";
-	infoDiv.style.color      = optTrailColor;
-	infoDiv.style.fontWeight = "bold";
-};
-
-/**
- * ジェスチャの軌道を消す
- */
-ContentScripts.prototype.clearCanvas = function () {
-	if (trailCanvas) {
-		// canvas clear
-		trailCanvas.width = trailCanvas.width;
-/*
-		var ctx = trailCanvas.getContext('2d');
-		// clear canvas
-		ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
-*/
-	}
+	this.infoDiv.style.fontFamily = 'Arial';
+	this.infoDiv.style.fontSize = 30 + "px";
+	this.infoDiv.style.color      = this.getOptTrailColor();
+	this.infoDiv.style.fontWeight = "bold";
 };
 
 /**
  *
  */
-ContentScripts.prototype.drawCanvas = function () {
+ContentScripts.prototype.draw = function () {
 	var tmp_canvas = null;
-	var ctx = null;
 
-	if (trailCanvas) {
-		tmp_canvas = document.getElementById('gestureTrailCanvas');
-		if (tmp_canvas) {
-			if (optDrawTrailOn) {
-				ctx = tmp_canvas.getContext('2d');
-
-				// draw trail line
-				if (optionsHash["trail_on"]) {
-					ctx.beginPath();
-					ctx.moveTo(gesture_man.last_x, gesture_man.last_y);
-					ctx.lineTo(gesture_man.now_x, gesture_man.now_y);
-					ctx.stroke();
-				}
+	if (mainGestureMan.getCanvas()) {
+		if (tmp_canvas = document.getElementById('gestureTrailCanvas')) {
+			// draw trail line
+			if (optionsHash && optionsHash["trail_on"]) {
+				var ctx = tmp_canvas.getContext('2d');
+				ctx.beginPath();
+				ctx.moveTo(mainGestureMan.getLastX(), mainGestureMan.getLastY());
+				ctx.lineTo(mainGestureMan.getX(), mainGestureMan.getY());
+				ctx.stroke();
 			}
 		}
 	}
 
-	if (infoDiv) {
-		tmp_canvas = document.getElementById('infoDiv');
-		if (tmp_canvas) {
-
-			// draw text
-//			if( optDrawActionNameOn ) {
-			if (optionsHash["action_text_on"]) {
+	if (this.infoDiv) {
+		if (document.getElementById('infoDiv')) {
+			if (optionsHash && optionsHash["action_text_on"]) {
 				var tmp_action_name = this.getNowGestureActionName();
 
 				if (tmp_action_name != $("#gestureCommandDiv").html()) {
@@ -241,10 +195,9 @@ ContentScripts.prototype.drawCanvas = function () {
 				}
 			}
 
-//			if( optDrawCommandOn ) {
-			if (optionsHash["command_text_on"]) {
-				if (gesture_man.gesture_command != $("#gestureActionNameDiv").html()) {
-					$("#gestureActionNameDiv").html(gesture_man.gesture_command);
+			if (optionsHash && optionsHash["command_text_on"]) {
+				if (mainGestureMan.getGestureString() != $("#gestureActionNameDiv").html()) {
+					$("#gestureActionNameDiv").html(mainGestureMan.getGestureString());
 				}
 			}
 		}
@@ -255,13 +208,12 @@ ContentScripts.prototype.drawCanvas = function () {
  * exchange "gesture command" to "action name".
  */
 ContentScripts.prototype.getNowGestureActionName = function () {
-
-	if (gesture_man.gesture_command == "") {
+	if ( ! mainGestureMan.getGestureString()) {
 		return null;
 	}
 
-	if (typeof optGestureHash[gesture_man.gesture_command] !== "undefined") {
-		return optGestureHash[gesture_man.gesture_command];
+	if (typeof optGestureHash[mainGestureMan.getGestureString()] !== "undefined") {
+		return optGestureHash[mainGestureMan.getGestureString()];
 	}
 
 	return null;
@@ -297,7 +249,7 @@ ContentScripts.prototype.exeAction = function (action_name) {
 			break;
 
 		case "new_tab":
-			chrome.extension.sendMessage({msg: action_name, url:link_url}, function(response) {
+			chrome.extension.sendMessage({msg: action_name, url:mainGestureMan.getURL() }, function(response) {
 					if (response !== null) {
 						debug_log("message: " + response.message);
 					}

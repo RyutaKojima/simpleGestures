@@ -1,4 +1,3 @@
-var optionCanvas = null;
 var colorWheel = null;
 var optionGestureMan = new LibGesture();
 var opt = new LibOption();
@@ -7,9 +6,7 @@ var opt = new LibOption();
  * entory point.
  * ready
  */
-//$(document).ready(function(){});
 $(function ready_handler() {
-
 	initTabView();
 
 	// 言語設定の変更
@@ -58,7 +55,6 @@ $(function ready_handler() {
 	// ジェスチャ入力欄
 	len = opt.GESTURE_ID_LIST.length;
 	for (i=0; i < len; i++) {
-
 		id_name = opt.GESTURE_ID_LIST[i];
 
 		// textbox value change event
@@ -68,53 +64,51 @@ $(function ready_handler() {
 
 		//
 		$('#'+id_name).click(function() {
-
 			select_instance = $(this);
 
-			if (optionCanvas) {
-				document.body.appendChild(optionCanvas);
+			if (optionGestureMan.getCanvas()) {
+				document.body.appendChild(optionGestureMan.getCanvas());
 
 				optionGestureMan.clear();
 
-				var ctx = optionCanvas.getContext('2d');
-				ctx.clearRect(0, 0, optionCanvas.width, optionCanvas.height);
+				var ctx = optionGestureMan.getCanvas().getContext('2d');
+				ctx.clearRect(0, 0, optionGestureMan.getCanvas().width, optionGestureMan.getCanvas().height);
 				ctx.globalAlpha = 0.5;
-				ctx.fillRect(0, 0, optionCanvas.width, optionCanvas.height);
+				ctx.fillRect(0, 0, optionGestureMan.getCanvas().width, optionGestureMan.getCanvas().height);
 
-				$('#gestureOptionCanvas').mousedown(function(e) {
-					var tmp_x	= e.pageX - $('#gestureOptionCanvas').offset().left;
-					var tmp_y	= e.pageY - $('#gestureOptionCanvas').offset().top;
-					optionGestureMan.startGestrue(tmp_x, tmp_y);
+				$('#'+optionGestureMan.getCanvas().id).mousedown(function(event) {
+					var tmp_x	= event.pageX - $(this).offset().left;
+					var tmp_y	= event.pageY - $(this).offset().top;
+					optionGestureMan.startGestrue(tmp_x, tmp_y, null);
 
 					return false;
 				});
 
-				$('#gestureOptionCanvas').mousemove(function(e) {
-					var tmp_x = e.pageX - $('#gestureOptionCanvas').offset().left;
-					var tmp_y = e.pageY - $('#gestureOptionCanvas').offset().top;
+				$('#'+optionGestureMan.getCanvas().id).mousemove(function(event) {
+					var tmp_x = event.pageX - $(this).offset().left;
+					var tmp_y = event.pageY - $(this).offset().top;
 
 					if (optionGestureMan.registPoint(tmp_x, tmp_y)) {
-						var ctx = optionCanvas.getContext('2d');
+						var ctx = optionGestureMan.getCanvas().getContext('2d');
 						ctx.globalAlpha = 1.0;
 						ctx.beginPath();
-						ctx.moveTo(optionGestureMan.last_x, optionGestureMan.last_y);
-						ctx.lineTo(optionGestureMan.now_x, optionGestureMan.now_y);
+						ctx.moveTo(optionGestureMan.getLastX(), optionGestureMan.getLastY());
+						ctx.lineTo(optionGestureMan.getX(), optionGestureMan.getY());
 						ctx.stroke();
 					}
 
 					return false;
 				});
 
-				$('#gestureOptionCanvas').mouseup(function(e) {
-					if (optionCanvas) {
-						tmp_canvas = document.getElementById('gestureOptionCanvas');
-						if (tmp_canvas) {
+				$('#'+optionGestureMan.getCanvas().id).mouseup(function(event) {
+					if (optionGestureMan.getCanvas()) {
+						if (tmp_canvas = document.getElementById(optionGestureMan.getCanvas().id)) {
 							document.body.removeChild(tmp_canvas);
 						}
 					}
 
 					// textbox value set.
-					select_instance.val(optionGestureMan.gesture_command);
+					select_instance.val(optionGestureMan.getGestureString());
 					select_instance = null;
 
 					opt.saveOptions();
@@ -159,50 +153,14 @@ $(document).on('contextmenu', function oncontextmenu_handler() {
  * create canvas & update style
  */
 var createOptionCanvas = function () {
-	if (!optionCanvas) {
-		optionCanvas = document.createElement('canvas');
-		optionCanvas.id = "gestureOptionCanvas";
-	}
+	optionGestureMan.createCanvas("gestureOptionCanvas", 300, 300, '10002');
 
-	var set_width	= $(window).width();
-	var set_height	= $(window).height();
-
-	var set_width	= 300;
-	var set_height	= 300;
-
-	// style setting.
-	optionCanvas.width          = set_width;
-	optionCanvas.height         = set_height;
-	optionCanvas.style.width    = set_width;
-	optionCanvas.style.height   = set_height;
-
-	// display position: center
-	optionCanvas.style.top      = "0px";
-	optionCanvas.style.left     = "0px";
-	optionCanvas.style.right    = "0px";
-	optionCanvas.style.bottom   = "0px";
-	optionCanvas.style.margin   = "auto";
-	optionCanvas.style.position = 'fixed';
-//	optionCanvas.style.position = 'absolute';
-
-	optionCanvas.style.overflow = 'visible';
-	optionCanvas.style.zIndex   ="10002";
-
-	var ctx = optionCanvas.getContext('2d');
+	var ctx = optionGestureMan.getCanvas().getContext('2d');
 	ctx.font = "bold 30px 'Arial'";
 	ctx.textBaseline = 'top';
 //	ctx.fillStyle = "#FF0000";
 
-
-	// display position: center
-/*
-	if( optionCanvas ) {
-		var top  = ( $(window).height() - optionCanvas.height ) / 2 + $(window).scrollTop();
-		var left = ( $(window).width()  - optionCanvas.width  ) / 2 + $(window).scrollLeft();
-		optionCanvas.style.top  = top  + "px";
-		optionCanvas.style.left = left + "px";
-	}
-*/
+	return optionGestureMan.getCanvas();
 }
 
 /**
@@ -229,7 +187,6 @@ var initOptionView = function () {
 	// ジェスチャー
 	len = opt.GESTURE_ID_LIST.length;
 	for (i=0; i < len; i++) {
-
 		id_name = opt.GESTURE_ID_LIST[i];
 
 		// textbox value set.
@@ -241,7 +198,6 @@ var initOptionView = function () {
  * タブ表示の初期化をする
  */
 var initTabView = function () {
-
 	// default open tab
 	ChangeTab("tab_body2");
 
@@ -266,7 +222,6 @@ var initTabView = function () {
  * change view tab.
  */
 var ChangeTab = function (tabname) {
-
    // all tab body clear.
    $('#tab_body1').hide();
    $('#tab_body2').hide();
@@ -283,13 +238,12 @@ var changeLanguage = function (lang) {
 	if (lang == null) {
 		lang = 'English';
 
-		if (opt.options_instance && 'language' in opt.options_instance)
-		{
+		if (opt.options_instance && 'language' in opt.options_instance) {
 			lang = opt.options_instance.language;
 		}
 	}
-	switch (lang)
-	{
+
+	switch (lang) {
 		default:
 			// no break;
 		case 'English':

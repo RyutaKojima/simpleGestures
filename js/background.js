@@ -1,4 +1,3 @@
-
 var opt = new LibOption();
 
 var gestureFunction = {
@@ -94,11 +93,11 @@ var gestureFunction = {
 					return;
 				}
 			}
-			chrome.tabs.create({url:chromeExtURL,selected:true});
+			chrome.tabs.create({url:chromeExtURL, selected:true});
 		});
 	},
 	"restart": function() {
-		chrome.tabs.create({url:"chrome://restart",selected:true});
+		chrome.tabs.create({url:"chrome://restart", selected:true});
 	},
 	"last_tab": function() {
 //		chrome.storage.local.get('lasturl', function(result){
@@ -107,22 +106,32 @@ var gestureFunction = {
 	},
 };
 
-chrome.extension.onMessage.addListener(
-	function onMessage_handler(request, sender, sendResponse) {
-		var responseString = "";
+/**
+ * フロントサイドからのメッセージ受信したイベント
+ *
+ * @param {type} param
+ */
+chrome.extension.onMessage.addListener(function onMessage_handler(request, sender, sendResponse) {
+	var responseString = "";
 
-		if ("load_options" == request.msg) {
-			sendResponse({message: "yes", "options_json": opt.loadOptionsString() });
-			return;
-		}
-		else if (request.msg in gestureFunction) {
-			gestureFunction[request.msg](request);
-		}
-		else {
-			responseString= "unknown command";
-		}
-
-		sendResponse({message: responseString});
+	if ("load_options" == request.msg) {
+		sendResponse({message:"yes", "options_json":opt.loadOptionsString() });
+		return;
 	}
-);
+	else if ("keydown" == request.msg) {
+		responseString = request.msg + ": " + request.keyCode;
+//		console.log(responseString);
+	}
+	else if ("keyup" == request.msg) {
+		responseString = request.msg + ": " + request.keyCode;
+//		console.log(responseString);
+	}
+	else if (request.msg in gestureFunction) {
+		gestureFunction[request.msg](request);
+	}
+	else {
+		responseString = "unknown command";
+	}
 
+	sendResponse({message: responseString});
+});

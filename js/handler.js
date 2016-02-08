@@ -12,37 +12,20 @@
  */
 
 var DEBUG_ON = false;
-var KEY_CTRL = 17;
 
 //--------------------------------------------------------------------------------------------------
 // Global Variables
 //--------------------------------------------------------------------------------------------------
-var trailCanvas			= null;
-var infoDiv				= null;
-var commandDiv			= null;
-var actionNameDiv		= null;
-
 // option variables
 var optionsHash	= null;
+var optGestureHash = new Object();	// hash: gesture list
+var lockerOn = false;
+var nextMenuSkip = true;
 
-var optTrailColor		= '#FF0000';
-var optTrailWidth		= 3;
-var optDrawTrailOn		= true;
-var optDrawActionNameOn	= true;
-var optDrawCommandOn	= false;
-var optGestureHash		= new Object();	// hash: gesture list
-
-// work variables
-var gesture_man = new LibGesture();
-var locker_on			= false;
-var next_menu_skip		= true;
-
-var link_url			= null;
-var lmousedown			= false;
-var rmousedown			= false;
-var input_key_buffer	= new Array();	// キーボードの入力状態を記録する配列
-
-var contentScripts		= new ContentScripts();
+var inputMouse = new Mouse();
+var inputKeyboard = new Keyboard();
+var mainGestureMan = new LibGesture();
+var contentScripts = new ContentScripts();
 
 //--------------------------------------------------------------------------------------------------
 // Event Handler
@@ -51,28 +34,33 @@ var contentScripts		= new ContentScripts();
  * entory point.
  */
 $(window).ready(function onready_handler() {
-//	debug_log("$(window).ready");
-//	debug_log("frames=" + window.frames.length);
-	input_key_buffer = new Array();
-});
-
-$(window).load(function onload_handler() {
-//	debug_log("$(window).load");
-	input_key_buffer = new Array();
+	debug_log("$(window).ready: frames=" + window.frames.length);
 });
 
 /**
  * キーボードを押したときに実行されるイベント
  */
 $(document).on('keydown', function (e) {
-	input_key_buffer[e.keyCode] = true;
+	inputKeyboard.setOn(e.keyCode);
+
+	chrome.extension.sendMessage({msg: 'keydown', keyCode: e.keyCode}, function(response) {
+		if (response !== null) {
+			debug_log("message: " + response.message);
+		}
+	});
 });
 
 /**
  * キーボードを離したときに実行されるイベント
  */
 $(document).on('keyup', function (e) {
-	input_key_buffer[e.keyCode] = false;
+	inputKeyboard.setOff(e.keyCode);
+
+	chrome.extension.sendMessage({msg: 'keyup', keyCode: e.keyCode}, function(response) {
+		if (response !== null) {
+			debug_log("message: " + response.message);
+		}
+	});
 });
 
 /**
@@ -84,54 +72,51 @@ $(document).on('mousedown', function onmousedown_handler(event) {
 	// 初回の初期化
 	contentScripts.initializeExtensionOnce();
 
-	// Ctrlが押された状態だと、マウスジェスチャを開始しない。
-	if (input_key_buffer[KEY_CTRL] === true) {
+	// Ctrlが押された状態だと、マウスジェスチャ無効な仕様
+	if (inputKeyboard.isOn(inputKeyboard.KEY_CTRL)) {
 		return;
 	}
 
-	// down button type
-	if (event.which === 1) {
-		lmousedown = true;
+	inputMouse.setOn(event.which);
 
+	if (event.which === inputMouse.LEFT_BUTTON) {
 		// locker gesture
-		if (lmousedown & rmousedown) {
-			locker_on = true;
+		if (inputMouse.isLeft() & inputMouse.isRight()) {
+			lockerOn = true;
+			mainGestureMan.clearCanvas();
+
 			contentScripts.exeAction("back");
 		}
 	}
-	else if (event.which === 3) {
-		rmousedown = true;
-		next_menu_skip = false;
+	else if (event.which === inputMouse.RIGHT_BUTTON) {
+		nextMenuSkip = false;
 
 		// locker gesture
-		if (lmousedown & rmousedown) {
-			locker_on = true;
+		if (inputMouse.isLeft() & inputMouse.isRight()) {
+			lockerOn = true;
+
 			contentScripts.exeAction("forward");
 		}
 
-		gesture_man.clear();
-		gesture_man.startGestrue(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop() );
+		mainGestureMan.clear();
 
-		// select link url copy
-		if (event.target.href) {
-			link_url = event.target.href;
-		}
-		else if (event.target.parentElement && event.target.parentElement.href) {
-			link_url = event.target.parentElement.href;
-		}
-		else {
-			link_url = null;
-		}
-		debug_log("select link: " + link_url );
+		if ( ! lockerOn) {
+			var link_url = null;
+			if (event.target.href) {
+				link_url = event.target.href;
+			}
+			else if (event.target.parentElement && event.target.parentElement.href) {
+				link_url = event.target.parentElement.href;
+			}
+			else {
+				link_url = null;
+			}
+			debug_log("select link: " + link_url );
 
-		// setting
-		contentScripts.loadOption();
+			mainGestureMan.startGestrue(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop(), link_url);
 
-		if (infoDiv) {
-			document.body.appendChild(infoDiv);
-
-			$("#gestureCommandDiv").html("");
-			$("#gestureActionNameDiv").html("");
+			// setting
+			contentScripts.loadOption();
 		}
 	}
 });
@@ -141,17 +126,19 @@ $(document).on('mousedown', function onmousedown_handler(event) {
  */
 $(document).on('mousemove', function onmousemove_handler(event) {
 //	debug_log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+	if (inputMouse.isRight()) {
+		if ( ! lockerOn) {
+			if (mainGestureMan.registPoint(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop())) {
+				document.body.appendChild(mainGestureMan.getCanvas());
 
-	if (rmousedown) {
-		var tmp_x = event.pageX - $(window).scrollLeft();
-		var tmp_y = event.pageY - $(window).scrollTop();
+				if (contentScripts.infoDiv) {
+					document.body.appendChild(contentScripts.infoDiv);
+					$("#gestureCommandDiv").html("");
+					$("#gestureActionNameDiv").html("");
+				}
 
-		if (gesture_man.registPoint(tmp_x, tmp_y)) {
-			if (trailCanvas) {
-				document.body.appendChild(trailCanvas);
+				contentScripts.draw();
 			}
-
-			contentScripts.drawCanvas();
 		}
 	}
 });
@@ -161,41 +148,32 @@ $(document).on('mousemove', function onmousemove_handler(event) {
  */
 $(document).on('mouseup', function onmouseup_handler(event) {
 //	debug_log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+	inputMouse.setOff(event.which);
 
-	var tmp_canvas;
-
-	// down button type
-	if (event.which === 1) {
-		lmousedown = false;
-	}
-	else if (event.which === 3) {
-		rmousedown = false;
-
-		// gesture action run !
-		if (locker_on) {
-			next_menu_skip = true;
+	if (event.which === inputMouse.RIGHT_BUTTON) {
+		if (lockerOn) {
+			nextMenuSkip = true;
 		}
-		else {
-			var tmp_action_name = contentScripts.getNowGestureActionName();
-			if( tmp_action_name !== null ) {
-				contentScripts.exeAction(tmp_action_name);
+		else if (mainGestureMan.getGestureString()) {
+			nextMenuSkip = true;
+
+			// gesture action run !
+			if( contentScripts.getNowGestureActionName() ) {
+				contentScripts.exeAction(contentScripts.getNowGestureActionName());
 			}
 		}
 
 		// removeChild
-		tmp_canvas = document.getElementById('gestureTrailCanvas');
-		if (tmp_canvas) {
-			document.body.removeChild(tmp_canvas);
+		if (document.getElementById(mainGestureMan.getCanvas().id)) {
+			document.body.removeChild(document.getElementById(mainGestureMan.getCanvas().id));
 		}
 
-		tmp_canvas = document.getElementById('infoDiv');
-		if (tmp_canvas) {
-			document.body.removeChild(tmp_canvas);
+		if (document.getElementById(contentScripts.infoDiv.id)) {
+			document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
 		}
 
-		link_url = null;
-		contentScripts.clearCanvas();
-		locker_on = false;
+		mainGestureMan.endGesture();
+		lockerOn = false;
 	}
 });
 
@@ -206,14 +184,14 @@ $(document).on('mouseup', function onmouseup_handler(event) {
 $(document).on('contextmenu', function oncontextmenu_handler() {
 	debug_log(arguments.callee.name);
 
-	if (next_menu_skip) {
-		next_menu_skip = false;
+	if (nextMenuSkip) {
+		nextMenuSkip = false;
 		return false;
 	}
-	else if (lmousedown || rmousedown) {
+	else if (inputMouse.isLeft() || inputMouse.isRight()) {
 		return false;
 	}
-	else if (gesture_man.gesture_command === "") {
+	else if (mainGestureMan.getGestureString() === "") {
 		return true;
 	}
 	else {

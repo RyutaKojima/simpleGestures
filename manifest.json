@@ -1,6 +1,6 @@
 {
 	"name": "simpleGestures",
-	"version": "0.0.12+",
+	"version": "0.0.13",
 	"manifest_version": 2,
 	"description": "simple mouse gestures.",
 	"icons": {
@@ -25,8 +25,9 @@
 		],
 		"js": [
 			"js/vendor/jquery-1.11.3.min.js",
-
 			"js/basic.js",
+			"js/mouse.js",
+			"js/keyboard.js",
 			"js/lib_gesture.js",
 			"js/content_scripts.js",
 			"js/handler.js"
