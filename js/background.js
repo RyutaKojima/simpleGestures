@@ -1,6 +1,4 @@
 var opt = new LibOption();
-var tabUrlHash = new Object();
-var closeTabAry = new Array();
 
 /**
  * 各マウスジェスチャの処理
@@ -106,10 +104,11 @@ var gestureFunction = {
 		chrome.tabs.create({url:"chrome://restart", selected:true});
 	},
 	"last_tab": function() {
-		if (closeTabAry.length > 0) {
-			var url = closeTabAry.pop();
-			chrome.tabs.create({'url':url});
-		}
+		chrome.sessions.getRecentlyClosed({maxResults:1}, function(sessions){
+			if (sessions.length) {
+				chrome.sessions.restore();
+			}
+		});
 	},
 };
 
@@ -141,31 +140,4 @@ chrome.extension.onMessage.addListener(function onMessage_handler(request, sende
 	}
 
 	sendResponse({message: responseString});
-});
-
-/**
- * タブを開いたときにイベント発生
- * @param {type} param
- *
- * @sample reload:		updateTabId = 55, changeInfo = Object {status: "loading"}
- * @sample new tab:		updateTabId = 94, changeInfo = Object {status: "loading", url: "chrome://newtab/"}
- * @sample link click:	updateTabId = 100, changeInfo = Object {status: "loading", url: "https://atom.io/"}
- */
-chrome.tabs.onUpdated.addListener(function(updateTabId, changeInfo) {
-	if (changeInfo.url) {
-		tabUrlHash[updateTabId] = changeInfo.url;
-	}
-});
-
-/**
- * タブを閉じたときにイベント発生
- * @param {type} param
- *
- * @sample close tab:	closedTabId = 78, changeInfo = Object {isWindowClosing: false, windowId: 32}
- */
-chrome.tabs.onRemoved.addListener(function(closedTabId) {
-	if (typeof tabUrlHash[closedTabId] != "undefined") {
-		closeTabAry.push(tabUrlHash[closedTabId]);
-		delete tabUrlHash[closedTabId];
-	}
 });

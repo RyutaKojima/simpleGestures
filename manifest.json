@@ -1,6 +1,6 @@
 {
 	"name": "simpleGestures",
-	"version": "0.1.1",
+	"version": "0.1.1.777",
 	"manifest_version": 2,
 	"description": "simple mouse gestures.",
 	"icons": {
@@ -9,6 +9,7 @@
 		"128": "img/SG128.png"
 	},
 	"permissions": [
+		"sessions",
 		"tabs",
 		"storage"
 	],
