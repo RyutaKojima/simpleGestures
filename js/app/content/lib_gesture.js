@@ -63,11 +63,11 @@ LibGesture.prototype.startGestrue = function(x, y, url) {
 LibGesture.prototype.registPoint = function(x, y) {
 	if (this._lastX !== -1 && this._lastY !== -1) {
 		var distance = Math.sqrt( Math.pow(x-this._lastX, 2) + Math.pow(y-this._lastY, 2) );
-//		debug_log("distance: " + distance);
+//		console.log("distance: " + distance);
 		if (distance > this.GESTURE_START_DISTANCE) {
 			var radian = Math.atan2(y-this._lastY, x-this._lastX);
 			var rot    = radian * 180 / Math.PI;
-//			debug_log( "radian: " + radian + ", rotate: " + rot );
+//			console.log( "radian: " + radian + ", rotate: " + rot );
 
 			var tmp_vector = null;
 			if (rot >= -45.0 && rot < 45.0) {
@@ -82,7 +82,7 @@ LibGesture.prototype.registPoint = function(x, y) {
 			else {
 				tmp_vector = "L";
 			}
-//			debug_log(tmp_vector);
+//			console.log(tmp_vector);
 
 			if (this._lastVector !== tmp_vector) {
 				this._lastVector = tmp_vector;

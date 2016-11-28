@@ -15,9 +15,9 @@
 	],
 	"background": {
 		"scripts": [
-			"js/basic.js",
-			"js/lib_option.js",
-			"js/background.js"
+			"js/app/basic.js",
+			"js/app/lib_option.js",
+			"js/app/background/background.js"
 		]
 	},
 	"content_scripts": [{
@@ -26,12 +26,12 @@
 		],
 		"js": [
 			"js/vendor/jquery-1.11.3.min.js",
-			"js/basic.js",
-			"js/mouse.js",
-			"js/keyboard.js",
-			"js/lib_gesture.js",
-			"js/content_scripts.js",
-			"js/handler.js"
+			"js/app/basic.js",
+			"js/app/content/mouse.js",
+			"js/app/content/keyboard.js",
+			"js/app/content/lib_gesture.js",
+			"js/app/content/content_scripts.js",
+			"js/app/content/handler.js"
 		],
 		"all_frames": true,
 		"run_at": "document_start"
