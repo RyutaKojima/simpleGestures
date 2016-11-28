@@ -58,14 +58,6 @@ ContentScripts.prototype.initializeExtensionOnce = function() {
 };
 
 /**
- * initialize gesture list table.
- */
-ContentScripts.prototype.initGestureHash = function () {
-	optGestureHash = new Object();
-//	optGestureHash["RDLU"]	= "open_option";
-};
-
-/**
  * load option values.
  */
 ContentScripts.prototype.loadOption = function () {
@@ -78,23 +70,6 @@ ContentScripts.prototype.loadOption = function () {
 //			console.log('option: ' + response.options_json);
 
 			optionsHash = JSON.parse(response.options_json);
-
-			// gesture
-			_this.initGestureHash();
-
-			var GESTURE_ID_LIST = optionsHash["gesture_id_list"];
-
-			var id_name = "";
-			var i=0;
-			var len = GESTURE_ID_LIST.length;
-			for (i=0; i < len; i++) {
-				id_name = GESTURE_ID_LIST[i];
-
-				if (optionsHash[id_name]) {
-					// cut "gesture_" word
-					optGestureHash[optionsHash[id_name]]		= id_name.replace("gesture_", "");
-				}
-			}
 
 			// reload setting for canvas.
 			_this.createTrailCanvas();
@@ -169,7 +144,7 @@ ContentScripts.prototype.createInfoDiv = function () {
 /**
  *
  */
-ContentScripts.prototype.draw = function () {
+ContentScripts.prototype.draw = function (command_name, action_name) {
 	var tmp_canvas = null;
 
 	if (this.mainGestureMan.getCanvas()) {
@@ -188,11 +163,9 @@ ContentScripts.prototype.draw = function () {
 	if (this.infoDiv) {
 		if (document.getElementById('infoDiv')) {
 			if (optionsHash && optionsHash["action_text_on"]) {
-				var tmp_action_name = this.getNowGestureActionName();
-
-				if (tmp_action_name != $("#gestureCommandDiv").html()) {
-					if (tmp_action_name != null) {
-						$("#gestureCommandDiv").html(tmp_action_name);
+				if (action_name != $("#gestureCommandDiv").html()) {
+					if (action_name != null) {
+						$("#gestureCommandDiv").html(action_name);
 					}
 					else {
 						$("#gestureCommandDiv").html("");
@@ -201,27 +174,12 @@ ContentScripts.prototype.draw = function () {
 			}
 
 			if (optionsHash && optionsHash["command_text_on"]) {
-				if (this.mainGestureMan.getGestureString() != $("#gestureActionNameDiv").html()) {
-					$("#gestureActionNameDiv").html(this.mainGestureMan.getGestureString());
+				if (command_name != $("#gestureActionNameDiv").html()) {
+					$("#gestureActionNameDiv").html(command_name);
 				}
 			}
 		}
 	}
-};
-
-/**
- * exchange "gesture command" to "action name".
- */
-ContentScripts.prototype.getNowGestureActionName = function () {
-	if ( ! this.mainGestureMan.getGestureString()) {
-		return null;
-	}
-
-	if (typeof optGestureHash[this.mainGestureMan.getGestureString()] !== "undefined") {
-		return optGestureHash[this.mainGestureMan.getGestureString()];
-	}
-
-	return null;
 };
 
 /**

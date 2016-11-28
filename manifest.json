@@ -16,7 +16,10 @@
 	"background": {
 		"scripts": [
 			"js/app/basic.js",
+			"js/app/mouse.js",
+			"js/app/keyboard.js",
 			"js/app/lib_option.js",
+			"js/app/content/lib_gesture.js",
 			"js/app/background/background.js"
 		]
 	},
@@ -27,8 +30,8 @@
 		"js": [
 			"js/vendor/jquery-1.11.3.min.js",
 			"js/app/basic.js",
-			"js/app/content/mouse.js",
-			"js/app/content/keyboard.js",
+			"js/app/mouse.js",
+			"js/app/keyboard.js",
 			"js/app/content/lib_gesture.js",
 			"js/app/content/content_scripts.js",
 			"js/app/content/handler.js"

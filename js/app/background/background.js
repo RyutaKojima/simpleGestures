@@ -1,4 +1,178 @@
+var inputMouse = new Mouse();
+var inputKeyboard = new Keyboard();
+var mainGestureMan = new LibGesture();
 var opt = new LibOption();
+
+
+var optionsHash = null;
+var optGestureHash = new Object();	// hash: gesture list
+var lockerOn = false;
+var nextMenuSkip = true;
+
+
+var getNowGestureActionName = function () {
+	var gestureString = mainGestureMan.getGestureString();
+	if ( ! gestureString) {
+		return null;
+	}
+
+	if (typeof optGestureHash[gestureString] !== "undefined") {
+		return optGestureHash[gestureString];
+	}
+
+	return null;
+};
+
+/**
+ * フロントからのメッセージリクエストに対する処理
+ * 
+ * @type {{load_options: requestFunction.load_options}}
+ */
+var requestFunction = {
+	load_options: function(request) {
+		var optionString = opt.loadOptionsString();
+		optionsHash = JSON.parse(optionString);
+		optGestureHash = new Object();
+
+		var GESTURE_ID_LIST = optionsHash["gesture_id_list"];
+
+		var id_name = "";
+		var i=0;
+		var len = GESTURE_ID_LIST.length;
+		for (i=0; i < len; i++) {
+			id_name = GESTURE_ID_LIST[i];
+
+			if (optionsHash[id_name]) {
+				// cut "gesture_" word
+				optGestureHash[optionsHash[id_name]] = id_name.replace("gesture_", "");
+			}
+		}
+
+		return {message: "yes", "options_json": optionString};
+	},
+	keydown: function(request) {
+		responseString = request.msg + ": " + request.keyCode;
+		console.log(responseString);
+
+		inputKeyboard.setOn(request.keyCode);
+
+		return {message: "yes"};
+	},
+	keyup: function (request) {
+		responseString = request.msg + ": " + request.keyCode;
+		console.log(responseString);
+
+		inputKeyboard.setOff(request.keyCode);
+
+		return {message: "yes"};
+	},
+	mousedown: function(request) {
+		var response = {
+			message: "yes",
+			action: null,
+			href: request.href,
+			canvas: {
+				clear: false,
+				draw: false,
+				x: request.x,
+				y: request.y,
+			}
+		};
+
+		// Ctrlが押された状態だと、マウスジェスチャ無効な仕様
+		if (inputKeyboard.isOn(inputKeyboard.KEY_CTRL)) {
+			return;
+		}
+
+		inputMouse.setOn(request.which);
+
+		if (request.which === inputMouse.LEFT_BUTTON) {
+			if (inputMouse.isLeft() && inputMouse.isRight()) {
+				lockerOn = true;
+				response.canvas.clear = true;
+
+				response.action = "back";
+			}
+		}
+		else if (request.which === inputMouse.RIGHT_BUTTON) {
+			nextMenuSkip = false;
+
+			// locker gesture
+			if (inputMouse.isLeft() && inputMouse.isRight()) {
+				lockerOn = true;
+
+				response.action = "forward";
+			}
+
+			mainGestureMan.clear();
+
+			if ( ! lockerOn) {
+				console.log("select request.href: " + request.href );
+
+				response.canvas.draw = true;
+				mainGestureMan.startGestrue(request.x, request.y, request.href);
+			}
+		}
+
+		return response;
+	},
+	mousemove: function(request) {
+		var response = {
+			message: "yes",
+			action: null,
+			href: request.href,
+			canvas: {
+				clear: false,
+				draw: false,
+				x: request.x,
+				y: request.y,
+			},
+			gestureString: mainGestureMan.getGestureString(),
+			gestureAction: getNowGestureActionName(),
+		};
+
+		if (inputMouse.isRight()) {
+			if ( ! lockerOn) {
+				if (mainGestureMan.registPoint(request.x, request.y)) {
+					response.canvas.draw = true;
+				}
+			}
+		}
+
+		return response;
+	},
+	mouseup: function(request) {
+		var response = {
+			message: "yes",
+			action: null,
+			href: request.href,
+			canvas: {
+				clear: false,
+				draw: false,
+				x: request.x,
+				y: request.y,
+			}
+		};
+
+		inputMouse.setOff(request.which);
+
+		if (request.which === inputMouse.RIGHT_BUTTON) {
+			if (lockerOn) {
+				nextMenuSkip = true;
+			}
+			else if (mainGestureMan.getGestureString()) {
+				nextMenuSkip = true;
+
+				response.action = getNowGestureActionName();
+			}
+
+			mainGestureMan.endGesture();
+			lockerOn = false;
+		}
+
+		return response;
+	},
+};
 
 /**
  * 各マウスジェスチャの処理
@@ -120,19 +294,11 @@ var gestureFunction = {
 chrome.extension.onMessage.addListener(function onMessage_handler(request, sender, sendResponse) {
 	var responseString = "";
 
-	if ("load_options" == request.msg) {
-		sendResponse({message:"yes", "options_json":opt.loadOptionsString() });
+	if (typeof requestFunction[request.msg] === 'function') {
+		sendResponse(requestFunction[request.msg](request, sender));
 		return;
 	}
-	else if ("keydown" == request.msg) {
-		responseString = request.msg + ": " + request.keyCode;
-//		console.log(responseString);
-	}
-	else if ("keyup" == request.msg) {
-		responseString = request.msg + ": " + request.keyCode;
-//		console.log(responseString);
-	}
-	else if (request.msg in gestureFunction) {
+	else if (typeof gestureFunction[request.msg] === 'function') {
 		gestureFunction[request.msg](request);
 	}
 	else {

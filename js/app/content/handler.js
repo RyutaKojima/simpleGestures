@@ -21,192 +21,169 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 }
 
 (function(){
-	//--------------------------------------------------------------------------------------------------
-	// Global Variables
-	//--------------------------------------------------------------------------------------------------
-	// option variables
 	var optionsHash	= null;
-	var optGestureHash = new Object();	// hash: gesture list
-	var lockerOn = false;
 	var nextMenuSkip = true;
 
-	var inputMouse = new Mouse();
-	var inputKeyboard = new Keyboard();
 	var mainGestureMan = new LibGesture();
 	var contentScripts = new ContentScripts(mainGestureMan);
 
-//--------------------------------------------------------------------------------------------------
-// Event Handler
-//--------------------------------------------------------------------------------------------------
 	/**
-	 * entory point.
+	 * マウスイベントから、リンクURLを取得して返す
+	 * 
+	 * @param mouseevent
+	 * @returns {*}
 	 */
-	$(window).ready(function onready_handler() {
-		console.log("$(window).ready: frames=" + window.frames.length);
-	});
+	var getHref = function (mouseevent) {
+		var link_url = null;
 
-	/**
-	 * キーボードを押したときに実行されるイベント
-	 */
-	$(document).on('keydown', function (e) {
-		inputKeyboard.setOn(e.keyCode);
-
-		chrome.extension.sendMessage({msg: 'keydown', keyCode: e.keyCode}, function(response) {
-			if (response !== null) {
-				console.log("message: " + response.message);
-			}
-		});
-	});
-
-	/**
-	 * キーボードを離したときに実行されるイベント
-	 */
-	$(document).on('keyup', function (e) {
-		inputKeyboard.setOff(e.keyCode);
-
-		chrome.extension.sendMessage({msg: 'keyup', keyCode: e.keyCode}, function(response) {
-			if (response !== null) {
-				console.log("message: " + response.message);
-			}
-		});
-	});
-
-	/**
-	 * いずれかのマウスボタンを押したときに実行されるイベント
-	 */
-	$(document).on('mousedown', function onmousedown_handler(event) {
-//	console.log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-
-		// 初回の初期化
-		contentScripts.initializeExtensionOnce();
-
-		// Ctrlが押された状態だと、マウスジェスチャ無効な仕様
-		if (inputKeyboard.isOn(inputKeyboard.KEY_CTRL)) {
-			return;
+		if (mouseevent.target.href) {
+			link_url = mouseevent.target.href;
 		}
-
-		inputMouse.setOn(event.which);
-
-		if (event.which === inputMouse.LEFT_BUTTON) {
-			// locker gesture
-			if (inputMouse.isLeft() & inputMouse.isRight()) {
-				lockerOn = true;
-				mainGestureMan.clearCanvas();
-
-				contentScripts.exeAction("back");
-			}
-		}
-		else if (event.which === inputMouse.RIGHT_BUTTON) {
-			nextMenuSkip = false;
-
-			// locker gesture
-			if (inputMouse.isLeft() & inputMouse.isRight()) {
-				lockerOn = true;
-
-				contentScripts.exeAction("forward");
-			}
-
-			mainGestureMan.clear();
-
-			if ( ! lockerOn) {
-				var link_url = null;
-				if (event.target.href) {
-					link_url = event.target.href;
-				}
-				else if (event.target.parentElement && event.target.parentElement.href) {
-					link_url = event.target.parentElement.href;
-				}
-				else {
-					link_url = null;
-				}
-				console.log("select link: " + link_url );
-
-				mainGestureMan.startGestrue(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop(), link_url);
-
-				// setting
-				contentScripts.loadOption();
-			}
-		}
-	});
-
-	/**
-	 * マウスが移動したときに実行されるイベント
-	 */
-	$(document).on('mousemove', function onmousemove_handler(event) {
-//	console.log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-		if (inputMouse.isRight()) {
-			if ( ! lockerOn) {
-				if (mainGestureMan.registPoint(event.pageX - $(window).scrollLeft(), event.pageY - $(window).scrollTop())) {
-					document.body.appendChild(mainGestureMan.getCanvas());
-
-					if (contentScripts.infoDiv) {
-						document.body.appendChild(contentScripts.infoDiv);
-						$("#gestureCommandDiv").html("");
-						$("#gestureActionNameDiv").html("");
-					}
-
-					contentScripts.draw();
-				}
-			}
-		}
-	});
-
-	/**
-	 * いずれかのマウスボタンを離したときに実行されるイベント
-	 */
-	$(document).on('mouseup', function onmouseup_handler(event) {
-//	console.log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-		inputMouse.setOff(event.which);
-
-		if (event.which === inputMouse.RIGHT_BUTTON) {
-			if (lockerOn) {
-				nextMenuSkip = true;
-			}
-			else if (mainGestureMan.getGestureString()) {
-				nextMenuSkip = true;
-
-				// gesture action run !
-				if( contentScripts.getNowGestureActionName() ) {
-					contentScripts.exeAction(contentScripts.getNowGestureActionName());
-				}
-			}
-
-			// removeChild
-			if (document.getElementById(mainGestureMan.getCanvas().id)) {
-				document.body.removeChild(document.getElementById(mainGestureMan.getCanvas().id));
-			}
-
-			if (document.getElementById(contentScripts.infoDiv.id)) {
-				document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
-			}
-
-			mainGestureMan.endGesture();
-			lockerOn = false;
-		}
-	});
-
-	/**
-	 * コンテキストメニューの呼び出しをされたときに実行されるイベント。
-	 * falseを返すと、コンテキストメニューを無効にする。
-	 */
-	$(document).on('contextmenu', function oncontextmenu_handler() {
-		console.log(arguments.callee.name);
-
-		if (nextMenuSkip) {
-			nextMenuSkip = false;
-			return false;
-		}
-		else if (inputMouse.isLeft() || inputMouse.isRight()) {
-			return false;
-		}
-		else if (mainGestureMan.getGestureString() === "") {
-			return true;
+		else if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
+			link_url = mouseevent.target.parentElement.href;
 		}
 		else {
-			return false;
+			link_url = null;
 		}
+		
+		return link_url;
+	};
 
-		return true;
-	});
+	//--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
+	var callee_handler = {
+		ready: function () {
+			console.log("$(window).ready: frames=" + window.frames.length);
+		},
+		keydown: function (e) {
+			if (! e.originalEvent.repeat) {
+				chrome.extension.sendMessage({msg: 'keydown', keyCode: e.keyCode}, function(response) {});
+			}
+		},
+		keyup: function (e) {
+			chrome.extension.sendMessage({msg: 'keyup', keyCode: e.keyCode}, function(response) {});
+		},
+		mousedown: function (event) {
+			//console.log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
+			contentScripts.initializeExtensionOnce();
+
+			var sendParam = {
+				msg: 'mousedown',
+				which: event.which,
+				href: getHref(event),
+				x: event.pageX - $(window).scrollLeft(),
+				y: event.pageY - $(window).scrollTop()
+			};
+			chrome.extension.sendMessage(sendParam, function(response) {
+				if (response !== null) {
+					console.log(response);
+
+					if (response.action) {
+						contentScripts.exeAction(response.action);
+					}
+
+					if (response.canvas.clear) {
+						mainGestureMan.clearCanvas();
+					} else if (response.canvas.draw) {
+						mainGestureMan.startGestrue(response.canvas.x, response.canvas.y, response.href);
+					}
+
+					// TODO: 既存互換
+					contentScripts.loadOption();
+				}
+			});
+		},
+		mousemove: function (event) {
+			//console.log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+
+			var sendParam = {
+				msg: 'mousemove',
+				which: event.which,
+				href: '',
+				x: event.pageX - $(window).scrollLeft(),
+				y: event.pageY - $(window).scrollTop()
+			};
+			chrome.extension.sendMessage(sendParam, function(response) {
+				if (response !== null) {
+					if (response.canvas.draw) {
+						mainGestureMan.registPoint(response.canvas.x, response.canvas.y);
+
+						document.body.appendChild(mainGestureMan.getCanvas());
+
+						if (contentScripts.infoDiv) {
+							document.body.appendChild(contentScripts.infoDiv);
+							$("#gestureCommandDiv").html("");
+							$("#gestureActionNameDiv").html("");
+						}
+
+						contentScripts.draw(response.gestureString, response.gestureAction);
+					}
+				}
+			});
+		},
+		mouseup: function (event) {
+			//console.log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+
+			var sendParam = {
+				msg: 'mouseup',
+				which: event.which,
+				href: '',
+				x: event.pageX - $(window).scrollLeft(),
+				y: event.pageY - $(window).scrollTop()
+			};
+			chrome.extension.sendMessage(sendParam, function(response) {
+				if (response !== null) {
+					console.log(response);
+
+					if (response.action) {
+						contentScripts.exeAction(response.action);
+					}
+
+					// removeChild
+					if (document.getElementById(mainGestureMan.getCanvas().id)) {
+						document.body.removeChild(document.getElementById(mainGestureMan.getCanvas().id));
+					}
+
+					if (document.getElementById(contentScripts.infoDiv.id)) {
+						document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
+					}
+
+					mainGestureMan.endGesture();
+				}
+			});
+		},
+
+		/**
+		 * コンテキストメニューの呼び出しをされたときに実行されるイベント。
+		 * falseを返すと、コンテキストメニューを無効にする。
+		 */
+		contextmenu: function () {
+			console.log(arguments.callee.name);
+
+			if (nextMenuSkip) {
+				nextMenuSkip = false;
+				return false;
+			}
+			else if (mainGestureMan.getGestureString() === "") {
+				return true;
+			}
+			else {
+				return false;
+			}
+
+			return true;
+		},
+	};
+
+	//--------------------------------------------------------------------------------------------------
+	// Event Handler
+	//--------------------------------------------------------------------------------------------------
+	$(window).ready(callee_handler.ready);
+	$(document).on('keydown', callee_handler.keydown);
+	$(document).on('keyup', callee_handler.keyup);
+	$(document).on('mousedown', callee_handler.mousedown);
+	$(document).on('mousemove', callee_handler.mousemove);
+	$(document).on('mouseup', callee_handler.mouseup);
+	$(document).on('contextmenu', callee_handler.contextmenu);
 })();
