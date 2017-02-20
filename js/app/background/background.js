@@ -81,6 +81,7 @@ var requestFunction = {
 
 		// Ctrlが押された状態だと、マウスジェスチャ無効な仕様
 		if (inputKeyboard.isOn(inputKeyboard.KEY_CTRL)) {
+			console.log('on KEY_CTRL. skip gesture.');
 			return;
 		}
 
@@ -287,7 +288,7 @@ var gestureFunction = {
 };
 
 /**
- * フロントサイドからのメッセージ受信したイベント
+ * フロントサイドからのメッセージ受信した時に発生するイベント
  *
  * @param {type} param
  */
@@ -306,4 +307,13 @@ chrome.extension.onMessage.addListener(function onMessage_handler(request, sende
 	}
 
 	sendResponse({message: responseString});
+});
+
+/**
+ * アクティブなタブが切り替わったときに発生するイベント
+ */
+chrome.tabs.onActivated.addListener(function(activeInfo){
+	console.log("chrome.tabs.onActivated");
+
+	inputKeyboard.reset();
 });
