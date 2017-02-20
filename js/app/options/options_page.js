@@ -1,5 +1,6 @@
 var colorWheel = null;
-var optionGestureMan = new LibGesture();
+var canvasForOption = new TrailCanvas();
+var gestureForOption = new LibGesture();
 var opt = new LibOption();
 
 /**
@@ -56,62 +57,66 @@ $(function ready_handler() {
 	len = opt.GESTURE_ID_LIST.length;
 	for (i=0; i < len; i++) {
 		id_name = opt.GESTURE_ID_LIST[i];
+		$textbox = $('#'+id_name);
 
-		// textbox value change event
-		$('#'+id_name).change(function() {
+		$textbox.change(function() {
 			opt.saveOptions();
 		});
 
-		//
-		$('#'+id_name).click(function() {
-			select_instance = $(this);
+		$textbox.click(function() {
+			var $that = $(this);
 
-			if (optionGestureMan.getCanvas()) {
-				document.body.appendChild(optionGestureMan.getCanvas());
+			if (canvasForOption.getCanvas()) {
+				var tmpCanvas = canvasForOption.getCanvas();
+				document.body.appendChild(tmpCanvas);
 
-				optionGestureMan.clear();
+				gestureForOption.clear();
 
-				var ctx = optionGestureMan.getCanvas().getContext('2d');
-				ctx.clearRect(0, 0, optionGestureMan.getCanvas().width, optionGestureMan.getCanvas().height);
+				canvasForOption.clearCanvas();
+				var ctx = canvasForOption.getCanvas().getContext('2d');
 				ctx.globalAlpha = 0.5;
-				ctx.fillRect(0, 0, optionGestureMan.getCanvas().width, optionGestureMan.getCanvas().height);
+				ctx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
 
-				$('#'+optionGestureMan.getCanvas().id).mousedown(function(event) {
+				var $canvas = $('#'+tmpCanvas.id);
+				$canvas.mousedown(function(event) {
 					var tmp_x	= event.pageX - $(this).offset().left;
 					var tmp_y	= event.pageY - $(this).offset().top;
-					optionGestureMan.startGestrue(tmp_x, tmp_y, null);
+					gestureForOption.startGestrue(tmp_x, tmp_y, null);
 
 					return false;
 				});
 
-				$('#'+optionGestureMan.getCanvas().id).mousemove(function(event) {
+				$canvas.mousemove(function(event) {
 					var tmp_x = event.pageX - $(this).offset().left;
 					var tmp_y = event.pageY - $(this).offset().top;
 
-					if (optionGestureMan.registPoint(tmp_x, tmp_y)) {
-						var ctx = optionGestureMan.getCanvas().getContext('2d');
+					if (gestureForOption.registPoint(tmp_x, tmp_y)) {
+						var ctx = tmpCanvas.getContext('2d');
 						ctx.globalAlpha = 1.0;
 						ctx.beginPath();
-						ctx.moveTo(optionGestureMan.getLastX(), optionGestureMan.getLastY());
-						ctx.lineTo(optionGestureMan.getX(), optionGestureMan.getY());
+						ctx.moveTo(gestureForOption.getLastX(), gestureForOption.getLastY());
+						ctx.lineTo(gestureForOption.getX(), gestureForOption.getY());
 						ctx.stroke();
 					}
 
 					return false;
 				});
 
-				$('#'+optionGestureMan.getCanvas().id).mouseup(function(event) {
-					if (optionGestureMan.getCanvas()) {
-						if (tmp_canvas = document.getElementById(optionGestureMan.getCanvas().id)) {
-							document.body.removeChild(tmp_canvas);
+				$canvas.mouseup(function(event) {
+					if (tmpCanvas) {
+						var removeCanvas = document.getElementById(tmpCanvas.id);
+						if (removeCanvas) {
+							document.body.removeChild(removeCanvas);
 						}
 					}
 
 					// textbox value set.
-					select_instance.val(optionGestureMan.getGestureString());
-					select_instance = null;
+					$that.val(gestureForOption.getGestureString());
+					$that = null;
 
 					opt.saveOptions();
+
+					$(this).unbind();
 
 					return false;
 				});
@@ -153,15 +158,14 @@ $(document).on('contextmenu', function oncontextmenu_handler() {
  * create canvas & update style
  */
 var createOptionCanvas = function () {
-	optionGestureMan.createCanvas("gestureOptionCanvas", 300, 300, '10002');
+	canvasForOption.createCanvas("gestureOptionCanvas", 300, 300, '10002');
+	canvasForOption.setDrawStyleLine('#000000', 1);
 
-	var ctx = optionGestureMan.getCanvas().getContext('2d');
+	var ctx = canvasForOption.getCanvas().getContext('2d');
 	ctx.font = "bold 30px 'Arial'";
 	ctx.textBaseline = 'top';
 //	ctx.fillStyle = "#FF0000";
-
-	return optionGestureMan.getCanvas();
-}
+};
 
 /**
  * オプション表示の初期化をする

@@ -133,9 +133,9 @@ LibOption.prototype.saveOptions = function () {
 	}
 
 	// チェックボタンがONになっているか受け取る
-	this.options_instance["command_text_on"] = $('#command_text_on:checked').val();
-	this.options_instance["action_text_on"] = $('#action_text_on:checked').val();
-	this.options_instance["trail_on"] = $('#trail_on:checked').val();
+	this.options_instance["command_text_on"] = $('#command_text_on:checked').val() ? true : false;
+	this.options_instance["action_text_on"] = $('#action_text_on:checked').val() ? true : false;
+	this.options_instance["trail_on"] = $('#trail_on:checked').val() ? true : false;
 
 	// "gesture_xxxxxx"
 	len = this.GESTURE_ID_LIST.length;

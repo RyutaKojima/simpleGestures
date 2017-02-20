@@ -16,6 +16,18 @@ var Mouse = function() {
 	this.btn_buffer = new Array();
 };
 
+/**
+ * 現在の入力状態をリセットする
+ */
+Mouse.prototype.reset = function() {
+	this.btn_buffer = new Array();
+};
+
+/**
+ * 基本操作メソッド
+ * @param btnCode
+ * @returns {*}
+ */
 Mouse.prototype.isOn = function(btnCode) {
 	return this.btn_buffer[btnCode];
 }

@@ -21,11 +21,9 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 }
 
 (function(){
-	var optionsHash	= null;
-	var nextMenuSkip = true;
-
-	var mainGestureMan = new LibGesture();
-	var contentScripts = new ContentScripts(mainGestureMan);
+	var nextMenuSkip = false;
+	var trailCanvas = new TrailCanvas();
+	var contentScripts = new ContentScripts(trailCanvas);
 
 	/**
 	 * マウスイベントから、リンクURLを取得して返す
@@ -64,8 +62,6 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 			chrome.extension.sendMessage({msg: 'keyup', keyCode: e.keyCode}, function(response) {});
 		},
 		mousedown: function (event) {
-			//console.log("down (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-
 			contentScripts.initializeExtensionOnce();
 
 			var sendParam = {
@@ -76,22 +72,22 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 				y: event.pageY - $(window).scrollTop()
 			};
 			chrome.extension.sendMessage(sendParam, function(response) {
-				if (response !== null) {
-					console.log(response);
-
-					if (response.action) {
-						contentScripts.exeAction(response.action);
-					}
-
-					if (response.canvas.clear) {
-						mainGestureMan.clearCanvas();
-					} else if (response.canvas.draw) {
-						mainGestureMan.startGestrue(response.canvas.x, response.canvas.y, response.href);
-					}
-
-					// TODO: 既存互換
-					contentScripts.loadOption();
+				if (response === null) {
+					return;
 				}
+
+				console.log(response);
+
+				if (response.action) {
+					nextMenuSkip = true;
+					contentScripts.exeAction(response.action);
+				}
+
+				if (response.canvas.clear) {
+					trailCanvas.clearCanvas();
+				}
+
+				contentScripts.loadOption();
 			});
 		},
 		mousemove: function (event) {
@@ -105,26 +101,33 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 				y: event.pageY - $(window).scrollTop()
 			};
 			chrome.extension.sendMessage(sendParam, function(response) {
-				if (response !== null) {
-					if (response.canvas.draw) {
-						mainGestureMan.registPoint(response.canvas.x, response.canvas.y);
+				if (response === null) {
+					return;
+				}
 
-						document.body.appendChild(mainGestureMan.getCanvas());
+				if (response.canvas.draw) {
+					nextMenuSkip = (response.gestureString != "");
 
-						if (contentScripts.infoDiv) {
-							document.body.appendChild(contentScripts.infoDiv);
-							$("#gestureCommandDiv").html("");
-							$("#gestureActionNameDiv").html("");
-						}
+					document.body.appendChild(trailCanvas.getCanvas());
 
-						contentScripts.draw(response.gestureString, response.gestureAction);
+					if (contentScripts.infoDiv) {
+						document.body.appendChild(contentScripts.infoDiv);
+						$("#gestureCommandDiv").html("");
+						$("#gestureActionNameDiv").html("");
 					}
+
+					var listParam = {
+						fromX: response.canvas.x,
+						fromY: response.canvas.y,
+						toX: response.canvas.toX,
+						toY: response.canvas.toY,
+					}
+
+					contentScripts.draw(listParam, response.gestureString, response.gestureAction);
 				}
 			});
 		},
 		mouseup: function (event) {
-			//console.log("up (" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
-
 			var sendParam = {
 				msg: 'mouseup',
 				which: event.which,
@@ -133,24 +136,29 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 				y: event.pageY - $(window).scrollTop()
 			};
 			chrome.extension.sendMessage(sendParam, function(response) {
-				if (response !== null) {
-					console.log(response);
-
-					if (response.action) {
-						contentScripts.exeAction(response.action);
-					}
-
-					// removeChild
-					if (document.getElementById(mainGestureMan.getCanvas().id)) {
-						document.body.removeChild(document.getElementById(mainGestureMan.getCanvas().id));
-					}
-
-					if (document.getElementById(contentScripts.infoDiv.id)) {
-						document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
-					}
-
-					mainGestureMan.endGesture();
+				if (response === null) {
+					return;
 				}
+
+				// console.log(response);
+
+				nextMenuSkip = (response.gestureString != "");
+
+				if (response.action) {
+					nextMenuSkip = true;
+					contentScripts.exeAction(response.action);
+				}
+
+				// removeChild
+				if (document.getElementById(trailCanvas.getCanvas().id)) {
+					document.body.removeChild(document.getElementById(trailCanvas.getCanvas().id));
+				}
+
+				if (document.getElementById(contentScripts.infoDiv.id)) {
+					document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
+				}
+
+				trailCanvas.clearCanvas();
 			});
 		},
 
@@ -163,12 +171,6 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 
 			if (nextMenuSkip) {
 				nextMenuSkip = false;
-				return false;
-			}
-			else if (mainGestureMan.getGestureString() === "") {
-				return true;
-			}
-			else {
 				return false;
 			}
 

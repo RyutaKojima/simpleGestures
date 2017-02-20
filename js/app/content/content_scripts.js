@@ -2,26 +2,26 @@
  * ContentScripts Object
  * @constructor
  */
-var ContentScripts = function (lib_gesture) {
+var ContentScripts = function (trailCanvas) {
 	this.initialized = false;
 	this.infoDiv = null;
 	this.commandDiv = null;
 	this.actionNameDiv = null;
-	this.mainGestureMan = lib_gesture;
+	this.trailCanvas = trailCanvas;
+
+	this.trailColor = '#FF0000';
+	this.trailWidth = 3;
+	this.trailDisplayable = true;
+	this.actionTextDisplayable = true;
+	this.commandTextDisplayable = true;
 };
 
 ContentScripts.prototype.getOptTrailColor = function() {
-	if (optionsHash && optionsHash["color_code"]) {
-		return optionsHash["color_code"];
-	}
-	return '#FF0000';
+	return this.trailColor;
 };
 
 ContentScripts.prototype.getOptTrailWidth = function() {
-	if (optionsHash && optionsHash["line_width"]) {
-		return optionsHash["line_width"];
-	}
-	return 3;
+	return this.trailWidth;
 };
 
 /**
@@ -31,18 +31,6 @@ ContentScripts.prototype.getOptTrailWidth = function() {
 ContentScripts.prototype.initializeExtensionOnce = function() {
 	if ( ! this.initialized) {
 		console.log("initialize run!!");
-
-//		console.log( "$(window).height()      = " +  $(window).height() );
-//		console.log( "$(window).innerHeight() = " +  $(window).innerHeight() );
-//
-//		console.log( "window.innerHeight      = " +  window.innerHeight );
-//		console.log( "screen.height           = " +  screen.height );
-//		console.log( "screen.availHeight      = " +  screen.availHeight );
-//		console.log( "document.height         = " +  document.height );
-//		console.log( "document.body.scrollHeight             = " +  document.body.scrollHeight );
-//		console.log( "document.body.clientHeight             = " +  document.body.clientHeight );
-//		console.log( "document.documentElement.scrollHeight  = " +  document.documentElement.scrollHeight );
-//		console.log( "document.documentElement.clientHeight  = " +  document.documentElement.clientHeight );
 
 		this.initialized = true;
 
@@ -61,15 +49,29 @@ ContentScripts.prototype.initializeExtensionOnce = function() {
  * load option values.
  */
 ContentScripts.prototype.loadOption = function () {
-	optionsHash = null;
 	var _this = this;
 
 	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
 		if (response) {
-//			console.log('message: ' + response.message);
-//			console.log('option: ' + response.options_json);
+			var optionsHash = JSON.parse(response.options_json);
 
-			optionsHash = JSON.parse(response.options_json);
+			if(optionsHash) {
+				if(optionsHash["color_code"]) {
+					_this.trailColor = optionsHash["color_code"];
+				}
+				if (optionsHash["line_width"]) {
+					_this.trailWidth = optionsHash["line_width"];
+				}
+				if (typeof optionsHash["trail_on"] !== 'undefined') {
+					_this.trailDisplayable = optionsHash["trail_on"];
+				}
+				if (typeof optionsHash["action_text_on"] !== 'undefined') {
+					_this.actionTextDisplayable = optionsHash["action_text_on"]
+				}
+				if (typeof optionsHash["command_text_on"] !== 'undefined') {
+					_this.commandTextDisplayable = optionsHash["command_text_on"];
+				} 
+			}
 
 			// reload setting for canvas.
 			_this.createTrailCanvas();
@@ -82,10 +84,8 @@ ContentScripts.prototype.loadOption = function () {
  * create canvas & update style
  */
 ContentScripts.prototype.createTrailCanvas = function () {
-	this.mainGestureMan.createCanvas("gestureTrailCanvas", window.innerWidth, window.innerHeight, "1000000");
-	this.mainGestureMan.setDrawStyleLine(this.getOptTrailColor(), this.getOptTrailWidth());
-
-	return this.mainGestureMan.getCanvas();
+	this.trailCanvas.createCanvas("gestureTrailCanvas", window.innerWidth, window.innerHeight, "1000000");
+	this.trailCanvas.setDrawStyleLine(this.getOptTrailColor(), this.getOptTrailWidth());
 };
 
 /**
@@ -144,17 +144,17 @@ ContentScripts.prototype.createInfoDiv = function () {
 /**
  *
  */
-ContentScripts.prototype.draw = function (command_name, action_name) {
+ContentScripts.prototype.draw = function (lineParam, command_name, action_name) {
 	var tmp_canvas = null;
 
-	if (this.mainGestureMan.getCanvas()) {
+	if (this.trailCanvas.getCanvas()) {
 		if (tmp_canvas = document.getElementById('gestureTrailCanvas')) {
 			// draw trail line
-			if (optionsHash && optionsHash["trail_on"]) {
+			if (this.trailDisplayable) {
 				var ctx = tmp_canvas.getContext('2d');
 				ctx.beginPath();
-				ctx.moveTo(this.mainGestureMan.getLastX(), this.mainGestureMan.getLastY());
-				ctx.lineTo(this.mainGestureMan.getX(), this.mainGestureMan.getY());
+				ctx.moveTo(lineParam.fromX, lineParam.fromY);
+				ctx.lineTo(lineParam.toX, lineParam.toY);
 				ctx.stroke();
 			}
 		}
@@ -162,18 +162,13 @@ ContentScripts.prototype.draw = function (command_name, action_name) {
 
 	if (this.infoDiv) {
 		if (document.getElementById('infoDiv')) {
-			if (optionsHash && optionsHash["action_text_on"]) {
+			if (this.actionTextDisplayable) {
 				if (action_name != $("#gestureCommandDiv").html()) {
-					if (action_name != null) {
-						$("#gestureCommandDiv").html(action_name);
-					}
-					else {
-						$("#gestureCommandDiv").html("");
-					}
+					$("#gestureCommandDiv").html( (action_name != null) ? action_name : "");
 				}
 			}
 
-			if (optionsHash && optionsHash["command_text_on"]) {
+			if (this.commandTextDisplayable) {
 				if (command_name != $("#gestureActionNameDiv").html()) {
 					$("#gestureActionNameDiv").html(command_name);
 				}
@@ -209,20 +204,6 @@ ContentScripts.prototype.exeAction = function (action_name) {
 
 		case "scroll_bottom":
 			window.scrollTo(0, $(document).height());
-			break;
-
-		case "new_tab":
-			chrome.extension.sendMessage({msg: action_name, url:this.mainGestureMan.getURL() }, function(response) {
-					if (response !== null) {
-						console.log("message: " + response.message);
-					}
-					else {
-						console.log('problem executing open tab');
-						if (chrome.extension.lastError) {
-							console.log(chrome.extension.lastError.message);
-						}
-					}
-				});
 			break;
 
 		default:

@@ -10,6 +10,10 @@ var lockerOn = false;
 var nextMenuSkip = true;
 
 
+/**
+ * 現在のジェスチャ軌跡に対応するアクション名を返す
+ * @returns {*}
+ */
 var getNowGestureActionName = function () {
 	var gestureString = mainGestureMan.getGestureString();
 	if ( ! gestureString) {
@@ -67,15 +71,22 @@ var requestFunction = {
 		return {message: "yes"};
 	},
 	mousedown: function(request) {
+		responseString = request.which === inputMouse.LEFT_BUTTON ? "LEFT" : "RIGHT";
+		console.log(responseString);
+
 		var response = {
 			message: "yes",
 			action: null,
 			href: request.href,
+			gestureString: '',
+			gestureAction: '',
 			canvas: {
 				clear: false,
 				draw: false,
 				x: request.x,
 				y: request.y,
+				toX: request.x,
+				toY: request.y,
 			}
 		};
 
@@ -122,20 +133,26 @@ var requestFunction = {
 			message: "yes",
 			action: null,
 			href: request.href,
+			gestureString: mainGestureMan.getGestureString(),
+			gestureAction: getNowGestureActionName(),
 			canvas: {
 				clear: false,
 				draw: false,
 				x: request.x,
 				y: request.y,
-			},
-			gestureString: mainGestureMan.getGestureString(),
-			gestureAction: getNowGestureActionName(),
+				toX: request.x,
+				toY: request.y,
+			}
 		};
 
 		if (inputMouse.isRight()) {
 			if ( ! lockerOn) {
 				if (mainGestureMan.registPoint(request.x, request.y)) {
 					response.canvas.draw = true;
+					response.canvas.x = mainGestureMan.getLastX();
+					response.canvas.y = mainGestureMan.getLastY();
+					response.canvas.toX = mainGestureMan.getX();
+					response.canvas.toY = mainGestureMan.getY();
 				}
 			}
 		}
@@ -147,11 +164,15 @@ var requestFunction = {
 			message: "yes",
 			action: null,
 			href: request.href,
+			gestureString: mainGestureMan.getGestureString(),
+			gestureAction: getNowGestureActionName(),
 			canvas: {
 				clear: false,
 				draw: false,
 				x: request.x,
 				y: request.y,
+				toX: request.x,
+				toY: request.y,
 			}
 		};
 
@@ -180,17 +201,16 @@ var requestFunction = {
  * @type type
  */
 var gestureFunction = {
-	"new_tab": function(options) {
-		var url = options.url;
-
+	"new_tab": function() {
+		var _url = mainGestureMan.getURL();
 		chrome.tabs.query({active: true}, function(tabs) {
 			var current_tab = tabs[0];
 			var append_index = current_tab.index+1;
-			if (url == null) {
+			if (_url == null) {
 				chrome.tabs.create({index:append_index});
 			}
 			else {
-				chrome.tabs.create({url:url, index:append_index});
+				chrome.tabs.create({url:_url, index:append_index});
 			}
 		});
 	},
@@ -316,4 +336,5 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
 	console.log("chrome.tabs.onActivated");
 
 	inputKeyboard.reset();
+	inputMouse.reset();
 });

@@ -14,8 +14,6 @@ var LibGesture = function() {
 	this._lastVector = null;
 	this._strGestureCommand = "";
 	this._linkUrl = null;
-
-	this.myCanvas = null;
 };
 
 LibGesture.prototype.getLastX = function() {	return this._lastX;	};
@@ -24,7 +22,6 @@ LibGesture.prototype.getX = function() {	return this._nowX;	};
 LibGesture.prototype.getY = function() {	return this._nowY;	};
 LibGesture.prototype.getURL = function() {	return this._linkUrl;	};
 LibGesture.prototype.getGestureString = function() {	return this._strGestureCommand;	};
-LibGesture.prototype.getCanvas = function() {	return this.myCanvas;	};
 
 LibGesture.prototype.clear = function() {
 	this._nowX = -1;
@@ -116,72 +113,4 @@ LibGesture.prototype.registPoint = function(x, y) {
  *
  * @returns {undefined}
  */
-LibGesture.prototype.endGesture = function () {
-	this.clear();
-	this.clearCanvas();
-};
-
-/**
- * ジェスチャの軌跡描画用のキャンパスインスタンスを作成する
- *
- * @param {type} _width
- * @param {type} _height
- * @param {type} _zIndex
- * @returns {this.myCanvas}
- */
-LibGesture.prototype.createCanvas = function (_Id, _width, _height, _zIndex) {
-	if ( ! this.myCanvas) {
-		this.myCanvas = document.createElement('canvas');
-		this.myCanvas.id = _Id;
-	}
-
-	this.myCanvas.width    = _width;
-	this.myCanvas.height   = _height;
-
-	//------------------------------
-	// Style settings.
-	//------------------------------
-//	this.myCanvas.style.width    = _width + "px";
-//	this.myCanvas.style.height   = _height + "px";
-
-	// Set priority
-	this.myCanvas.style.zIndex   = _zIndex;
-
-	// Set in the center position.
-	this.myCanvas.style.top      = "0px";
-	this.myCanvas.style.left     = "0px";
-	this.myCanvas.style.right    = "0px";
-	this.myCanvas.style.bottom   = "0px";
-	this.myCanvas.style.margin   = "auto";
-	this.myCanvas.style.position = 'fixed';
-	this.myCanvas.style.overflow = 'visible';
-
-	return this.myCanvas;
-};
-
-/**
- * 描画するラインのスタイルを設定する
- *
- * @param {type} _color
- * @param {type} _width
- * @returns {undefined}
- */
-LibGesture.prototype.setDrawStyleLine = function (_color, _width) {
-	if (this.myCanvas) {
-		var ctx = this.myCanvas.getContext('2d');
-		ctx.strokeStyle = _color;
-		ctx.lineWidth   = _width;
-	}
-};
-
-/**
- * ジェスチャ用キャンバスの軌道を消す
- */
-LibGesture.prototype.clearCanvas = function () {
-	if (this.myCanvas) {
-		this.myCanvas.width = this.myCanvas.width;
-
-		var ctx = this.myCanvas.getContext('2d');
-		ctx.clearRect(0, 0, this.myCanvas.width, this.myCanvas.height);
-	}
-};
+LibGesture.prototype.endGesture = function () {};
