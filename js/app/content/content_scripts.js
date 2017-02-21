@@ -16,14 +16,6 @@ var ContentScripts = function (trailCanvas) {
 	this.commandTextDisplayable = true;
 };
 
-ContentScripts.prototype.getOptTrailColor = function() {
-	return this.trailColor;
-};
-
-ContentScripts.prototype.getOptTrailWidth = function() {
-	return this.trailWidth;
-};
-
 /**
  * 拡張機能の準備. ２回目移行の呼び出しは無視される
  * When initialization, return true.
@@ -84,8 +76,10 @@ ContentScripts.prototype.loadOption = function () {
  * create canvas & update style
  */
 ContentScripts.prototype.createTrailCanvas = function () {
-	this.trailCanvas.createCanvas("gestureTrailCanvas", window.innerWidth, window.innerHeight, "1000000");
-	this.trailCanvas.setDrawStyleLine(this.getOptTrailColor(), this.getOptTrailWidth());
+	if (this.trailCanvas.getCanvas() == null) {
+		this.trailCanvas.createCanvas("gestureTrailCanvas", window.innerWidth, window.innerHeight, "1000000");
+	}
+	this.trailCanvas.setDrawStyleLine(this.trailColor, this.trailWidth);
 };
 
 /**
@@ -137,7 +131,7 @@ ContentScripts.prototype.createInfoDiv = function () {
 
 	this.infoDiv.style.fontFamily = 'Arial';
 	this.infoDiv.style.fontSize = 30 + "px";
-	this.infoDiv.style.color      = this.getOptTrailColor();
+	this.infoDiv.style.color      = this.trailColor;
 	this.infoDiv.style.fontWeight = "bold";
 };
 
