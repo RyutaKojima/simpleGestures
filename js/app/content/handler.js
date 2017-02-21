@@ -47,8 +47,25 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 		return link_url;
 	};
 
-	//--------------------------------------------------------------------------------------------------
-	//--------------------------------------------------------------------------------------------------
+	/**
+	 * 画面表示をすべてクリア
+	 */
+	var clearAllDisplay = function() {
+		if (document.getElementById(trailCanvas.getCanvas().id)) {
+			document.body.removeChild(document.getElementById(trailCanvas.getCanvas().id));
+		}
+
+		if (document.getElementById(contentScripts.infoDiv.id)) {
+			document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
+		}
+
+		trailCanvas.clearCanvas();
+	};
+
+	/**
+	 * 各イベントのコールバックを定義する
+	 * @type {{ready: ready, keydown: keydown, keyup: keyup, mousedown: mousedown, mousemove: mousemove, mouseup: mouseup, contextmenu: contextmenu}}
+	 */
 	var callee_handler = {
 		ready: function () {
 			console.log("$(window).ready: frames=" + window.frames.length);
@@ -91,7 +108,7 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 			});
 		},
 		mousemove: function (event) {
-			//console.log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+			console.log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
 			var sendParam = {
 				msg: 'mousemove',
@@ -121,9 +138,12 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 						fromY: response.canvas.y,
 						toX: response.canvas.toX,
 						toY: response.canvas.toY,
-					}
-
+					};
 					contentScripts.draw(listParam, response.gestureString, response.gestureAction);
+				}
+
+				if (response.canvas.clear) {
+					clearAllDisplay();
 				}
 			});
 		},
@@ -149,16 +169,7 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 					contentScripts.exeAction(response.action);
 				}
 
-				// removeChild
-				if (document.getElementById(trailCanvas.getCanvas().id)) {
-					document.body.removeChild(document.getElementById(trailCanvas.getCanvas().id));
-				}
-
-				if (document.getElementById(contentScripts.infoDiv.id)) {
-					document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
-				}
-
-				trailCanvas.clearCanvas();
+				clearAllDisplay();
 			});
 		},
 
@@ -181,11 +192,11 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 	//--------------------------------------------------------------------------------------------------
 	// Event Handler
 	//--------------------------------------------------------------------------------------------------
-	$(window).ready(callee_handler.ready);
-	$(document).on('keydown', callee_handler.keydown);
-	$(document).on('keyup', callee_handler.keyup);
-	$(document).on('mousedown', callee_handler.mousedown);
-	$(document).on('mousemove', callee_handler.mousemove);
-	$(document).on('mouseup', callee_handler.mouseup);
+	$(window).ready(              callee_handler.ready);
+	$(document).on('keydown',     callee_handler.keydown);
+	$(document).on('keyup',       callee_handler.keyup);
+	$(document).on('mousedown',   callee_handler.mousedown);
+	$(document).on('mousemove',   callee_handler.mousemove);
+	$(document).on('mouseup',     callee_handler.mouseup);
 	$(document).on('contextmenu', callee_handler.contextmenu);
 })();

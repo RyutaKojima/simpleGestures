@@ -129,6 +129,7 @@ var requestFunction = {
 		return response;
 	},
 	mousemove: function(request) {
+		// mousemove の event.whichには、最初に押されたボタンが入る。
 		var response = {
 			message: "yes",
 			action: null,
@@ -145,7 +146,14 @@ var requestFunction = {
 			}
 		};
 
-		if (inputMouse.isRight()) {
+		if (request.which == 0) {
+			inputMouse.reset();
+			mainGestureMan.clear();
+			response.canvas.clear = true;
+			return response;
+		}
+
+		if (inputMouse.isRight() && request.which == inputMouse.RIGHT_BUTTON) {
 			if ( ! lockerOn) {
 				if (mainGestureMan.registPoint(request.x, request.y)) {
 					response.canvas.draw = true;
