@@ -51,8 +51,11 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 	 * 画面表示をすべてクリア
 	 */
 	var clearAllDisplay = function() {
-		if (document.getElementById(trailCanvas.getCanvas().id)) {
-			document.body.removeChild(document.getElementById(trailCanvas.getCanvas().id));
+		if (trailCanvas.getCanvasId()){
+			var canvasId = trailCanvas.getCanvasId();
+			if (document.getElementById(canvasId)) {
+				document.body.removeChild(document.getElementById(canvasId));
+			}
 		}
 
 		if (document.getElementById(contentScripts.infoDiv.id)) {
@@ -68,7 +71,8 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 	 */
 	var callee_handler = {
 		ready: function () {
-			console.log("$(window).ready: frames=" + window.frames.length);
+			// console.log("$(window).ready: frames=" + window.frames.length);
+			contentScripts.initializeExtensionOnce();
 		},
 		keydown: function (e) {
 			if (! e.originalEvent.repeat) {
@@ -79,8 +83,6 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 			chrome.extension.sendMessage({msg: 'keyup', keyCode: e.keyCode}, function(response) {});
 		},
 		mousedown: function (event) {
-			contentScripts.initializeExtensionOnce();
-
 			var sendParam = {
 				msg: 'mousedown',
 				which: event.which,
@@ -93,7 +95,7 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 					return;
 				}
 
-				console.log(response);
+				// console.log(response);
 
 				if (response.action) {
 					nextMenuSkip = true;
@@ -108,7 +110,7 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 			});
 		},
 		mousemove: function (event) {
-			console.log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+			// console.log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
 			var sendParam = {
 				msg: 'mousemove',
@@ -178,7 +180,7 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 		 * falseを返すと、コンテキストメニューを無効にする。
 		 */
 		contextmenu: function () {
-			console.log(arguments.callee.name);
+			// console.log(arguments.callee.name);
 
 			if (nextMenuSkip) {
 				nextMenuSkip = false;

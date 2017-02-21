@@ -9,6 +9,9 @@ var TrailCanvas = function() {
 TrailCanvas.prototype.getCanvas = function() {
 	return this.myCanvas;
 };
+TrailCanvas.prototype.getCanvasId = function() {
+	return (this.myCanvas) ? this.myCanvas.id : null;
+};
 TrailCanvas.prototype.getContext2d = function() {
 	return (this.myCanvas) ? this.myCanvas.getContext('2d') : null;
 };

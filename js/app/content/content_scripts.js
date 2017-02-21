@@ -30,7 +30,7 @@ ContentScripts.prototype.getOptTrailWidth = function() {
  */
 ContentScripts.prototype.initializeExtensionOnce = function() {
 	if ( ! this.initialized) {
-		console.log("initialize run!!");
+		// console.log("run: initializeExtensionOnce");
 
 		this.initialized = true;
 
@@ -145,11 +145,10 @@ ContentScripts.prototype.createInfoDiv = function () {
  *
  */
 ContentScripts.prototype.draw = function (lineParam, command_name, action_name) {
-	var tmp_canvas = null;
-
-	if (this.trailCanvas.getCanvas()) {
-		if (tmp_canvas = document.getElementById('gestureTrailCanvas')) {
-			// draw trail line
+	if (this.trailCanvas.getCanvasId()) {
+		// append されているか調べるため、あえて document.getElementById で取得
+		var tmp_canvas = document.getElementById(this.trailCanvas.getCanvasId());
+		if (tmp_canvas) {
 			if (this.trailDisplayable) {
 				var ctx = tmp_canvas.getContext('2d');
 				ctx.beginPath();
