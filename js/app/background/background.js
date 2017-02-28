@@ -33,6 +33,11 @@ var getNowGestureActionName = function () {
  * @type {{load_options: requestFunction.load_options}}
  */
 var requestFunction = {
+	reset_input: function(request) {
+		console.log('reset_input.'+request.event);
+		inputKeyboard.reset();
+		inputMouse.reset();
+	},
 	load_options: function(request) {
 		var optionString = opt.loadOptionsString();
 		optionsHash = JSON.parse(optionString);

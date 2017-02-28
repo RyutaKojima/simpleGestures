@@ -51,18 +51,22 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 	 * 画面表示をすべてクリア
 	 */
 	var clearAllDisplay = function() {
-		if (trailCanvas.getCanvasId()){
+		if (trailCanvas && trailCanvas.getCanvasId()){
 			var canvasId = trailCanvas.getCanvasId();
 			if (document.getElementById(canvasId)) {
 				document.body.removeChild(document.getElementById(canvasId));
 			}
 		}
 
-		if (document.getElementById(contentScripts.infoDiv.id)) {
-			document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
+		if (contentScripts.infoDiv) {
+			if (document.getElementById(contentScripts.infoDiv.id)) {
+				document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
+			}
 		}
 
-		trailCanvas.clearCanvas();
+		if (trailCanvas) {
+			trailCanvas.clearCanvas();
+		}
 	};
 
 	/**
@@ -73,6 +77,9 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 		ready: function () {
 			// console.log("$(window).ready: frames=" + window.frames.length);
 			contentScripts.initializeExtensionOnce();
+		},
+		focus: function() {
+			chrome.extension.sendMessage({ msg: 'reset_input', event:'focus' }, function(response) {});
 		},
 		keydown: function (e) {
 			if (! e.originalEvent.repeat) {
@@ -194,7 +201,9 @@ if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
 	//--------------------------------------------------------------------------------------------------
 	// Event Handler
 	//--------------------------------------------------------------------------------------------------
-	$(window).ready(              callee_handler.ready);
+	$(window).on('ready', callee_handler.ready);
+	$(window).on('focus', callee_handler.focus);
+	// $(window).on('blur', callee_handler.blur);
 	$(document).on('keydown',     callee_handler.keydown);
 	$(document).on('keyup',       callee_handler.keyup);
 	$(document).on('mousedown',   callee_handler.mousedown);
