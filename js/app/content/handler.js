@@ -10,16 +10,6 @@
  * 名前空間は	foo.namespaceNamesLikeThis.bar
  * ファイルは	filenameslikethis.js
  */
-
-var DEBUG_ON = true;
-
-/**
- * デバッグモード以外では console.log を出力しない
- */
-if (typeof DEBUG_ON == 'undefined' || ! DEBUG_ON) {
-	console.log = function(dummy){}
-}
-
 (function(){
 	var nextMenuSkip = false;
 	var trailCanvas = new TrailCanvas();
