@@ -3,7 +3,6 @@ var inputKeyboard = new Keyboard();
 var mainGestureMan = new LibGesture();
 var opt = new LibOption();
 
-
 var optionsHash = null;
 var optGestureHash = new Object();	// hash: gesture list
 var lockerOn = false;
@@ -34,9 +33,13 @@ var getNowGestureActionName = function () {
  */
 var requestFunction = {
 	reset_input: function(request) {
-		console.log('reset_input.'+request.event);
+		inputKeyboard.lock();
 		inputKeyboard.reset();
 		inputMouse.reset();
+
+		setTimeout(function(){
+			inputKeyboard.unlock();
+		}, 100);
 	},
 	load_options: function(request) {
 		var optionString = opt.loadOptionsString();
@@ -60,17 +63,11 @@ var requestFunction = {
 		return {message: "yes", "options_json": optionString};
 	},
 	keydown: function(request) {
-		responseString = request.msg + ": " + request.keyCode;
-		console.log(responseString);
-
 		inputKeyboard.setOn(request.keyCode);
 
 		return {message: "yes"};
 	},
 	keyup: function (request) {
-		responseString = request.msg + ": " + request.keyCode;
-		console.log(responseString);
-
 		inputKeyboard.setOff(request.keyCode);
 
 		return {message: "yes"};
@@ -345,9 +342,4 @@ chrome.extension.onMessage.addListener(function onMessage_handler(request, sende
 /**
  * アクティブなタブが切り替わったときに発生するイベント
  */
-chrome.tabs.onActivated.addListener(function(activeInfo){
-	console.log("chrome.tabs.onActivated");
-
-	inputKeyboard.reset();
-	inputMouse.reset();
-});
+// chrome.tabs.onActivated.addListener(function(activeInfo){});
