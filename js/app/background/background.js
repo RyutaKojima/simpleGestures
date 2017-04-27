@@ -1,13 +1,11 @@
 var inputMouse = new Mouse();
 var inputKeyboard = new Keyboard();
 var mainGestureMan = new LibGesture();
-var opt = new LibOption();
+var option = new LibOption();
+option.load();
 
-var optionsHash = null;
-var optGestureHash = new Object();	// hash: gesture list
 var lockerOn = false;
 var nextMenuSkip = true;
-
 
 /**
  * 現在のジェスチャ軌跡に対応するアクション名を返す
@@ -19,11 +17,7 @@ var getNowGestureActionName = function () {
 		return null;
 	}
 
-	if (typeof optGestureHash[gestureString] !== "undefined") {
-		return optGestureHash[gestureString];
-	}
-
-	return null;
+	return option.getGestureActionName(gestureString);
 };
 
 /**
@@ -41,26 +35,11 @@ var requestFunction = {
 			inputKeyboard.unlock();
 		}, 100);
 	},
+	reload_option: function() {
+		option.load();
+	},
 	load_options: function(request) {
-		var optionString = opt.loadOptionsString();
-		optionsHash = JSON.parse(optionString);
-		optGestureHash = new Object();
-
-		var GESTURE_ID_LIST = optionsHash["gesture_id_list"];
-
-		var id_name = "";
-		var i=0;
-		var len = GESTURE_ID_LIST.length;
-		for (i=0; i < len; i++) {
-			id_name = GESTURE_ID_LIST[i];
-
-			if (optionsHash[id_name]) {
-				// cut "gesture_" word
-				optGestureHash[optionsHash[id_name]] = id_name.replace("gesture_", "");
-			}
-		}
-
-		return {message: "yes", "options_json": optionString};
+		return {message: "yes", "options_json": option.getRawStorageData()};
 	},
 	keydown: function(request) {
 		inputKeyboard.setOn(request.keyCode);
@@ -170,12 +149,14 @@ var requestFunction = {
 		return response;
 	},
 	mouseup: function(request) {
+		var doAction = getNowGestureActionName();
+
 		var response = {
 			message: "yes",
 			action: null,
 			href: mainGestureMan.getURL(),
 			gestureString: mainGestureMan.getGestureString(),
-			gestureAction: getNowGestureActionName(),
+			gestureAction: doAction,
 			canvas: {
 				clear: false,
 				draw: false,
@@ -192,10 +173,19 @@ var requestFunction = {
 			if (lockerOn) {
 				nextMenuSkip = true;
 			}
-			else if (mainGestureMan.getGestureString()) {
+			else if (doAction) {
 				nextMenuSkip = true;
 
-				response.action = getNowGestureActionName();
+				if (typeof gestureFunction[doAction] === 'function') {
+					var optionParams = {
+						href: mainGestureMan.getURL()
+					};
+					gestureFunction[doAction](optionParams);
+				}
+				else {
+					// バックグラウンドで処理できないものはフロントに任せる
+					response.action = doAction;
+				}
 			}
 
 			mainGestureMan.endGesture();
@@ -211,8 +201,12 @@ var requestFunction = {
  * @type type
  */
 var gestureFunction = {
-	"new_tab": function(request) {
-		var _url = request.href;
+	"new_tab": function(options) {
+		var _url = '';
+
+		if (options && typeof options.href !== 'undefined') {
+			_url = options.href;
+		}
 
 		chrome.tabs.query({active: true}, function(tabs) {
 			var current_tab = tabs[0];
@@ -239,9 +233,9 @@ var gestureFunction = {
 	},
 	"reload_all": function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			for (var i = 0; i < tabs.length; i++) {
-				chrome.tabs.reload(tabs[i].id);
-			}
+			tabs.forEach(function(tab){
+				chrome.tabs.reload(tab.id);
+			});
 		});
 	},
 	"next_tab": function() {
@@ -273,20 +267,20 @@ var gestureFunction = {
 	"close_all_background": function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			var current_tab = tabs[0];
-			chrome.tabs.getAllInWindow(null, function(all_tabs) {
-				for (var i = 0; i < all_tabs.length; i++) {
-					if (all_tabs[i].id != current_tab.id) {
-						chrome.tabs.remove(all_tabs[i].id);
+			chrome.tabs.getAllInWindow(null, function(tabs) {
+				tabs.forEach(function(tab){
+					if (tab.id != current_tab.id) {
+						chrome.tabs.remove(tab.id);
 					}
-				}
+				});
 			});
 		});
 	},
 	"close_all": function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			for (var i = 0; i < tabs.length; i++) {
-				chrome.tabs.remove(tabs[i].id);
-			}
+			tabs.forEach(function(tab){
+				chrome.tabs.remove(tab.id);
+			});
 		});
 	},
 	"open_option": function() {
@@ -297,12 +291,12 @@ var gestureFunction = {
 	"open_extension": function() {
 		var chromeExtURL="chrome://extensions/";
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			for (var i = 0; i < tabs.length; i++) {
-				if (tabs[i].url == chromeExtURL) {
-					chrome.tabs.update(tabs[i].id, {selected:true});
+			tabs.forEach(function(tab){
+				if (tab.url == chromeExtURL) {
+					chrome.tabs.update(tab.id, {selected:true});
 					return;
 				}
-			}
+			});
 			chrome.tabs.create({url:chromeExtURL, selected:true});
 		});
 	},
@@ -324,23 +318,10 @@ var gestureFunction = {
  * @param {type} param
  */
 chrome.extension.onMessage.addListener(function onMessage_handler(request, sender, sendResponse) {
-	var responseString = "";
-
-	if (typeof requestFunction[request.msg] === 'function') {
-		sendResponse(requestFunction[request.msg](request, sender));
-		return;
+	var reqFunc = requestFunction[request.msg];
+	if (typeof reqFunc === 'function') {
+		sendResponse(reqFunc(request, sender));
+	} else {
+		sendResponse({message: "unknown command"});
 	}
-	else if (typeof gestureFunction[request.msg] === 'function') {
-		gestureFunction[request.msg](request);
-	}
-	else {
-		responseString = "unknown command";
-	}
-
-	sendResponse({message: responseString});
 });
-
-/**
- * アクティブなタブが切り替わったときに発生するイベント
- */
-// chrome.tabs.onActivated.addListener(function(activeInfo){});
