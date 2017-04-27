@@ -124,12 +124,12 @@
 				if (response.canvas.draw) {
 					nextMenuSkip = (response.gestureString != "");
 
-					document.body.appendChild(trailCanvas.getCanvas());
+					if (trailCanvas.getCanvas()) {
+						document.body.appendChild(trailCanvas.getCanvas());
+					}
 
 					if (contentScripts.infoDiv) {
 						document.body.appendChild(contentScripts.infoDiv);
-						$("#gestureCommandDiv").html("");
-						$("#gestureActionNameDiv").html("");
 					}
 
 					var listParam = {

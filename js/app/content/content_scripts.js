@@ -9,11 +9,20 @@ var ContentScripts = function (trailCanvas) {
 	this.actionNameDiv = null;
 	this.trailCanvas = trailCanvas;
 
+	this.language = null;
 	this.trailColor = '#FF0000';
 	this.trailWidth = 3;
 	this.trailDisplayable = true;
 	this.actionTextDisplayable = true;
 	this.commandTextDisplayable = true;
+};
+
+/**
+ * 利用言語が日本語ならtrueを返す
+ * @returns {boolean}
+ */
+ContentScripts.prototype.isJapanese = function() {
+	return (this.language == 'Japanese');
 };
 
 /**
@@ -48,6 +57,9 @@ ContentScripts.prototype.loadOption = function () {
 			var optionsHash = JSON.parse(response.options_json);
 
 			if(optionsHash) {
+				if(optionsHash["language"]) {
+					_this.language = optionsHash["language"];
+				}
 				if(optionsHash["color_code"]) {
 					_this.trailColor = optionsHash["color_code"];
 				}
@@ -154,17 +166,26 @@ ContentScripts.prototype.draw = function (lineParam, command_name, action_name) 
 	}
 
 	if (this.infoDiv) {
-		if (document.getElementById('infoDiv')) {
+		if (document.getElementById(this.infoDiv.id)) {
+			var $divAction = $('#'+this.actionNameDiv.id);
 			if (this.actionTextDisplayable) {
-				if (action_name != $("#gestureCommandDiv").html()) {
-					$("#gestureCommandDiv").html( (action_name != null) ? action_name : "");
+
+				if (action_name != $divAction.html()) {
+					$divAction.html( (action_name != null) ? action_name : "");
 				}
+			} else {
+				$divAction.html('');
 			}
 
+			var $divCommand = $('#'+this.commandDiv.id);
 			if (this.commandTextDisplayable) {
-				if (command_name != $("#gestureActionNameDiv").html()) {
-					$("#gestureActionNameDiv").html(command_name);
+				command_name = this.replaceCommandToArrow(command_name);
+
+				if (command_name != $divCommand.html()) {
+					$divCommand.html(command_name);
 				}
+			} else {
+				$divCommand.html('');
 			}
 		}
 	}
@@ -203,4 +224,21 @@ ContentScripts.prototype.exeAction = function (action_name) {
 			chrome.extension.sendMessage({msg: action_name});
 			break;
 	}
+};
+
+/**
+ * ジェスチャコマンドを矢印表記に変換して返す D=>↓、U=>↑...
+ * @param {string} action_name
+ * @returns {string}
+ */
+ContentScripts.prototype.replaceCommandToArrow = function (action_name) {
+	// マルチバイト文字表示出来ないかもしれないので、日本語のみ対応
+	if (action_name && this.isJapanese()) {
+		action_name = action_name.replace(/U/g, '↑');
+		action_name = action_name.replace(/L/g, '←');
+		action_name = action_name.replace(/R/g, '→');
+		action_name = action_name.replace(/D/g, '↓');
+	}
+
+	return action_name;
 };
