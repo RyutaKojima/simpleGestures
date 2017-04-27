@@ -197,7 +197,7 @@ ContentScripts.prototype.draw = function (lineParam, command_name, action_name) 
  * @param {type} action_name
  * @returns {undefined}
  */
-ContentScripts.prototype.exeAction = function (action_name) {
+ContentScripts.prototype.exeAction = function (action_name, href_url) {
 
 	switch (action_name) {
 		case "back":
@@ -221,7 +221,7 @@ ContentScripts.prototype.exeAction = function (action_name) {
 			break;
 
 		default:
-			chrome.extension.sendMessage({msg: action_name});
+			chrome.extension.sendMessage({msg: action_name, href: href_url});
 			break;
 	}
 };

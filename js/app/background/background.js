@@ -173,7 +173,7 @@ var requestFunction = {
 		var response = {
 			message: "yes",
 			action: null,
-			href: request.href,
+			href: mainGestureMan.getURL(),
 			gestureString: mainGestureMan.getGestureString(),
 			gestureAction: getNowGestureActionName(),
 			canvas: {
@@ -211,12 +211,13 @@ var requestFunction = {
  * @type type
  */
 var gestureFunction = {
-	"new_tab": function() {
-		var _url = mainGestureMan.getURL();
+	"new_tab": function(request) {
+		var _url = request.href;
+
 		chrome.tabs.query({active: true}, function(tabs) {
 			var current_tab = tabs[0];
 			var append_index = current_tab.index+1;
-			if (_url == null) {
+			if ( ! _url) {
 				chrome.tabs.create({index:append_index});
 			}
 			else {

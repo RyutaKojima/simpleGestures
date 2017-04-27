@@ -165,7 +165,7 @@
 
 				if (response.action) {
 					nextMenuSkip = true;
-					contentScripts.exeAction(response.action);
+					contentScripts.exeAction(response.action, response.href);
 				}
 
 				clearAllDisplay();
