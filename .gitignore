@@ -1,0 +1,6 @@
+# IDE's project directory
+/.idea/
+/nbproject/
+
+# other
+/node_modules/
