@@ -89,10 +89,11 @@ LibOption.prototype.setRawStorageData = function (rawStorageData) {
 	});
 };
 
+LibOption.prototype.enableGestureParam = function(paramName) { return (this.GESTURE_ID_LIST && this.GESTURE_ID_LIST.indexOf(paramName) !== -1); };
 LibOption.prototype.paramExists = function(paramName) { return (this.options_instance && this.options_instance.hasOwnProperty(paramName)); };
 LibOption.prototype.getParam = function(paramName, defaultValue) { return this.paramExists(paramName) ? this.options_instance[paramName] : defaultValue; };
 LibOption.prototype.setParam = function(paramName, value) {
-	if (this.paramExists(paramName)) {
+	if (this.paramExists(paramName) || this.enableGestureParam(paramName)) {
 		this.options_instance[paramName] = value;
 	}
 };
