@@ -2,8 +2,24 @@
  * TrailCanvas
  * @constructor
  */
-var TrailCanvas = function() {
-	this.myCanvas = null;
+var TrailCanvas = function(_Id, _zIndex) {
+	this.myCanvas = document.createElement('canvas');
+	this.myCanvas.id = _Id;
+
+	//------------------------------
+	// Style settings.
+	//------------------------------
+	// Set priority
+	this.myCanvas.style.zIndex   = _zIndex;
+
+	// Set in the center position.
+	this.myCanvas.style.top      = "0px";
+	this.myCanvas.style.left     = "0px";
+	this.myCanvas.style.right    = "0px";
+	this.myCanvas.style.bottom   = "0px";
+	this.myCanvas.style.margin   = "auto";
+	this.myCanvas.style.position = 'fixed';
+	this.myCanvas.style.overflow = 'visible';
 };
 
 TrailCanvas.prototype.getCanvas = function() {
@@ -17,41 +33,18 @@ TrailCanvas.prototype.getContext2d = function() {
 };
 
 /**
- * ジェスチャの軌跡描画用のキャンパスインスタンスを作成する
- *
+ * キャンバスのサイズを変更
+ * 
  * @param {type} _width
  * @param {type} _height
- * @param {type} _zIndex
- * @returns {this.myCanvas}
  */
-TrailCanvas.prototype.createCanvas = function (_Id, _width, _height, _zIndex) {
-	if ( ! this.myCanvas) {
-		this.myCanvas = document.createElement('canvas');
-		this.myCanvas.id = _Id;
+TrailCanvas.prototype.setCanvasSize = function (_width, _height) {
+	if (this.myCanvas) {
+//		this.myCanvas.style.width    = _width + "px";
+//		this.myCanvas.style.height   = _height + "px";
+		this.myCanvas.width = _width;
+		this.myCanvas.height = _height;
 	}
-
-	this.myCanvas.width    = _width;
-	this.myCanvas.height   = _height;
-
-	//------------------------------
-	// Style settings.
-	//------------------------------
-//	this.myCanvas.style.width    = _width + "px";
-//	this.myCanvas.style.height   = _height + "px";
-
-	// Set priority
-	this.myCanvas.style.zIndex   = _zIndex;
-
-	// Set in the center position.
-	this.myCanvas.style.top      = "0px";
-	this.myCanvas.style.left     = "0px";
-	this.myCanvas.style.right    = "0px";
-	this.myCanvas.style.bottom   = "0px";
-	this.myCanvas.style.margin   = "auto";
-	this.myCanvas.style.position = 'fixed';
-	this.myCanvas.style.overflow = 'visible';
-
-	return this.myCanvas;
 };
 
 /**
@@ -61,7 +54,7 @@ TrailCanvas.prototype.createCanvas = function (_Id, _width, _height, _zIndex) {
  * @param {type} _width
  * @returns {undefined}
  */
-TrailCanvas.prototype.setDrawStyleLine = function (_color, _width) {
+TrailCanvas.prototype.setLineStyle = function (_color, _width) {
 	var ctx = this.getContext2d();
 	if ( ! ctx) {
 		return;
@@ -72,16 +65,31 @@ TrailCanvas.prototype.setDrawStyleLine = function (_color, _width) {
 };
 
 /**
- * ジェスチャ用キャンバスの軌道を消す
+ * キャンバスをクリア
  */
 TrailCanvas.prototype.clearCanvas = function () {
-	if ( ! this.myCanvas) {
-		return;
-	}
 	var ctx = this.getContext2d();
 	if ( ! ctx) {
 		return;
 	}
 
 	ctx.clearRect(0, 0, this.myCanvas.width, this.myCanvas.height);
+};
+
+/**
+ * 直線を描く
+ * 
+ * @param fromX
+ * @param fromY
+ * @param toX
+ * @param toY
+ */
+TrailCanvas.prototype.drawLine = function (fromX, fromY, toX, toY) {
+	var ctx = this.getContext2d();
+	if (ctx) {
+		ctx.beginPath();
+		ctx.moveTo(fromX, fromY);
+		ctx.lineTo(toX, toY);
+		ctx.stroke();
+	}
 };

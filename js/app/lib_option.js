@@ -40,113 +40,97 @@ var LibOption = function() {
 	];
 
 
+	this.storageData = null;
 	this.options_instance = null;
+	this.gestureHash = {};
 };
 
 /**
  *
  * @returns {undefined}
  */
-LibOption.prototype.resetOptions = function () {
+LibOption.prototype.reset = function () {
 //	localStorage.removeItem(this.LOCAL_STRAGE_KEY);
 	localStorage.clear();
 
-	this.options_instance = null;
+	this.load();
 };
 
-/**
- * Load option in the saved "localStorage"
- * @returns {String}
- */
-LibOption.prototype.loadOptionsString = function () {
-	var str = localStorage.getItem(this.LOCAL_STRAGE_KEY);
-
-	if (str === null) {
-		str = JSON.stringify( this.createDefaultOptions() );
-	}
-	return str;
+LibOption.prototype.load = function () {
+	this.storageData = localStorage.getItem(this.LOCAL_STRAGE_KEY);
+	this.setRawStorageData(this.storageData);
 };
 
-/**
- *
- * @returns {Array|Object|LibOption.prototype.createDefaultOptions.tmp_obj}
- */
-LibOption.prototype.loadOptions = function () {
-//	var str = localStorage.getItem(this.LOCAL_STRAGE_KEY);
-	var str = this.loadOptionsString();
-	var retObj = null;
-
-	if (str === null) {
-		retObj = this.createDefaultOptions();
-	}
-	else {
-		retObj = JSON.parse(str);
-	}
-
-	return retObj;
+LibOption.prototype.getRawStorageData = function () {
+	return this.storageData;
 };
+
+LibOption.prototype.setRawStorageData = function (rawStorageData) {
+	var that = this;
+
+	this.storageData = rawStorageData;
+
+	if (this.storageData === null) {
+		this.options_instance = this.createDefaultOptions();
+	} else {
+		this.options_instance = JSON.parse(this.storageData);
+	}
+
+	this.gestureHash = {};
+	this.GESTURE_ID_LIST.forEach(function(key){
+		if (that.paramExists(key)) {
+			var command = that.getParam(key, null);
+			var action = key.replace("gesture_", "");
+			if (command) {
+				// cut "gesture_" prefix
+				that.gestureHash[command] = action;
+			}
+		}
+	});
+};
+
+LibOption.prototype.paramExists = function(paramName) { return (this.options_instance && this.options_instance.hasOwnProperty(paramName)); };
+LibOption.prototype.getParam = function(paramName, defaultValue) { return this.paramExists(paramName) ? this.options_instance[paramName] : defaultValue; };
+LibOption.prototype.setParam = function(paramName, value) {
+	if (this.paramExists(paramName)) {
+		this.options_instance[paramName] = value;
+	}
+};
+
+LibOption.prototype.getGestureActionName = function(command) {
+	if (this.gestureHash && this.gestureHash.hasOwnProperty(command)) {
+		return this.gestureHash[command];
+	}
+
+	return null;
+};
+
+LibOption.prototype.isJapanese      = function () { return (this.getLanguage() === 'Japanese'); };
+LibOption.prototype.isEnglish       = function () { return (this.getLanguage() === 'English'); };
+LibOption.prototype.getLanguage     = function () { return this.getParam("language",   'English'); };
+LibOption.prototype.getColorCode    = function () { return this.getParam("color_code", '#FF0000'); };
+LibOption.prototype.getLineWidth    = function () { return this.getParam("line_width",      1); };
+LibOption.prototype.isCommandTextOn = function () { return this.getParam("command_text_on", true); };
+LibOption.prototype.isActionTextOn  = function () { return this.getParam("action_text_on",  true); };
+LibOption.prototype.isTrailOn       = function () { return this.getParam("trail_on",        true); };
 
 /**
  * default option setting
  * @returns {Object|LibOption.prototype.createDefaultOptions.tmp_obj}
  */
 LibOption.prototype.createDefaultOptions = function () {
-	var tmp_obj = new Object();
+	return {
+		"language": "English",
+		"color_code": "#FF0000",
+		"line_width": "3",
+		"command_text_on": true,
+		"action_text_on": true,
+		"trail_on": true,
 
-	tmp_obj["language"]   = "English";
-	tmp_obj["color_code"] = "#FF0000";
-	tmp_obj["line_width"] = "3";
-	tmp_obj["command_text_on"] = true;
-	tmp_obj["action_text_on"] = true;
-	tmp_obj["trail_on"] = true;
-
-	tmp_obj["gesture_id_list"] = this.GESTURE_ID_LIST;
-	tmp_obj["gesture_open_option"] = "RDLU";
-
-	return tmp_obj;
+		"gesture_open_option": "RDLU"
+	};
 };
 
-/**
- * Save option to "localStorage"
- * @returns {undefined}
- */
-LibOption.prototype.saveOptions = function () {
-
-	if (this.options_instance === null) {
-		this.options_instance = this.loadOptions();
-	}
-
-	// オプションデータの表示
-	var id_name = "";
-	var i=0;
-	var len = null;
-
-	// language
-	// color_code
-	// line_width
-	// ...
-	len = this.OPTION_ID_LIST.length;
-	for (i=0; i < len; i++) {
-		id_name = this.OPTION_ID_LIST[i];
-
-		this.options_instance[id_name] = $('#'+id_name).val();
-	}
-
-	// チェックボタンがONになっているか受け取る
-	this.options_instance["command_text_on"] = $('#command_text_on:checked').val() ? true : false;
-	this.options_instance["action_text_on"] = $('#action_text_on:checked').val() ? true : false;
-	this.options_instance["trail_on"] = $('#trail_on:checked').val() ? true : false;
-
-	// "gesture_xxxxxx"
-	len = this.GESTURE_ID_LIST.length;
-	for ( i=0; i < len; i++) {
-		id_name = this.GESTURE_ID_LIST[i];
-
-		this.options_instance[id_name] = $('#'+id_name).val();
-	}
-
-	this.options_instance["gesture_id_list"] = this.GESTURE_ID_LIST;
-
-	// save localstrage.
+LibOption.prototype.save = function () {
 	localStorage.setItem(this.LOCAL_STRAGE_KEY, JSON.stringify(this.options_instance));
 };

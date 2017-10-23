@@ -1,7 +1,9 @@
 var colorWheel = null;
-var canvasForOption = new TrailCanvas();
 var gestureForOption = new LibGesture();
-var opt = new LibOption();
+var option = new LibOption();
+option.load();
+var canvasForOption = new TrailCanvas("gestureOptionCanvas", '10002');
+canvasForOption.setCanvasSize(300, 300);
 
 /**
  * entory point.
@@ -13,140 +15,113 @@ $(function ready_handler() {
 	// 言語設定の変更
 	changeLanguage();
 
-	// load option data.
-	if (opt.options_instance == null) {
-		opt.options_instance = opt.loadOptions();
+	initOptionView();
 
-		initOptionView();
-	}
-
-	createOptionCanvas();
+	setCanvasStyle(canvasForOption);
 
 	// オプションデータの表示
-	var id_name = "";
-	var i=0;
-	var len = opt.OPTION_ID_LIST.length;
-	for (i=0; i < len; i++) {
-		id_name = opt.OPTION_ID_LIST[i];
-
+	option.OPTION_ID_LIST.forEach(function(id_name){
 		// textbox value change event
 		$('#'+id_name).change(function() {
-			// 設定の保存
-			opt.saveOptions();
+			option.setParam(id_name, $(this).val());
+			saveOptions();
 
-			// 言語設定の変更
 			changeLanguage();
 		});
-	}
+	});
 
 	// チェックボックス
-	$('#command_text_on').change(function() {
-		// 設定の保存
-		opt.saveOptions();
-	});
-	$('#action_text_on').change(function() {
-		// 設定の保存
-		opt.saveOptions();
-	});
-	$('#trail_on').change(function() {
-		// 設定の保存
-		opt.saveOptions();
+	const checke_ids = ['command_text_on', 'action_text_on', 'trail_on'];
+	checke_ids.forEach(function(id_name){
+		$('#'+id_name).change(function() {
+			option.setParam(id_name, $(this).prop("checked"));
+			saveOptions();
+		});
 	});
 
 	// ジェスチャ入力欄
-	len = opt.GESTURE_ID_LIST.length;
-	for (i=0; i < len; i++) {
-		id_name = opt.GESTURE_ID_LIST[i];
+	option.GESTURE_ID_LIST.forEach(function(id_name){
 		$textbox = $('#'+id_name);
 
 		$textbox.change(function() {
-			opt.saveOptions();
+			option.setParam(id_name, $(this).val());
+			saveOptions();
 		});
 
 		$textbox.click(function() {
 			var $that = $(this);
 
 			if (canvasForOption.getCanvas()) {
-				var tmpCanvas = canvasForOption.getCanvas();
-				document.body.appendChild(tmpCanvas);
+				var drawCanvas = canvasForOption.getCanvas();
+				var ctx = canvasForOption.getContext2d();
+
+				document.body.appendChild(drawCanvas);
+				var $canvas = $('#'+canvasForOption.getCanvasId());
 
 				gestureForOption.clear();
-
 				canvasForOption.clearCanvas();
-				var ctx = canvasForOption.getCanvas().getContext('2d');
-				ctx.globalAlpha = 0.5;
-				ctx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
 
-				var $canvas = $('#'+tmpCanvas.id);
+				ctx.globalAlpha = 0.5;
+				ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+				ctx.globalAlpha = 1.0;
+
 				$canvas.mousedown(function(event) {
-					var tmp_x	= event.pageX - $(this).offset().left;
-					var tmp_y	= event.pageY - $(this).offset().top;
+					var tmp_x = event.pageX - $(this).offset().left;
+					var tmp_y = event.pageY - $(this).offset().top;
 					gestureForOption.startGestrue(tmp_x, tmp_y, null);
 
 					return false;
-				});
+				})
+					.mousemove(function(event) {
+						var tmp_x = event.pageX - $(this).offset().left;
+						var tmp_y = event.pageY - $(this).offset().top;
 
-				$canvas.mousemove(function(event) {
-					var tmp_x = event.pageX - $(this).offset().left;
-					var tmp_y = event.pageY - $(this).offset().top;
-
-					if (gestureForOption.registPoint(tmp_x, tmp_y)) {
-						var ctx = tmpCanvas.getContext('2d');
-						ctx.globalAlpha = 1.0;
-						ctx.beginPath();
-						ctx.moveTo(gestureForOption.getLastX(), gestureForOption.getLastY());
-						ctx.lineTo(gestureForOption.getX(), gestureForOption.getY());
-						ctx.stroke();
-					}
-
-					return false;
-				});
-
-				$canvas.mouseup(function(event) {
-					if (tmpCanvas) {
-						var removeCanvas = document.getElementById(tmpCanvas.id);
-						if (removeCanvas) {
-							document.body.removeChild(removeCanvas);
+						if (gestureForOption.registPoint(tmp_x, tmp_y)) {
+							canvasForOption.drawLine(
+								gestureForOption.getLastX(), gestureForOption.getLastY(),
+								gestureForOption.getX(),     gestureForOption.getY()
+							);
 						}
-					}
 
-					// textbox value set.
-					$that.val(gestureForOption.getGestureString());
-					$that = null;
+						return false;
+					})
+					.mouseup(function(event) {
+						if (drawCanvas) {
+							var removeCanvas = document.getElementById(drawCanvas.id);
+							if (removeCanvas) {
+								document.body.removeChild(removeCanvas);
+							}
+						}
 
-					opt.saveOptions();
+						// textbox value set.
+						$that.val(gestureForOption.getGestureString()).triggerHandler('change');
+						$that = null;
 
-					$(this).unbind();
+						$(this).unbind();
 
-					return false;
-				});
+						return false;
+					});
 			}
 		});
-	}
+	});
 
 	//
 	$('#reset_all').click(function() {
-		opt.resetOptions();
+		option.reset();
+		chrome.extension.sendMessage({msg: "reload_option"}, function(response) {});
 
-		// load option data.
-		if (opt.options_instance == null) {
-			opt.options_instance = opt.loadOptions();
-
-			initOptionView();
-		}
+		initOptionView();
 	});
 
 	// language selector
-	$('#language').val(opt.options_instance["language"]);
-	changeLanguage();
+	$('#language').val(option.getLanguage());
 
 	// color wheel
 	colorWheel = Raphael.colorwheel($("#input_example")[0],100);
 	colorWheel.input($("#color_code")[0]);
-	colorWheel.color(opt.options_instance["color_code"]);
-
+	colorWheel.color(option.getColorCode());
 	colorWheel.onchange(function(color) {
-		opt.saveOptions();
+		$("#color_code").triggerHandler('change');
 	})
 });
 
@@ -157,11 +132,10 @@ $(document).on('contextmenu', function oncontextmenu_handler() {
 /**
  * create canvas & update style
  */
-var createOptionCanvas = function () {
-	canvasForOption.createCanvas("gestureOptionCanvas", 300, 300, '10002');
-	canvasForOption.setDrawStyleLine('#000000', 1);
+var setCanvasStyle = function (canvas) {
+	canvas.setLineStyle('#000000', 1);
 
-	var ctx = canvasForOption.getCanvas().getContext('2d');
+	var ctx = canvas.getCanvas().getContext('2d');
 	ctx.font = "bold 30px 'Arial'";
 	ctx.textBaseline = 'top';
 //	ctx.fillStyle = "#FF0000";
@@ -171,32 +145,32 @@ var createOptionCanvas = function () {
  * オプション表示の初期化をする
  */
 var initOptionView = function () {
-	var id_name = "";
-	var i=0;
+	var checkValues = {
+		'command_text_on': option.isCommandTextOn(),
+		'action_text_on': option.isActionTextOn(),
+		'trail_on': option.isTrailOn()
+	};
 
-	// "textbox"の初期化
-	var len = opt.OPTION_ID_LIST.length;
-	for (i=0; i < len; i++) {
-		id_name = opt.OPTION_ID_LIST[i];
-
-		// textbox value set.
-		$('#'+id_name).val(opt.options_instance[id_name]);
-	}
-
-	// checkboxの初期化
-	$('#command_text_on').prop("checked", opt.options_instance["command_text_on"]);
-	$('#action_text_on').prop("checked", opt.options_instance["action_text_on"]);
-	$('#trail_on').prop("checked", opt.options_instance["trail_on"]);
+	var textValues = {
+		"language": option.getLanguage(),
+		"color_code": option.getColorCode(),
+		"line_width": option.getLineWidth()
+	};
 
 	// ジェスチャー
-	len = opt.GESTURE_ID_LIST.length;
-	for (i=0; i < len; i++) {
-		id_name = opt.GESTURE_ID_LIST[i];
+	option.GESTURE_ID_LIST.forEach(function(key){
+		textValues[key] = option.getParam(key, '');
+	});
 
-		// textbox value set.
-		$('#'+id_name).val(opt.options_instance[id_name]);
-	}
-}
+	// 各DOMに設定値を適用
+	Object.keys(textValues).forEach(function(key){
+		$('#'+key).val(this[key]);
+	}, textValues);
+
+	Object.keys(checkValues).forEach(function(key){
+		$('#'+key).prop("checked", this[key]);
+	}, checkValues);
+};
 
 /**
  * タブ表示の初期化をする
@@ -220,7 +194,7 @@ var initTabView = function () {
 		ChangeTab('tab_body3');
 		return false;
 	});
-}
+};
 
 /**
  * change view tab.
@@ -233,21 +207,13 @@ var ChangeTab = function (tabname) {
 
    // select tab body display.
    $('#'+tabname).show();
-}
+};
 
 /**
  * change Language View.
  */
-var changeLanguage = function (lang) {
-	if (lang == null) {
-		lang = 'English';
-
-		if (opt.options_instance && 'language' in opt.options_instance) {
-			lang = opt.options_instance.language;
-		}
-	}
-
-	switch (lang) {
+var changeLanguage = function () {
+	switch (option.getLanguage()) {
 		default:
 			// no break;
 		case 'English':
@@ -259,4 +225,9 @@ var changeLanguage = function (lang) {
 			$('.class_Japanese').show();
 			break;
 	}
-}
+};
+
+var saveOptions = function () {
+	option.save();
+	chrome.extension.sendMessage({msg: "reload_option"}, function(response) {});
+};

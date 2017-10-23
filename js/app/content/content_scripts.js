@@ -3,47 +3,12 @@
  * @constructor
  */
 var ContentScripts = function (trailCanvas) {
-	this.initialized = false;
 	this.infoDiv = null;
 	this.commandDiv = null;
 	this.actionNameDiv = null;
 	this.trailCanvas = trailCanvas;
 
-	this.language = null;
-	this.trailColor = '#FF0000';
-	this.trailWidth = 3;
-	this.trailDisplayable = true;
-	this.actionTextDisplayable = true;
-	this.commandTextDisplayable = true;
-};
-
-/**
- * 利用言語が日本語ならtrueを返す
- * @returns {boolean}
- */
-ContentScripts.prototype.isJapanese = function() {
-	return (this.language == 'Japanese');
-};
-
-/**
- * 拡張機能の準備. ２回目移行の呼び出しは無視される
- * When initialization, return true.
- */
-ContentScripts.prototype.initializeExtensionOnce = function() {
-	if ( ! this.initialized) {
-		// console.log("run: initializeExtensionOnce");
-
-		this.initialized = true;
-
-		this.loadOption();
-
-		this.createTrailCanvas();
-		this.createInfoDiv();
-
-		return true;
-	}
-
-	return false;
+	this.option = new LibOption();
 };
 
 /**
@@ -54,44 +19,17 @@ ContentScripts.prototype.loadOption = function () {
 
 	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
 		if (response) {
-			var optionsHash = JSON.parse(response.options_json);
-
-			if(optionsHash) {
-				if(optionsHash["language"]) {
-					_this.language = optionsHash["language"];
-				}
-				if(optionsHash["color_code"]) {
-					_this.trailColor = optionsHash["color_code"];
-				}
-				if (optionsHash["line_width"]) {
-					_this.trailWidth = optionsHash["line_width"];
-				}
-				if (typeof optionsHash["trail_on"] !== 'undefined') {
-					_this.trailDisplayable = optionsHash["trail_on"];
-				}
-				if (typeof optionsHash["action_text_on"] !== 'undefined') {
-					_this.actionTextDisplayable = optionsHash["action_text_on"]
-				}
-				if (typeof optionsHash["command_text_on"] !== 'undefined') {
-					_this.commandTextDisplayable = optionsHash["command_text_on"];
-				} 
-			}
+			_this.option.setRawStorageData(response.options_json);
 
 			// reload setting for canvas.
-			_this.createTrailCanvas();
+			_this.setCanvasStyle();
 			_this.createInfoDiv();
 		}
 	});
 };
 
-/**
- * create canvas & update style
- */
-ContentScripts.prototype.createTrailCanvas = function () {
-	if (this.trailCanvas.getCanvas() == null) {
-		this.trailCanvas.createCanvas("gestureTrailCanvas", window.innerWidth, window.innerHeight, "1000000");
-	}
-	this.trailCanvas.setDrawStyleLine(this.trailColor, this.trailWidth);
+ContentScripts.prototype.setCanvasStyle = function () {
+	this.trailCanvas.setLineStyle(this.option.getColorCode(), this.option.getLineWidth());
 };
 
 /**
@@ -143,7 +81,7 @@ ContentScripts.prototype.createInfoDiv = function () {
 
 	this.infoDiv.style.fontFamily = 'Arial';
 	this.infoDiv.style.fontSize = 30 + "px";
-	this.infoDiv.style.color      = this.trailColor;
+	this.infoDiv.style.color      = this.option.getColorCode();
 	this.infoDiv.style.fontWeight = "bold";
 };
 
@@ -151,24 +89,18 @@ ContentScripts.prototype.createInfoDiv = function () {
  *
  */
 ContentScripts.prototype.draw = function (lineParam, command_name, action_name) {
-	if (this.trailCanvas.getCanvasId()) {
-		// append されているか調べるため、あえて document.getElementById で取得
-		var tmp_canvas = document.getElementById(this.trailCanvas.getCanvasId());
-		if (tmp_canvas) {
-			if (this.trailDisplayable) {
-				var ctx = tmp_canvas.getContext('2d');
-				ctx.beginPath();
-				ctx.moveTo(lineParam.fromX, lineParam.fromY);
-				ctx.lineTo(lineParam.toX, lineParam.toY);
-				ctx.stroke();
-			}
+	if (this.option.isTrailOn()) {
+		// append されているか調べる。document.getElementById で取得出来たらOK
+		var canvasId = this.trailCanvas.getCanvasId();
+		if (canvasId && document.getElementById(canvasId)) {
+			this.trailCanvas.drawLine(lineParam.fromX, lineParam.fromY, lineParam.toX, lineParam.toY);
 		}
 	}
 
 	if (this.infoDiv) {
 		if (document.getElementById(this.infoDiv.id)) {
 			var $divAction = $('#'+this.actionNameDiv.id);
-			if (this.actionTextDisplayable) {
+			if (this.option.isActionTextOn()) {
 
 				if (action_name != $divAction.html()) {
 					$divAction.html( (action_name != null) ? action_name : "");
@@ -178,7 +110,7 @@ ContentScripts.prototype.draw = function (lineParam, command_name, action_name) 
 			}
 
 			var $divCommand = $('#'+this.commandDiv.id);
-			if (this.commandTextDisplayable) {
+			if (this.option.isCommandTextOn()) {
 				command_name = this.replaceCommandToArrow(command_name);
 
 				if (command_name != $divCommand.html()) {
@@ -197,7 +129,7 @@ ContentScripts.prototype.draw = function (lineParam, command_name, action_name) 
  * @param {type} action_name
  * @returns {undefined}
  */
-ContentScripts.prototype.exeAction = function (action_name, href_url) {
+ContentScripts.prototype.exeAction = function (action_name) {
 
 	switch (action_name) {
 		case "back":
@@ -221,7 +153,7 @@ ContentScripts.prototype.exeAction = function (action_name, href_url) {
 			break;
 
 		default:
-			chrome.extension.sendMessage({msg: action_name, href: href_url});
+			// なにもしない
 			break;
 	}
 };
@@ -233,7 +165,7 @@ ContentScripts.prototype.exeAction = function (action_name, href_url) {
  */
 ContentScripts.prototype.replaceCommandToArrow = function (action_name) {
 	// マルチバイト文字表示出来ないかもしれないので、日本語のみ対応
-	if (action_name && this.isJapanese()) {
+	if (action_name && this.option.isJapanese()) {
 		action_name = action_name.replace(/U/g, '↑');
 		action_name = action_name.replace(/L/g, '←');
 		action_name = action_name.replace(/R/g, '→');

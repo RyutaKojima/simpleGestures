@@ -16,12 +16,12 @@ var LibGesture = function() {
 	this._linkUrl = null;
 };
 
-LibGesture.prototype.getLastX = function() {	return this._lastX;	};
-LibGesture.prototype.getLastY = function() {	return this._lastY;	};
-LibGesture.prototype.getX = function() {	return this._nowX;	};
-LibGesture.prototype.getY = function() {	return this._nowY;	};
-LibGesture.prototype.getURL = function() {	return this._linkUrl;	};
-LibGesture.prototype.getGestureString = function() {	return this._strGestureCommand;	};
+LibGesture.prototype.getLastX = function() { return this._lastX; };
+LibGesture.prototype.getLastY = function() { return this._lastY; };
+LibGesture.prototype.getX = function() { return this._nowX; };
+LibGesture.prototype.getY = function() { return this._nowY; };
+LibGesture.prototype.getURL = function() { return this._linkUrl; };
+LibGesture.prototype.getGestureString = function() { return this._strGestureCommand; };
 
 LibGesture.prototype.clear = function() {
 	this._nowX = -1;
