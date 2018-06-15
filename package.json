@@ -1,6 +1,6 @@
 {
   "name": "simplegestures",
-  "version": "0.1.5",
+  "version": "0",
   "description": "`simpleGesture` is Chrome extension to add mouse gestures.",
   "main": "index.js",
   "scripts": {
