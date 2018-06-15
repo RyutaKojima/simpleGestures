@@ -3,7 +3,7 @@
  *
  * @constructor
  */
-var Keyboard = function() {
+const Keyboard = function() {
 	/** @const */
 	this.KEY_CTRL = 17;
 

@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-var LibOption = function() {
+const LibOption = function() {
 	/**
 	 * ローカル領域に保存するときのキー
 	 * @const
@@ -66,7 +66,7 @@ LibOption.prototype.getRawStorageData = function () {
 };
 
 LibOption.prototype.setRawStorageData = function (rawStorageData) {
-	var that = this;
+	const that = this;
 
 	this.storageData = rawStorageData;
 
@@ -79,8 +79,8 @@ LibOption.prototype.setRawStorageData = function (rawStorageData) {
 	this.gestureHash = {};
 	this.GESTURE_ID_LIST.forEach(function(key){
 		if (that.paramExists(key)) {
-			var command = that.getParam(key, null);
-			var action = key.replace("gesture_", "");
+			const command = that.getParam(key, null);
+			const action = key.replace("gesture_", "");
 			if (command) {
 				// cut "gesture_" prefix
 				that.gestureHash[command] = action;

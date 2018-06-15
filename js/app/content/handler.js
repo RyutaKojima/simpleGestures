@@ -11,27 +11,28 @@
  * ファイル filenameslikethis.js
  */
 (function(){
+	const trailCanvas = new TrailCanvas("gestureTrailCanvas", "1000000");
+	const contentScripts = new ContentScripts(trailCanvas);
+
 	var nextMenuSkip = false;
-	var trailCanvas = new TrailCanvas("gestureTrailCanvas", "1000000");
-	var contentScripts = new ContentScripts(trailCanvas);
 
 	/**
 	 * 画面表示をすべてクリア
 	 */
-	var clearAllDisplay = function() {
-		var canvasId = trailCanvas.getCanvasId();
-		if (canvasId && document.getElementById(canvasId)) {
-			document.body.removeChild(document.getElementById(canvasId));
+	const clearAllDisplay = function () {
+		if (trailCanvas) {
+			trailCanvas.clearCanvas();
+
+			const canvasId = trailCanvas.getCanvasId();
+			if (canvasId && document.getElementById(canvasId)) {
+				document.body.removeChild(document.getElementById(canvasId));
+			}
 		}
 
 		if (contentScripts.infoDiv) {
 			if (document.getElementById(contentScripts.infoDiv.id)) {
 				document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
 			}
-		}
-
-		if (trailCanvas) {
-			trailCanvas.clearCanvas();
 		}
 	};
 
@@ -62,19 +63,17 @@
 	});
 
 	$(document).on('mousedown', function onMouseDown(event) {
-		var sendParam = {
+		const sendMouseDownParam = {
 			msg: 'mousedown',
 			which: event.which,
 			href: Mouse.getHref(event),
 			x: event.pageX - $(window).scrollLeft(),
 			y: event.pageY - $(window).scrollTop()
 		};
-		chrome.extension.sendMessage(sendParam, function(response) {
+		chrome.extension.sendMessage(sendMouseDownParam, function(response) {
 			if (response === null) {
 				return;
 			}
-
-			// console.log(response);
 
 			if (response.action) {
 				nextMenuSkip = true;
@@ -92,14 +91,14 @@
 	$(document).on('mousemove', function onMouseMove(event) {
 		// console.log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
 
-		var sendParam = {
+		const sendMouseMoveParam = {
 			msg: 'mousemove',
 			which: event.which,
 			href: '',
 			x: event.pageX - $(window).scrollLeft(),
 			y: event.pageY - $(window).scrollTop()
 		};
-		chrome.extension.sendMessage(sendParam, function(response) {
+		chrome.extension.sendMessage(sendMouseMoveParam, function(response) {
 			if (response === null) {
 				return;
 			}
@@ -115,7 +114,7 @@
 					document.body.appendChild(contentScripts.infoDiv);
 				}
 
-				var listParam = {
+				const listParam = {
 					fromX: response.canvas.x,
 					fromY: response.canvas.y,
 					toX: response.canvas.toX,
@@ -131,14 +130,14 @@
 	});
 
 	$(document).on('mouseup', function onMouseUp(event) {
-		var sendParam = {
+		const sendMouseUpParam = {
 			msg: 'mouseup',
 			which: event.which,
 			href: '',
 			x: event.pageX - $(window).scrollLeft(),
 			y: event.pageY - $(window).scrollTop()
 		};
-		chrome.extension.sendMessage(sendParam, function(response) {
+		chrome.extension.sendMessage(sendMouseUpParam, function(response) {
 			if (response === null) {
 				return;
 			}

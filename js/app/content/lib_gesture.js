@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-var LibGesture = function() {
+const LibGesture = function() {
 	/** @const */
 	this.COMMAND_MAX_LENGTH = 14;
 	/** @const */
@@ -59,14 +59,14 @@ LibGesture.prototype.startGestrue = function(x, y, url) {
  */
 LibGesture.prototype.registPoint = function(x, y) {
 	if (this._lastX !== -1 && this._lastY !== -1) {
-		var distance = Math.sqrt( Math.pow(x-this._lastX, 2) + Math.pow(y-this._lastY, 2) );
+		const distance = Math.sqrt(Math.pow(x - this._lastX, 2) + Math.pow(y - this._lastY, 2));
 //		console.log("distance: " + distance);
 		if (distance > this.GESTURE_START_DISTANCE) {
-			var radian = Math.atan2(y-this._lastY, x-this._lastX);
-			var rot    = radian * 180 / Math.PI;
+			const radian = Math.atan2(y-this._lastY, x-this._lastX);
+			const rot    = radian * 180 / Math.PI;
 //			console.log( "radian: " + radian + ", rotate: " + rot );
 
-			var tmp_vector = null;
+			let tmp_vector = null;
 			if (rot >= -45.0 && rot < 45.0) {
 				tmp_vector = "R";
 			}
@@ -90,7 +90,7 @@ LibGesture.prototype.registPoint = function(x, y) {
 				else {
 					// gesture cancel
 					this._strGestureCommand = "";
-					for (var i=0; i < this.COMMAND_MAX_LENGTH; i++ ) {
+					for (let i=0; i < this.COMMAND_MAX_LENGTH; i++ ) {
 						this._strGestureCommand += "-";
 					}
 				}

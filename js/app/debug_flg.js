@@ -1,5 +1,5 @@
 
-var DEBUG_ON = false;
+const DEBUG_ON = false;
 
 /**
  * デバッグモード以外では console.log を出力しない

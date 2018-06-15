@@ -2,7 +2,7 @@
  * TrailCanvas
  * @constructor
  */
-var TrailCanvas = function(_Id, _zIndex) {
+const TrailCanvas = function(_Id, _zIndex) {
 	this.myCanvas = document.createElement('canvas');
 	this.myCanvas.id = _Id;
 
@@ -55,7 +55,7 @@ TrailCanvas.prototype.setCanvasSize = function (_width, _height) {
  * @returns {undefined}
  */
 TrailCanvas.prototype.setLineStyle = function (_color, _width) {
-	var ctx = this.getContext2d();
+	const ctx = this.getContext2d();
 	if ( ! ctx) {
 		return;
 	}
@@ -68,7 +68,7 @@ TrailCanvas.prototype.setLineStyle = function (_color, _width) {
  * キャンバスをクリア
  */
 TrailCanvas.prototype.clearCanvas = function () {
-	var ctx = this.getContext2d();
+	const ctx = this.getContext2d();
 	if ( ! ctx) {
 		return;
 	}
@@ -85,7 +85,7 @@ TrailCanvas.prototype.clearCanvas = function () {
  * @param toY
  */
 TrailCanvas.prototype.drawLine = function (fromX, fromY, toX, toY) {
-	var ctx = this.getContext2d();
+	const ctx = this.getContext2d();
 	if (ctx) {
 		ctx.beginPath();
 		ctx.moveTo(fromX, fromY);

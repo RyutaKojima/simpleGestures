@@ -1,8 +1,8 @@
 var colorWheel = null;
-var gestureForOption = new LibGesture();
-var option = new LibOption();
+const gestureForOption = new LibGesture();
+const option = new LibOption();
 option.load();
-var canvasForOption = new TrailCanvas("gestureOptionCanvas", '10002');
+const canvasForOption = new TrailCanvas("gestureOptionCanvas", '10002');
 canvasForOption.setCanvasSize(300, 300);
 
 /**
@@ -52,11 +52,11 @@ $(function ready_handler() {
 			var $that = $(this);
 
 			if (canvasForOption.getCanvas()) {
-				var drawCanvas = canvasForOption.getCanvas();
-				var ctx = canvasForOption.getContext2d();
+				const drawCanvas = canvasForOption.getCanvas();
+				const ctx = canvasForOption.getContext2d();
 
 				document.body.appendChild(drawCanvas);
-				var $canvas = $('#'+canvasForOption.getCanvasId());
+				const $canvas = $('#'+canvasForOption.getCanvasId());
 
 				gestureForOption.clear();
 				canvasForOption.clearCanvas();
@@ -65,17 +65,17 @@ $(function ready_handler() {
 				ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
 				ctx.globalAlpha = 1.0;
 
-				$canvas.mousedown(function(event) {
-					var tmp_x = event.pageX - $(this).offset().left;
-					var tmp_y = event.pageY - $(this).offset().top;
-					gestureForOption.startGestrue(tmp_x, tmp_y, null);
+				$canvas
+					.mousedown(function (event) {
+						const tmp_x = event.pageX - $(this).offset().left;
+						const tmp_y = event.pageY - $(this).offset().top;
+						gestureForOption.startGestrue(tmp_x, tmp_y, null);
 
-					return false;
-				})
+						return false;
+					})
 					.mousemove(function(event) {
-						var tmp_x = event.pageX - $(this).offset().left;
-						var tmp_y = event.pageY - $(this).offset().top;
-
+						const tmp_x = event.pageX - $(this).offset().left;
+						const tmp_y = event.pageY - $(this).offset().top;
 						if (gestureForOption.registPoint(tmp_x, tmp_y)) {
 							canvasForOption.drawLine(
 								gestureForOption.getLastX(), gestureForOption.getLastY(),
@@ -87,7 +87,7 @@ $(function ready_handler() {
 					})
 					.mouseup(function(event) {
 						if (drawCanvas) {
-							var removeCanvas = document.getElementById(drawCanvas.id);
+							const removeCanvas = document.getElementById(drawCanvas.id);
 							if (removeCanvas) {
 								document.body.removeChild(removeCanvas);
 							}
@@ -132,10 +132,10 @@ $(document).on('contextmenu', function oncontextmenu_handler() {
 /**
  * create canvas & update style
  */
-var setCanvasStyle = function (canvas) {
+const setCanvasStyle = function (canvas) {
 	canvas.setLineStyle('#000000', 1);
 
-	var ctx = canvas.getCanvas().getContext('2d');
+	const ctx = canvas.getCanvas().getContext('2d');
 	ctx.font = "bold 30px 'Arial'";
 	ctx.textBaseline = 'top';
 //	ctx.fillStyle = "#FF0000";
@@ -144,14 +144,14 @@ var setCanvasStyle = function (canvas) {
 /**
  * オプション表示の初期化をする
  */
-var initOptionView = function () {
-	var checkValues = {
+const initOptionView = function () {
+	const checkValues = {
 		'command_text_on': option.isCommandTextOn(),
 		'action_text_on': option.isActionTextOn(),
 		'trail_on': option.isTrailOn()
 	};
 
-	var textValues = {
+	const textValues = {
 		"language": option.getLanguage(),
 		"color_code": option.getColorCode(),
 		"line_width": option.getLineWidth()
@@ -175,7 +175,7 @@ var initOptionView = function () {
 /**
  * タブ表示の初期化をする
  */
-var initTabView = function () {
+const initTabView = function () {
 	// default open tab
 	ChangeTab("tab_body2");
 
@@ -199,7 +199,7 @@ var initTabView = function () {
 /**
  * change view tab.
  */
-var ChangeTab = function (tabname) {
+const ChangeTab = function (tabname) {
    // all tab body clear.
    $('#tab_body1').hide();
    $('#tab_body2').hide();
@@ -212,22 +212,25 @@ var ChangeTab = function (tabname) {
 /**
  * change Language View.
  */
-var changeLanguage = function () {
+const changeLanguage = function () {
+	const $langEn = $('.class_English');
+	const $langJa = $('.class_Japanese');
+
 	switch (option.getLanguage()) {
 		default:
 			// no break;
 		case 'English':
-			$('.class_English').show();
-			$('.class_Japanese').hide();
+			$langEn.show();
+			$langJa.hide();
 			break;
 		case 'Japanese':
-			$('.class_English').hide();
-			$('.class_Japanese').show();
+			$langEn.hide();
+			$langJa.show();
 			break;
 	}
 };
 
-var saveOptions = function () {
+const saveOptions = function () {
 	option.save();
 	chrome.extension.sendMessage({msg: "reload_option"}, function(response) {});
 };

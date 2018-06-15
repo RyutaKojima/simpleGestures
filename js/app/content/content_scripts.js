@@ -2,7 +2,7 @@
  * ContentScripts Object
  * @constructor
  */
-var ContentScripts = function (trailCanvas) {
+const ContentScripts = function (trailCanvas) {
 	this.infoDiv = null;
 	this.commandDiv = null;
 	this.actionNameDiv = null;
@@ -15,7 +15,7 @@ var ContentScripts = function (trailCanvas) {
  * load option values.
  */
 ContentScripts.prototype.loadOption = function () {
-	var _this = this;
+	const _this = this;
 
 	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
 		if (response) {
@@ -55,8 +55,8 @@ ContentScripts.prototype.createInfoDiv = function () {
 		this.infoDiv.appendChild(this.actionNameDiv);
 	}
 
-	var set_width	= 300;
-	var set_height	= 80;
+	const set_width  = 300;
+	const set_height = 80;
 
 	// style setting.
 	this.infoDiv.style.width    = set_width + "px";
@@ -91,7 +91,7 @@ ContentScripts.prototype.createInfoDiv = function () {
 ContentScripts.prototype.draw = function (lineParam, command_name, action_name) {
 	if (this.option.isTrailOn()) {
 		// append されているか調べる。document.getElementById で取得出来たらOK
-		var canvasId = this.trailCanvas.getCanvasId();
+		const canvasId = this.trailCanvas.getCanvasId();
 		if (canvasId && document.getElementById(canvasId)) {
 			this.trailCanvas.drawLine(lineParam.fromX, lineParam.fromY, lineParam.toX, lineParam.toY);
 		}
@@ -99,7 +99,7 @@ ContentScripts.prototype.draw = function (lineParam, command_name, action_name) 
 
 	if (this.infoDiv) {
 		if (document.getElementById(this.infoDiv.id)) {
-			var $divAction = $('#'+this.actionNameDiv.id);
+			const $divAction = $('#'+this.actionNameDiv.id);
 			if (this.option.isActionTextOn()) {
 
 				if (action_name != $divAction.html()) {
@@ -109,7 +109,7 @@ ContentScripts.prototype.draw = function (lineParam, command_name, action_name) 
 				$divAction.html('');
 			}
 
-			var $divCommand = $('#'+this.commandDiv.id);
+			const $divCommand = $('#'+this.commandDiv.id);
 			if (this.option.isCommandTextOn()) {
 				command_name = this.replaceCommandToArrow(command_name);
 

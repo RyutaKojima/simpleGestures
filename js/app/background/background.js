@@ -1,7 +1,7 @@
-var inputMouse = new Mouse();
-var inputKeyboard = new Keyboard();
-var mainGestureMan = new LibGesture();
-var option = new LibOption();
+const inputMouse = new Mouse();
+const inputKeyboard = new Keyboard();
+const mainGestureMan = new LibGesture();
+const option = new LibOption();
 option.load();
 
 var lockerOn = false;
@@ -11,8 +11,8 @@ var nextMenuSkip = true;
  * 現在のジェスチャ軌跡に対応するアクション名を返す
  * @returns {*}
  */
-var getNowGestureActionName = function () {
-	var gestureString = mainGestureMan.getGestureString();
+const getNowGestureActionName = function () {
+	const gestureString = mainGestureMan.getGestureString();
 	if ( ! gestureString) {
 		return null;
 	}
@@ -25,7 +25,7 @@ var getNowGestureActionName = function () {
  * 
  * @type {{load_options: requestFunction.load_options}}
  */
-var requestFunction = {
+const requestFunction = {
 	reset_input: function(request) {
 		inputKeyboard.lock();
 		inputKeyboard.reset();
@@ -55,7 +55,7 @@ var requestFunction = {
 		responseString = request.which === inputMouse.LEFT_BUTTON ? "LEFT" : "RIGHT";
 		console.log(responseString);
 
-		var response = {
+		const response = {
 			message: "yes",
 			action: null,
 			href: request.href,
@@ -111,7 +111,7 @@ var requestFunction = {
 	},
 	mousemove: function(request) {
 		// mousemove の event.whichには、最初に押されたボタンが入る。
-		var response = {
+		const response = {
 			message: "yes",
 			action: null,
 			href: request.href,
@@ -149,9 +149,9 @@ var requestFunction = {
 		return response;
 	},
 	mouseup: function(request) {
-		var doAction = getNowGestureActionName();
+		const doAction = getNowGestureActionName();
 
-		var response = {
+		const response = {
 			message: "yes",
 			action: null,
 			href: mainGestureMan.getURL(),
@@ -177,7 +177,7 @@ var requestFunction = {
 				nextMenuSkip = true;
 
 				if (typeof gestureFunction[doAction] === 'function') {
-					var optionParams = {
+					const optionParams = {
 						href: mainGestureMan.getURL()
 					};
 					gestureFunction[doAction](optionParams);
@@ -200,17 +200,17 @@ var requestFunction = {
  * 各マウスジェスチャの処理
  * @type type
  */
-var gestureFunction = {
+const gestureFunction = {
 	"new_tab": function(options) {
-		var _url = '';
+		let _url = '';
 
 		if (options && typeof options.href !== 'undefined') {
 			_url = options.href;
 		}
 
 		chrome.tabs.query({active: true}, function(tabs) {
-			var current_tab = tabs[0];
-			var append_index = current_tab.index+1;
+			const current_tab = tabs[0];
+			const append_index = current_tab.index+1;
 			if ( ! _url) {
 				chrome.tabs.create({index:append_index});
 			}
@@ -221,13 +221,13 @@ var gestureFunction = {
 	},
 	"close_tab": function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			var current_tab = tabs[0];
+			const current_tab = tabs[0];
 			chrome.tabs.remove(current_tab.id);
 		});
 	},
 	"reload": function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			var current_tab = tabs[0];
+			const current_tab = tabs[0];
 			chrome.tabs.reload(current_tab.id);
 		});
 	},
@@ -240,7 +240,7 @@ var gestureFunction = {
 	},
 	"next_tab": function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			var current_tab = tabs[0];
+			const current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
 				if (current_tab.index == tabs.length-1) {
 					chrome.tabs.update(tabs[0].id, {active:true});
@@ -253,7 +253,7 @@ var gestureFunction = {
 	},
 	"prev_tab": function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			var current_tab = tabs[0];
+			const current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
 				if (current_tab.index == 0) {
 					chrome.tabs.update(tabs[tabs.length-1].id, {active:true});
@@ -266,7 +266,7 @@ var gestureFunction = {
 	},
 	"close_all_background": function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			var current_tab = tabs[0];
+			const current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
 				tabs.forEach(function(tab){
 					if (tab.id != current_tab.id) {
@@ -289,7 +289,7 @@ var gestureFunction = {
 		});
 	},
 	"open_extension": function() {
-		var chromeExtURL="chrome://extensions/";
+		const chromeExtURL = "chrome://extensions/";
 		chrome.tabs.getAllInWindow(null, function(tabs) {
 			tabs.forEach(function(tab){
 				if (tab.url == chromeExtURL) {
@@ -318,7 +318,7 @@ var gestureFunction = {
  * @param {type} param
  */
 chrome.extension.onMessage.addListener(function onMessage_handler(request, sender, sendResponse) {
-	var reqFunc = requestFunction[request.msg];
+	const reqFunc = requestFunction[request.msg];
 	if (typeof reqFunc === 'function') {
 		sendResponse(reqFunc(request, sender));
 	} else {

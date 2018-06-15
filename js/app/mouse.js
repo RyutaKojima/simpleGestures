@@ -3,7 +3,7 @@
  *
  * @constructor
  */
-var Mouse = function() {
+const Mouse = function() {
 	/** @const */
 	this.LEFT_BUTTON = 1;
 
