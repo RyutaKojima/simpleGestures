@@ -1,15 +1,3 @@
-/**
- * 命名規則 (よく忘れるのでメモ)
- *
- * 関数     functionNamesLikeThis
- * 変数     variableNamesLikeThis
- * クラス   ClassNamesLikeThis
- * 列挙型   EnumNamesLikeThis
- * メソッド methodNamesLikeThis
- * 定数    CONSTANT_VALUES_LIKE_THIS
- * 名前空間 foo.namespaceNamesLikeThis.bar
- * ファイル filenameslikethis.js
- */
 (function(){
 	const trailCanvas = new TrailCanvas("gestureTrailCanvas", "1000000");
 	const contentScripts = new ContentScripts(trailCanvas);
