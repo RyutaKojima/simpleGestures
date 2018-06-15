@@ -24,20 +24,17 @@
 		}
 	};
 
+	//console.log("$(window).ready: frames=" + window.frames.length);
+	trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
+	contentScripts.loadOption();
+	contentScripts.setCanvasStyle();
+	contentScripts.createInfoDiv();
+
 	//--------------------------------------------------------------------------------------------------
 	// Event Handler
 	//--------------------------------------------------------------------------------------------------
 	window.addEventListener('focus', function onFocus() {
 		chrome.extension.sendMessage({ msg: 'reset_input', event:'focus' }, function(response) {});
-	});
-
-	$(document).on('ready', function onReady() {
-		//console.log("$(window).ready: frames=" + window.frames.length);
-		trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
-
-		contentScripts.loadOption();
-		contentScripts.setCanvasStyle();
-		contentScripts.createInfoDiv();
 	});
 
 	$(document).on('keydown', function onKeyDown(e) {
