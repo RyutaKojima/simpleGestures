@@ -127,8 +127,13 @@ LibOption.prototype.createDefaultOptions = function () {
 		"command_text_on": true,
 		"action_text_on": true,
 		"trail_on": true,
-
-		"gesture_open_option": "RDLU"
+		// Default gesture
+		"gesture_close_tab":   "DR",  // ↓→
+		"gesture_forward":     "R",   // →
+		"gesture_back":        "L",   // ←
+		"gesture_new_tab":     "D",   // ↓
+		"gesture_reload":      "DU",  // ↓↑
+		"gesture_open_option": "RDLU" // →↓←↑
 	};
 };
 
