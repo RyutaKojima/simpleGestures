@@ -39,6 +39,12 @@ $(function ready_handler() {
 		});
 	});
 
+	// ジェスチャ割り当てクリアボタン
+	$('.reset_gesture').click(event => {
+		const name = $(event.target).data('target');
+		$('#' + name).val('').triggerHandler('change');
+	});
+
 	// ジェスチャ入力欄
 	option.GESTURE_ID_LIST.forEach(function(id_name){
 		$textbox = $('#'+id_name);
