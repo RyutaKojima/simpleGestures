@@ -102,6 +102,7 @@ $(() => {
 		option.reset();
 		chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
 		initOptionView();
+		changeLanguage();
 	});
 
 	// language selector
