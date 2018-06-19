@@ -9,32 +9,29 @@ canvasForOption.setCanvasSize(300, 300);
  * entory point.
  * ready
  */
-$(function ready_handler() {
+$(() => {
 	initTabView();
 
 	// 言語設定の変更
 	changeLanguage();
-
 	initOptionView();
 
 	setCanvasStyle(canvasForOption);
 
 	// オプションデータの表示
-	option.OPTION_ID_LIST.forEach(function(id_name){
-		// textbox value change event
-		$('#'+id_name).change(function() {
-			option.setParam(id_name, $(this).val());
+	option.OPTION_ID_LIST.forEach((id_name) => {
+		$('#'+id_name).change((event) => {
+			option.setParam(id_name, $(event.target).val());
 			saveOptions();
-
 			changeLanguage();
 		});
 	});
 
 	// チェックボックス
 	const checke_ids = ['command_text_on', 'action_text_on', 'trail_on'];
-	checke_ids.forEach(function(id_name){
-		$('#'+id_name).change(function() {
-			option.setParam(id_name, $(this).prop("checked"));
+	checke_ids.forEach((id_name) => {
+		$('#'+id_name).change(event => {
+			option.setParam(id_name, $(event.target).prop("checked"));
 			saveOptions();
 		});
 	});
@@ -45,77 +42,65 @@ $(function ready_handler() {
 		$('#' + name).val('').triggerHandler('change');
 	});
 
-	// ジェスチャ入力欄
-	option.GESTURE_ID_LIST.forEach(function(id_name){
-		$textbox = $('#'+id_name);
-
-		$textbox.change(function() {
-			option.setParam(id_name, $(this).val());
+	// ジェスチャ設定
+	$('.input_gesture')
+		.change(event => {
+			const $input = $(event.target);
+			option.setParam($input.attr('id'), $input.val());
 			saveOptions();
-		});
-
-		$textbox.click(function() {
-			var $that = $(this);
-
-			if (canvasForOption.getCanvas()) {
-				const drawCanvas = canvasForOption.getCanvas();
-				const ctx = canvasForOption.getContext2d();
-
-				document.body.appendChild(drawCanvas);
-				const $canvas = $('#'+canvasForOption.getCanvasId());
-
-				gestureForOption.clear();
-				canvasForOption.clearCanvas();
-
-				ctx.globalAlpha = 0.5;
-				ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
-				ctx.globalAlpha = 1.0;
-
-				$canvas
-					.mousedown(function (event) {
-						const tmp_x = event.pageX - $(this).offset().left;
-						const tmp_y = event.pageY - $(this).offset().top;
-						gestureForOption.startGestrue(tmp_x, tmp_y, null);
-
-						return false;
-					})
-					.mousemove(function(event) {
-						const tmp_x = event.pageX - $(this).offset().left;
-						const tmp_y = event.pageY - $(this).offset().top;
-						if (gestureForOption.registPoint(tmp_x, tmp_y)) {
-							canvasForOption.drawLine(
-								gestureForOption.getLastX(), gestureForOption.getLastY(),
-								gestureForOption.getX(),     gestureForOption.getY()
-							);
-						}
-
-						return false;
-					})
-					.mouseup(function(event) {
-						if (drawCanvas) {
-							const removeCanvas = document.getElementById(drawCanvas.id);
-							if (removeCanvas) {
-								document.body.removeChild(removeCanvas);
-							}
-						}
-
-						// textbox value set.
-						$that.val(gestureForOption.getGestureString()).triggerHandler('change');
-						$that = null;
-
-						$(this).unbind();
-
-						return false;
-					});
+		})
+		.click(event => {
+			if ( ! canvasForOption.getCanvas()) {
+				return false;
 			}
+
+			const $input = $(event.target);
+			const drawCanvas = canvasForOption.getCanvas();
+			const ctx = canvasForOption.getContext2d();
+			document.body.appendChild(drawCanvas);
+
+			gestureForOption.clear();
+			canvasForOption.clearCanvas();
+
+			ctx.globalAlpha = 0.5;
+			ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+			ctx.globalAlpha = 1.0;
+
+			const $canvas = $('#'+canvasForOption.getCanvasId());
+			$canvas
+				.mousedown(event => {
+					const tmp_x = event.pageX - $canvas.offset().left;
+					const tmp_y = event.pageY - $canvas.offset().top;
+					gestureForOption.startGestrue(tmp_x, tmp_y, null);
+					return false;
+				})
+				.mousemove(event => {
+					const tmp_x = event.pageX - $canvas.offset().left;
+					const tmp_y = event.pageY - $canvas.offset().top;
+					if (gestureForOption.registPoint(tmp_x, tmp_y)) {
+						canvasForOption.drawLine(gestureForOption.getLastX(), gestureForOption.getLastY(), gestureForOption.getX(),     gestureForOption.getY() );
+					}
+
+					return false;
+				})
+				.mouseup(event => {
+					if (drawCanvas) {
+						const removeCanvas = document.getElementById(drawCanvas.id);
+						if (removeCanvas) {
+							document.body.removeChild(removeCanvas);
+						}
+					}
+
+					$input.val(gestureForOption.getGestureString()).triggerHandler('change');
+					$canvas.unbind();
+					return false;
+				});
 		});
-	});
 
 	//
-	$('#reset_all').click(function() {
+	$('#reset_all').click(() => {
 		option.reset();
-		chrome.extension.sendMessage({msg: "reload_option"}, function(response) {});
-
+		chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
 		initOptionView();
 	});
 
@@ -126,19 +111,19 @@ $(function ready_handler() {
 	colorWheel = Raphael.colorwheel($("#input_example")[0],100);
 	colorWheel.input($("#color_code")[0]);
 	colorWheel.color(option.getColorCode());
-	colorWheel.onchange(function(color) {
+	colorWheel.onchange((color) => {
 		$("#color_code").triggerHandler('change');
 	})
 });
 
-$(document).on('contextmenu', function oncontextmenu_handler() {
+$(document).on('contextmenu', () => {
 	return false;
 });
 
 /**
  * create canvas & update style
  */
-const setCanvasStyle = function (canvas) {
+const setCanvasStyle = (canvas) => {
 	canvas.setLineStyle('#000000', 1);
 
 	const ctx = canvas.getCanvas().getContext('2d');
@@ -150,7 +135,7 @@ const setCanvasStyle = function (canvas) {
 /**
  * オプション表示の初期化をする
  */
-const initOptionView = function () {
+const initOptionView = () => {
 	const checkValues = {
 		'command_text_on': option.isCommandTextOn(),
 		'action_text_on': option.isActionTextOn(),
@@ -164,39 +149,39 @@ const initOptionView = function () {
 	};
 
 	// ジェスチャー
-	option.GESTURE_ID_LIST.forEach(function(key){
+	option.GESTURE_ID_LIST.forEach((key) => {
 		textValues[key] = option.getParam(key, '');
 	});
 
 	// 各DOMに設定値を適用
-	Object.keys(textValues).forEach(function(key){
-		$('#'+key).val(this[key]);
-	}, textValues);
+	Object.keys(textValues).forEach((key) => {
+		$('#'+key).val(textValues[key]);
+	});
 
-	Object.keys(checkValues).forEach(function(key){
-		$('#'+key).prop("checked", this[key]);
-	}, checkValues);
+	Object.keys(checkValues).forEach((key) => {
+		$('#'+key).prop("checked", checkValues[key]);
+	});
 };
 
 /**
  * タブ表示の初期化をする
  */
-const initTabView = function () {
+const initTabView = () => {
 	// default open tab
 	ChangeTab("tab_body2");
 
 	// for tab
-	$('#tab_btn1').click(function() {
+	$('#tab_btn1').click(() => {
 		ChangeTab('tab_body1');
 		return false;
 	});
 
-	$('#tab_btn2').click(function() {
+	$('#tab_btn2').click(() => {
 		ChangeTab('tab_body2');
 		return false;
 	});
 
-	$('#tab_btn3').click(function() {
+	$('#tab_btn3').click(() => {
 		ChangeTab('tab_body3');
 		return false;
 	});
@@ -205,7 +190,7 @@ const initTabView = function () {
 /**
  * change view tab.
  */
-const ChangeTab = function (tabname) {
+const ChangeTab = (tabname) => {
    // all tab body clear.
    $('#tab_body1').hide();
    $('#tab_body2').hide();
@@ -218,7 +203,7 @@ const ChangeTab = function (tabname) {
 /**
  * change Language View.
  */
-const changeLanguage = function () {
+const changeLanguage = () => {
 	const $langEn = $('.class_English');
 	const $langJa = $('.class_Japanese');
 
@@ -236,7 +221,7 @@ const changeLanguage = function () {
 	}
 };
 
-const saveOptions = function () {
+const saveOptions = () => {
 	option.save();
-	chrome.extension.sendMessage({msg: "reload_option"}, function(response) {});
+	chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
 };
