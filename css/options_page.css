@@ -1,47 +1,3 @@
-.gesture_option {
-	clear:both;
-}
-
-.box_language, 
-.box_color, 
-.box_trail_width {
-	clear:both;
-}
-
-.note_language,
-.note_color, 
-.note_trail_width {
-	width: 80px;
-	float: left;
-}
-
-.note_gestrue_visible {
-	width: 200px;
-	float: left;
-}
-
-.input_language,
-.input_color, 
-.input_trail_width {
-	float: left;
-}
-
-#color_code {
-	width: 60px;
-}
-
-#line_width {
-	width: 30px;
-	text-align: right;
-}
-
-/* space tag style */
-.space_20px {
-	clear:both;
-	margin: 10px;
-	padding: 5px;
-}
-
 /* gesture table style */
 .gesture_table {
 	width: 100%;
@@ -61,4 +17,19 @@
 	padding: 6px;
 	background-color: #fff;
 	border: 1px solid #b9b9b9;
+}
+
+/* -- Renewal --  */
+.tabs.is-boxed li.is-active a.color-lightblue,
+.color-lightblue {
+	border: solid 3px cornflowerblue;
+}
+
+.tabs.is-boxed li.is-active a.color-yellow,
+.color-yellow {
+	border: solid 3px orange;
+}
+
+.content_gesture .input {
+	width: 200px;
 }

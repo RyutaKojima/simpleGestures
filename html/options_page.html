@@ -1,10 +1,11 @@
-<html>
+<!DOCTYPE html>
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>simpleGestures Option</title>
-	<link rel="stylesheet" type="text/css" href="../css/tab.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
 	<link rel="stylesheet" type="text/css" href="../css/options_page.css">
-	
 	<script src="../js/vendor/jquery-1.11.3.min.js"></script>
 	<script src="../js/vendor/raphael-min.2.1.4.js"></script>
 	<script src="../js/vendor/colorwheel.js"></script>
@@ -19,281 +20,320 @@
 	<script src="../js/app/options/options_page.js"></script>
 </head>
 <body>
-	<h1 class="class_English">Option</h1>
-	<h1 class="class_Japanese">設定</h1>
+	<section class="section" style="padding-top: 1.5rem;">
+		<div class="container">
+			<h3 class="title is-3">
+				<span class="class_English">simpleGestures Option</span>
+				<span class="class_Japanese">simpleGestures設定</span>
+			</h3>
 
-	<span class="class_English">When the focus out, option will be saved.</span>
-	<span class="class_Japanese">設定は、フォーカスが外れると自動で保存されます。</span>
-	<br/>
+			<div class="notification" style="padding: 0.5em; margin-bottom: 0.5em;">
+				<span class="class_English">When the focus out, option will be saved.</span>
+				<span class="class_Japanese">設定は、フォーカスが外れると自動で保存されます。</span>
+			</div>
 
-	<div class="tabbox">
-	  <p class="tabs">
-		 <a href="#tab1" id="tab_btn1" class="tab_btn1" >
-			<span class="class_English">General Settings</span>
-			<span class="class_Japanese">基本設定</span>
-		 </a>
-		 <a href="#tab2" id="tab_btn2" class="tab_btn2" >
-			<span class="class_English">Gesture Settings</span>
-			<span class="class_Japanese">ジェスチャの設定</span>
-		 </a>
-		 </a>
-	  </p>
-	
-	<!-- =========================================================================================== -->
-	  <div id="tab_body1" class="tab">
-		<div id="general_option" class="general_option">
-	
-		  <div class="box_language">
-			<div class="note_language" >
-			   <span class="class_English">Use Language</span>
-			   <span class="class_Japanese">言語設定</span>
+			<div class="tabs is-small is-boxed" style="margin-bottom: 0rem;">
+				<ul>
+					<li class="is-active">
+						<a id="tab_btn1" class="changeTab" data-show-body="content_general" data-set-color="color-lightblue">
+							<span class="class_English">General Settings</span>
+							<span class="class_Japanese">基本設定</span>
+						</a>
+					</li>
+					<li>
+						<a id="tab_btn2" class="changeTab" data-show-body="content_gesture" data-set-color="color-yellow">
+							<span class="class_English">Gesture Settings</span>
+							<span class="class_Japanese">ジェスチャの設定</span>
+						</a>
+					</li>
+				</ul>
 			</div>
-			<div class="input_language">
-			  <select id="language" name="language" size="1">
-				<option value="English">English</option>
-				<option value="Japanese">日本語</option>
-			  </select>
+			<div class="box js-swich-color">
+				<!-- =========================================================================================== -->
+				<div id="content_general" class="tabBody content_general">
+					<table class="table">
+						<tbody>
+						<tr>
+							<th>
+								<span class="class_English">Use Language</span>
+								<span class="class_Japanese">言語設定</span>
+							</th>
+							<td>
+								<div class="field">
+									<div class="control">
+										<div class="select">
+											<select id="language" name="language" size="1">
+												<option value="English">English</option>
+												<option value="Japanese">日本語</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">Trail color.</span>
+								<span class="class_Japanese">ラインの色</span>
+							</th>
+							<td>
+								<div class="field">
+									<div class="control">
+										<input class="input" type="text" id="color_code" />
+									</div>
+								</div>
+								<div id="input_example" class="colorwheel" style="margin-right:20px; width:300px; text-align:left;"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">Trail line width</span>
+								<span class="class_Japanese">ラインの幅</span>
+							</th>
+							<td>
+								<div class="field has-addons">
+									<div class="control">
+										<input class="input" type="text" id="line_width" />
+									</div>
+									<div class="control">
+										<a class="button is-static">
+											px
+										</a>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">View gesture text.</span>
+								<span class="class_Japanese">ジェスチャテキストを表示する</span>
+							</th>
+							<td>
+								<label class="checkbox">
+									<input class="checkbox" type="checkbox" id="command_text_on">
+									<span class="class_English">Displayed when you check on.</span>
+									<span class="class_Japanese">表示する</span>
+								</label>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">View gesture action.</span>
+								<span class="class_Japanese">実行するアクション名を表示する</span>
+							</th>
+							<td>
+								<label class="checkbox">
+									<input class="checkbox" type="checkbox" id="action_text_on">
+									<span class="class_English">Displayed when you check on.</span>
+									<span class="class_Japanese">表示する</span>
+								</label>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">View gesture trail.</span>
+								<span class="class_Japanese">ジェスチャの軌跡を表示する</span>
+							</th>
+							<td>
+								<label class="checkbox">
+									<input class="checkbox" type="checkbox" id="trail_on">
+									<span class="class_English">Displayed when you check on.</span>
+									<span class="class_Japanese">表示する</span>
+								</label>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- =========================================================================================== -->
+				<div id="content_gesture" class="tabBody content_gesture">
+					<table class="table is-narrow is-hoverable">
+						<thead>
+						<tr>
+							<th>
+								<span class="class_English">action name</span>
+								<span class="class_Japanese">ジェスチャ名</span>
+							</th>
+							<th>
+								<span class="class_English">gesture command</span>
+								<span class="class_Japanese">コマンド</span>
+							</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<th>
+								<span class="class_English">tab close</span>
+								<span class="class_Japanese">タブを閉じる</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_close_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_close_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">new tab(link open)</span>
+								<span class="class_Japanese">新しいタブ(リンクを開く)</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_new_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_new_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">reload</span>
+								<span class="class_Japanese">ページを再読み込み</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_reload" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_reload"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">forward</span>
+								<span class="class_Japanese">進む</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_forward" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_forward"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">back</span>
+								<span class="class_Japanese">戻る</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_back" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_back"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">scroll top</span>
+								<span class="class_Japanese">ページの先頭までスクロール</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_scroll_top" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_scroll_top"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">scroll bottom</span>
+								<span class="class_Japanese">ページの最後までスクロール</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_scroll_bottom" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_scroll_bottom"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">open last tab</span>
+								<span class="class_Japanese">閉じたタブを開く</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_last_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_last_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">reload all</span>
+								<span class="class_Japanese">全てのページを再読み込み</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_reload_all" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_reload_all"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">next tab</span>
+								<span class="class_Japanese">次のタブ</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_next_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_next_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">prev tab</span>
+								<span class="class_Japanese">前のタブ</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_prev_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_prev_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">close all background tab</span>
+								<span class="class_Japanese">同一ウィンドウの他のタブを閉じる</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_close_all_background" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_close_all_background"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">close all tab</span>
+								<span class="class_Japanese">同一ウィンドウの全てのタブを閉じる</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_close_all" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_close_all"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">open chrome extension page</span>
+								<span class="class_Japanese">Google Choromeの「拡張機能」ページを開く</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_open_extension" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_open_extension"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">open simpleGesture option page</span>
+								<span class="class_Japanese">このページを開く</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_open_option" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_open_option"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">restart google chorome</span>
+								<span class="class_Japanese">Google Chromeを再起動する</span>
+							</th>
+							<td>
+								<input type="text" class="input is-small input_gesture" id="gesture_restart" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_restart"><a class="delete"></a></button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
-		  </div>
-		  <div class="space_20px"></div>
-	
-		  <div class="box_color">
-			<div class="note_color" >
-			  <span class="class_English">Trail color.</span>
-			  <span class="class_Japanese">ラインの色</span>
+
+			<div class="box" style="border: solid 1px red;">
+				<button id="reset_all" class="button is-danger is-outlined">
+					<a class="delete"></a>
+					<span class="class_English">reset all options</span>
+					<span class="class_Japanese">すべての設定を初期化</span>
+				</button>
 			</div>
-			<div class="input_color">
-			  <input type="text" id="color_code" />(#000000～#FFFFFF)
-			  <div id="input_example" class="colorwheel" style="margin-right:20px; width:300px; text-align:left;"></div>
-			</div>
-		  </div>
-		  <div class="space_20px"></div>
-		  <div class="box_trail_width">
-			<div class="note_trail_width" >
-			  <span class="class_English">Trail line width</span>
-			  <span class="class_Japanese">ラインの幅</span>
-			</div>
-			<div class="input_trail_width"><input type="text" id="line_width" />px</div>
-		  </div>
-		  <div class="space_20px"></div>
-	
-		  <div>
-			<div class="note_gestrue_visible" >
-			  <span class="class_English">View gesture text.</span>
-			  <span class="class_Japanese">ジェスチャテキストを表示する</span>
-			</div>
-			<div class="input_command_text_on">
-			  <label><input type="checkbox" id="command_text_on" name="command_text_on" value="1">
-				<span class="class_English">Displayed when you check on.</span>
-				<span class="class_Japanese">チェックで表示</span>
-			  </label>
-			</div>
-		  </div>
-		  <div class="space_20px"></div>
-	
-		  <div>
-			<div class="note_gestrue_visible" >
-			  <span class="class_English">View gesture action.</span>
-			  <span class="class_Japanese">実行するアクション名を表示する</span>
-			</div>
-			<div class="input_command_text_on">
-			  <label><input type="checkbox" id="action_text_on" name="action_text_on" value="1">
-				<span class="class_English">Displayed when you check on.</span>
-				<span class="class_Japanese">チェックで表示</span>
-			  </label>
-			</div>
-		  </div>
-		  <div class="space_20px"></div>
-	
-		  <div>
-			<div class="note_gestrue_visible" >
-			  <span class="class_English">View gesture trail.</span>
-			  <span class="class_Japanese">ジェスチャの軌跡を表示する</span>
-			</div>
-			<div class="input_trail_on">
-			  <label><input type="checkbox" id="trail_on" name="trail_on" value="1">
-				<span class="class_English">Displayed when you check on.</span>
-				<span class="class_Japanese">チェックで表示</span>
-			  </label>
-			</div>
-		  </div>
-		  <div class="space_20px"></div>
-	
 		</div>
-	  </div>
-	
-	<!-- =========================================================================================== -->
-	  <div id="tab_body2" class="tab">
-		<div id="gesture_option" class="gesture_option">
-		  <table class="gesture_table">
-			<tr>
-			  <th>
-				<span class="class_English">action name</span>
-				<span class="class_Japanese">ジェスチャ名</span>
-			  </th>
-			  <th>
-				<span class="class_English">gesture command</span>
-				<span class="class_Japanese">コマンド</span>
-			  </th>
-			</tr>
-	
-			<tr>
-			  <td>
-				<span class="class_English">tab close</span>
-				<span class="class_Japanese">タブを閉じる</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_close_tab" /><button class="reset_gesture" data-target="gesture_close_tab">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">new tab(link open)</span>
-				<span class="class_Japanese">新しいタブ(リンクを開く)</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_new_tab" /><button class="reset_gesture" data-target="gesture_new_tab">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">reload</span>
-				<span class="class_Japanese">ページを再読み込み</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_reload" /><button class="reset_gesture" data-target="gesture_reload">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">forward</span>
-				<span class="class_Japanese">進む</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_forward" /><button class="reset_gesture" data-target="gesture_forward">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">back</span>
-				<span class="class_Japanese">戻る</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_back" /><button class="reset_gesture" data-target="gesture_back">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">scroll top</span>
-				<span class="class_Japanese">ページの先頭までスクロール</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_scroll_top" /><button class="reset_gesture" data-target="gesture_scroll_top">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">scroll bottom</span>
-				<span class="class_Japanese">ページの最後までスクロール</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_scroll_bottom" /><button class="reset_gesture" data-target="gesture_scroll_bottom">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">open last tab</span>
-				<span class="class_Japanese">閉じたタブを開く</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_last_tab" /><button class="reset_gesture" data-target="gesture_last_tab">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">reload all</span>
-				<span class="class_Japanese">全てのページを再読み込み</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_reload_all" /><button class="reset_gesture" data-target="gesture_reload_all">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">next tab</span>
-				<span class="class_Japanese">次のタブ</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_next_tab" /><button class="reset_gesture" data-target="gesture_next_tab">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">prev tab</span>
-				<span class="class_Japanese">前のタブ</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_prev_tab" /><button class="reset_gesture" data-target="gesture_prev_tab">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">close all background tab</span>
-				<span class="class_Japanese">同一ウィンドウの他のタブを閉じる</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_close_all_background" /><button class="reset_gesture" data-target="gesture_close_all_background">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">close all tab</span>
-				<span class="class_Japanese">同一ウィンドウの全てのタブを閉じる</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_close_all" /><button class="reset_gesture" data-target="gesture_close_all">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">open chrome extension page</span>
-				<span class="class_Japanese">Google Choromeの「拡張機能」ページを開く</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_open_extension" /><button class="reset_gesture" data-target="gesture_open_extension">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">open simpleGesture option page</span>
-				<span class="class_Japanese">このページを開く</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_open_option" /><button class="reset_gesture" data-target="gesture_open_option">×</button>
-			  </td>
-			</tr>
-			<tr>
-			  <td>
-				<span class="class_English">restart google chorome</span>
-				<span class="class_Japanese">Google Chromeを再起動する</span>
-			  </td>
-			  <td>
-				  <input type="text" class="input_gesture" id="gesture_restart" /><button class="reset_gesture" data-target="gesture_restart">×</button>
-			  </td>
-			</tr>
-		  </table>
-		</div>
-	  </div>
-	
-	<!-- =========================================================================================== -->
-	  <div id="tab_body3" class="tab">
-		 <span class="class_English">Unsupported.</span>
-		 <span class="class_Japanese">未実装です</span>
-	  </div>
-	</div>
-
-	<div id="box_reset">
-	  <input type="button" id="reset_all" value="reset all options" />
-	</div>
+	</section>
 </body>
 </html>

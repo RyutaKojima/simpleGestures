@@ -38,7 +38,7 @@ $(() => {
 
 	// ジェスチャ割り当てクリアボタン
 	$('.reset_gesture').click(event => {
-		const name = $(event.target).data('target');
+		const name = $(event.currentTarget).data('target');
 		$('#' + name).val('').triggerHandler('change');
 	});
 
@@ -168,37 +168,39 @@ const initOptionView = () => {
  * タブ表示の初期化をする
  */
 const initTabView = () => {
-	// default open tab
-	ChangeTab("tab_body2");
+	$defaultActiveTab = $('#tab_btn2.changeTab');
+	ChangeTab($defaultActiveTab);
 
-	// for tab
-	$('#tab_btn1').click(() => {
-		ChangeTab('tab_body1');
-		return false;
-	});
-
-	$('#tab_btn2').click(() => {
-		ChangeTab('tab_body2');
-		return false;
-	});
-
-	$('#tab_btn3').click(() => {
-		ChangeTab('tab_body3');
-		return false;
+	$('.changeTab').click(event => {
+		const $target = $(event.currentTarget);
+		ChangeTab($target);
 	});
 };
 
 /**
  * change view tab.
  */
-const ChangeTab = (tabname) => {
-   // all tab body clear.
-   $('#tab_body1').hide();
-   $('#tab_body2').hide();
-   $('#tab_body3').hide();
+let setedColorClass = '';
+const ChangeTab = ($target) => {
+	const showBodyId = $target.data('show-body');
+	const setColorClass = $target.data('set-color');
 
-   // select tab body display.
-   $('#'+tabname).show();
+	$('.tabBody').hide();
+	$('#'+showBodyId).show();
+
+	const activeTabClass = 'is-active';
+	$('.tabs li').removeClass(activeTabClass);
+	$target.closest('li').addClass(activeTabClass);
+
+	const $switchDom = $('.js-swich-color');
+	const $allChangableTab = $('.changeTab');
+	if (setedColorClass) {
+		$switchDom.removeClass(setedColorClass);
+		$allChangableTab.removeClass(setedColorClass);
+	}
+	$switchDom.addClass(setColorClass);
+	$target.addClass(setColorClass);
+	setedColorClass = setColorClass;
 };
 
 /**
