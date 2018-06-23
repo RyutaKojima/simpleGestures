@@ -43,7 +43,16 @@ $(() => {
 
 	// ジェスチャ設定
 	$('.input_gesture')
-		.change(event => {
+		.on('blur', () => {
+			const drawCanvasId = canvasForOption.getCanvasId();
+			const removeCanvas = document.getElementById(drawCanvasId);
+			if (removeCanvas) {
+				document.body.removeChild(removeCanvas);
+				const $canvas = $('#'+drawCanvasId);
+				$canvas.off();
+			}
+		})
+		.on('change', event => {
 			const $input = $(event.target);
 			const inputGesture = $input.val();
 
@@ -56,14 +65,15 @@ $(() => {
 			option.setParam($input.attr('id'), inputGesture);
 			saveOptions();
 		})
-		.click(event => {
-			if ( ! canvasForOption.getCanvas()) {
-				return false;
-			}
-
+		.on('click', event => {
 			const $input = $(event.target);
 			const drawCanvas = canvasForOption.getCanvas();
 			const ctx = canvasForOption.getContext2d();
+
+			if ( ! drawCanvas || ! ctx) {
+				return;
+			}
+
 			document.body.appendChild(drawCanvas);
 
 			$input.data('prevValue', $input.val());
@@ -76,6 +86,7 @@ $(() => {
 			ctx.globalAlpha = 1.0;
 
 			const $canvas = $('#'+canvasForOption.getCanvasId());
+			$canvas.off();
 			$canvas
 				.mousedown(event => {
 					const tmp_x = event.pageX - $canvas.offset().left;
@@ -93,15 +104,12 @@ $(() => {
 					return false;
 				})
 				.mouseup(() => {
-					if (drawCanvas) {
-						const removeCanvas = document.getElementById(drawCanvas.id);
-						if (removeCanvas) {
-							document.body.removeChild(removeCanvas);
-						}
+					const removeCanvas = document.getElementById(drawCanvas.id);
+					if (removeCanvas) {
+						document.body.removeChild(removeCanvas);
 					}
 
 					$input.val(gestureForOption.getGestureString()).triggerHandler('change');
-					$canvas.unbind();
 					return false;
 				});
 		});
