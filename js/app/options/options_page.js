@@ -1,13 +1,12 @@
-var colorWheel = null;
 const gestureForOption = new LibGesture();
 const option = new LibOption();
-option.load();
 const canvasForOption = new TrailCanvas("gestureOptionCanvas", '10002');
+
+option.load();
 canvasForOption.setCanvasSize(300, 300);
 
 /**
- * entory point.
- * ready
+ * entry point (jQuery.ready)
  */
 $(() => {
 	initTabView();
@@ -28,8 +27,8 @@ $(() => {
 	});
 
 	// チェックボックス
-	const checke_ids = ['command_text_on', 'action_text_on', 'trail_on'];
-	checke_ids.forEach((id_name) => {
+	const check_ids = ['command_text_on', 'action_text_on', 'trail_on'];
+	check_ids.forEach((id_name) => {
 		$('#'+id_name).change(event => {
 			option.setParam(id_name, $(event.target).prop("checked"));
 			saveOptions();
@@ -83,7 +82,7 @@ $(() => {
 
 					return false;
 				})
-				.mouseup(event => {
+				.mouseup(() => {
 					if (drawCanvas) {
 						const removeCanvas = document.getElementById(drawCanvas.id);
 						if (removeCanvas) {
@@ -109,10 +108,10 @@ $(() => {
 	$('#language').val(option.getLanguage());
 
 	// color wheel
-	colorWheel = Raphael.colorwheel($("#input_example")[0],100);
+	const colorWheel = Raphael.colorwheel($("#input_example")[0],100);
 	colorWheel.input($("#color_code")[0]);
 	colorWheel.color(option.getColorCode());
-	colorWheel.onchange((color) => {
+	colorWheel.onchange(() => {
 		$("#color_code").triggerHandler('change');
 	})
 });
