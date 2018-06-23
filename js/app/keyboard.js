@@ -19,7 +19,7 @@ const Keyboard = function() {
  * 現在の入力状態をリセットする
  */
 Keyboard.prototype.reset = function() {
-	console.log("reset keybord");
+	console.log("reset keyboard");
 
 	this.key_buffer = [];
 };
