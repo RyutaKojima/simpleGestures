@@ -45,7 +45,15 @@ $(() => {
 	$('.input_gesture')
 		.change(event => {
 			const $input = $(event.target);
-			option.setParam($input.attr('id'), $input.val());
+			const inputGesture = $input.val();
+
+			// Validation
+			if ( ! inputGesture.match(/^[DLUR]*$/)) {
+				$input.val($input.data('prevValue'));
+				return;
+			}
+
+			option.setParam($input.attr('id'), inputGesture);
 			saveOptions();
 		})
 		.click(event => {
@@ -57,6 +65,8 @@ $(() => {
 			const drawCanvas = canvasForOption.getCanvas();
 			const ctx = canvasForOption.getContext2d();
 			document.body.appendChild(drawCanvas);
+
+			$input.data('prevValue', $input.val());
 
 			gestureForOption.clear();
 			canvasForOption.clearCanvas();
