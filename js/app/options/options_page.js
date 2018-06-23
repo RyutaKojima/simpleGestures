@@ -19,7 +19,7 @@ $(() => {
 
 	// オプションデータの表示
 	option.OPTION_ID_LIST.forEach((id_name) => {
-		$('#'+id_name).change((event) => {
+		$('#'+id_name).on('change', event => {
 			option.setParam(id_name, $(event.target).val());
 			saveOptions();
 			changeLanguage();
@@ -29,14 +29,14 @@ $(() => {
 	// チェックボックス
 	const check_ids = ['command_text_on', 'action_text_on', 'trail_on'];
 	check_ids.forEach((id_name) => {
-		$('#'+id_name).change(event => {
+		$('#'+id_name).on('change', event => {
 			option.setParam(id_name, $(event.target).prop("checked"));
 			saveOptions();
 		});
 	});
 
 	// ジェスチャ割り当てクリアボタン
-	$('.reset_gesture').click(event => {
+	$('.reset_gesture').on('click', event => {
 		const name = $(event.currentTarget).data('target');
 		$('#' + name).val('').triggerHandler('change');
 	});
@@ -115,7 +115,7 @@ $(() => {
 		});
 
 	//
-	$('#reset_all').click(() => {
+	$('#reset_all').on('click', () => {
 		option.reset();
 		chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
 		initOptionView();
@@ -185,10 +185,10 @@ const initOptionView = () => {
  * タブ表示の初期化をする
  */
 const initTabView = () => {
-	$defaultActiveTab = $('#tab_btn2.changeTab');
+	const $defaultActiveTab = $('#tab_btn2.changeTab');
 	ChangeTab($defaultActiveTab);
 
-	$('.changeTab').click(event => {
+	$('.changeTab').on('click', event => {
 		const $target = $(event.currentTarget);
 		ChangeTab($target);
 	});
@@ -197,7 +197,7 @@ const initTabView = () => {
 /**
  * change view tab.
  */
-let setedColorClass = '';
+let currentlySetColorClass = '';
 const ChangeTab = ($target) => {
 	const showBodyId = $target.data('show-body');
 	const setColorClass = $target.data('set-color');
@@ -209,15 +209,15 @@ const ChangeTab = ($target) => {
 	$('.tabs li').removeClass(activeTabClass);
 	$target.closest('li').addClass(activeTabClass);
 
-	const $switchDom = $('.js-swich-color');
-	const $allChangableTab = $('.changeTab');
-	if (setedColorClass) {
-		$switchDom.removeClass(setedColorClass);
-		$allChangableTab.removeClass(setedColorClass);
+	const $switchDom = $('.js-switch-color');
+	const $allChangeableTab = $('.changeTab');
+	if (currentlySetColorClass) {
+		$switchDom.removeClass(currentlySetColorClass);
+		$allChangeableTab.removeClass(currentlySetColorClass);
 	}
 	$switchDom.addClass(setColorClass);
 	$target.addClass(setColorClass);
-	setedColorClass = setColorClass;
+	currentlySetColorClass = setColorClass;
 };
 
 /**
