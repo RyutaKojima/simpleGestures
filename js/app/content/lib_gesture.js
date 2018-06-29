@@ -41,7 +41,7 @@ LibGesture.prototype.clear = function() {
  * @param {type} url
  * @returns {undefined}
  */
-LibGesture.prototype.startGestrue = function(x, y, url) {
+LibGesture.prototype.startGesture = function(x, y, url) {
 	this.clear();
 
 	this._nowX = x;

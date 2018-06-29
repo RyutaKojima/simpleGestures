@@ -103,7 +103,7 @@ const requestFunction = {
 				console.log("select request.href: " + request.href );
 
 				response.canvas.draw = true;
-				mainGestureMan.startGestrue(request.x, request.y, request.href);
+				mainGestureMan.startGesture(request.x, request.y, request.href);
 			}
 		}
 

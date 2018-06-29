@@ -91,7 +91,7 @@ $(() => {
 				.mousedown(event => {
 					const tmp_x = event.pageX - $canvas.offset().left;
 					const tmp_y = event.pageY - $canvas.offset().top;
-					gestureForOption.startGestrue(tmp_x, tmp_y, null);
+					gestureForOption.startGesture(tmp_x, tmp_y, null);
 					return false;
 				})
 				.mousemove(event => {
