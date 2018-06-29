@@ -11,7 +11,7 @@ const LibGesture = function() {
 	this._nowY = -1;
 	this._lastX = -1;
 	this._lastY = -1;
-	this._lastVector = null;
+	this._lastDirection = null;
 	this._strGestureCommand = "";
 	this._linkUrl = null;
 };
@@ -28,7 +28,7 @@ LibGesture.prototype.clear = function() {
 	this._nowY = -1;
 	this._lastX = -1;
 	this._lastY = -1;
-	this._lastVector = null;
+	this._lastDirection = null;
 	this._strGestureCommand = "";
 	this._linkUrl = null;
 };
@@ -59,38 +59,23 @@ LibGesture.prototype.startGestrue = function(x, y, url) {
  */
 LibGesture.prototype.registPoint = function(x, y) {
 	if (this._lastX !== -1 && this._lastY !== -1) {
-		const distance = Math.sqrt(Math.pow(x - this._lastX, 2) + Math.pow(y - this._lastY, 2));
-//		console.log("distance: " + distance);
+		const distance = this.calcDistance(x, y, this._lastX, this._lastY);
+//		console.log('Distance: ' + distance);
 		if (distance > this.GESTURE_START_DISTANCE) {
-			const radian = Math.atan2(y-this._lastY, x-this._lastX);
-			const rot    = radian * 180 / Math.PI;
-//			console.log( "radian: " + radian + ", rotate: " + rot );
+			const rotation = this.calcRotation(x, y, this._lastX, this._lastY);
+			const charDirection = this.rotationToDirection(rotation);
+//			console.log('Rotation: ' + rotation + ' Direction: ' + charDirection);
 
-			let tmp_vector = null;
-			if (rot >= -45.0 && rot < 45.0) {
-				tmp_vector = "R";
-			}
-			else if (rot >= 45.0 && rot < 135.0) {
-				tmp_vector = "D";
-			}
-			else if (rot >= -135.0 && rot < -45.0) {
-				tmp_vector = "U";
-			}
-			else {
-				tmp_vector = "L";
-			}
-//			console.log(tmp_vector);
-
-			if (this._lastVector !== tmp_vector) {
-				this._lastVector = tmp_vector;
+			if (this._lastDirection !== charDirection) {
+				this._lastDirection = charDirection;
 
 				if (this._strGestureCommand.length < this.COMMAND_MAX_LENGTH) {
-					this._strGestureCommand += tmp_vector;
+					this._strGestureCommand += charDirection;
 				}
 				else {
 					// gesture cancel
 					this._strGestureCommand = "";
-					for (let i=0; i < this.COMMAND_MAX_LENGTH; i++ ) {
+					for (let i = 0; i < this.COMMAND_MAX_LENGTH; i++) {
 						this._strGestureCommand += "-";
 					}
 				}
@@ -114,3 +99,47 @@ LibGesture.prototype.registPoint = function(x, y) {
  * @returns {undefined}
  */
 LibGesture.prototype.endGesture = function () {};
+
+/**
+ * ２点の座標から距離を計算して返す
+ * @param x
+ * @param y
+ * @param lastX
+ * @param lastY
+ * @returns {number}
+ */
+LibGesture.prototype.calcDistance = function (x, y, lastX, lastY) {
+	return Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
+};
+
+/**
+ * ２点の座標から角度を計算して返す
+ * @param x
+ * @param y
+ * @param lastX
+ * @param lastY
+ * @returns {number}
+ */
+LibGesture.prototype.calcRotation = function (x, y, lastX, lastY) {
+	const radian = Math.atan2(y - lastY, x - lastX);
+	//console.log("rotate: " + rotation);
+	return radian * 180 / Math.PI;
+};
+
+/**
+ * 角度から上下左右の向き情報に変換して返す
+ */
+LibGesture.prototype.rotationToDirection = function (rotation) {
+	if (rotation >= -45.0 && rotation < 45.0) {
+		return "R";
+	}
+	else if (rotation >= 45.0 && rotation < 135.0) {
+		return "D";
+	}
+	else if (rotation >= -135.0 && rotation < -45.0) {
+		return "U";
+	}
+	else {
+		return "L";
+	}
+};
