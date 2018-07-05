@@ -37,6 +37,10 @@
 		chrome.extension.sendMessage({ msg: 'reset_input', event:'focus' }, function(response) {});
 	});
 
+	$(window).on('resize', () => {
+		trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
+	});
+
 	$(document).on('keydown', function onKeyDown(e) {
 		if (! e.originalEvent.repeat) {
 			chrome.extension.sendMessage({msg: 'keydown', keyCode: e.keyCode}, function(response) {});
