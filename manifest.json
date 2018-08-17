@@ -27,6 +27,9 @@
 		"matches": [
 			"<all_urls>"
 		],
+		"css": [
+			"css/font/flaticon.css"
+		],
 		"js": [
 			"js/vendor/jquery-1.11.3.min.js",
 			"js/app/debug_flg.js",
@@ -41,5 +44,8 @@
 		"all_frames": true,
 		"run_at": "document_start"
 	}],
+	"web_accessible_resources": [
+		"css/font/*"
+	],
 	"options_page": "html/options_page.html"
 }

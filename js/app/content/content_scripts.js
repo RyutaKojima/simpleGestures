@@ -166,10 +166,10 @@ ContentScripts.prototype.exeAction = function (action_name) {
 ContentScripts.prototype.replaceCommandToArrow = function (action_name) {
 	// マルチバイト文字表示出来ないかもしれないので、日本語のみ対応
 	if (action_name && this.option.isJapanese()) {
-		action_name = action_name.replace(/U/g, '↑');
-		action_name = action_name.replace(/L/g, '←');
-		action_name = action_name.replace(/R/g, '→');
-		action_name = action_name.replace(/D/g, '↓');
+		action_name = action_name.replace(/U/g, '<i class="flaticon-up-arrow"></i>');
+		action_name = action_name.replace(/L/g, '<i class="flaticon-left-arrow"></i>');
+		action_name = action_name.replace(/R/g, '<i class="flaticon-right-arrow"></i>');
+		action_name = action_name.replace(/D/g, '<i class="flaticon-down-arrow"></i>');
 	}
 
 	return action_name;
