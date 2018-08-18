@@ -33,3 +33,11 @@
 .content_gesture .input {
 	width: 200px;
 }
+
+.content_gesture .views_gesture {
+	width: 250px;
+	display: inline-block;
+	word-wrap: break-word;
+	cursor: pointer;
+	background-color: beige;
+}

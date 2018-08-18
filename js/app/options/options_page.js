@@ -1,6 +1,7 @@
 const gestureForOption = new LibGesture();
 const option = new LibOption();
 const canvasForOption = new TrailCanvas("gestureOptionCanvas", '10002');
+const contentScripts = new ContentScripts(null);
 
 option.load();
 canvasForOption.setCanvasSize(300, 300);
@@ -42,8 +43,14 @@ $(() => {
 	});
 
 	// ジェスチャ設定
+	$('.views_gesture').on('click', event => {
+		const $viewsGestureElement = $(event.currentTarget);
+		$viewsGestureElement.siblings('.input_gesture').show().focus().trigger('click');
+	});
+
 	$('.input_gesture')
-		.on('blur', () => {
+		.on('blur', event => {
+			const $input = $(event.currentTarget);
 			const drawCanvasId = canvasForOption.getCanvasId();
 			const removeCanvas = document.getElementById(drawCanvasId);
 			if (removeCanvas) {
@@ -51,9 +58,12 @@ $(() => {
 				const $canvas = $('#'+drawCanvasId);
 				$canvas.off();
 			}
+
+			$input.hide();
 		})
 		.on('change', event => {
 			const $input = $(event.target);
+			const $viewsGestureElement = $input.siblings('.views_gesture');
 			const inputGesture = $input.val();
 
 			// Validation
@@ -61,6 +71,10 @@ $(() => {
 				$input.val($input.data('prevValue'));
 				return;
 			}
+
+			const setGestureText = inputGesture ? contentScripts.replaceCommandToArrow(inputGesture) : '&nbsp;';
+			$viewsGestureElement.html(setGestureText);
+			$input.hide();
 
 			option.setParam($input.attr('id'), inputGesture);
 			saveOptions();
@@ -173,7 +187,18 @@ const initOptionView = () => {
 
 	// 各DOMに設定値を適用
 	Object.keys(textValues).forEach((key) => {
-		$('#'+key).val(textValues[key]);
+		const $inputTextElement = $('#'+key);
+		let setText = textValues[key];
+
+		$inputTextElement.val(setText);
+
+		if ($inputTextElement.hasClass('input_gesture')) {
+			const setGestureText = setText ? contentScripts.replaceCommandToArrow(setText) : '&nbsp;';
+			const $viewsGestureElement = $inputTextElement.siblings('.views_gesture');
+
+			$viewsGestureElement.html(setGestureText);
+			$inputTextElement.hide();
+		}
 	});
 
 	Object.keys(checkValues).forEach((key) => {
