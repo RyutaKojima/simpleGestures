@@ -164,8 +164,7 @@ ContentScripts.prototype.exeAction = function (action_name) {
  * @returns {string}
  */
 ContentScripts.prototype.replaceCommandToArrow = function (action_name) {
-	// マルチバイト文字表示出来ないかもしれないので、日本語のみ対応
-	if (action_name && this.option.isJapanese()) {
+	if (action_name) {
 		action_name = action_name.replace(/U/g, '<i class="flaticon-up-arrow"></i>');
 		action_name = action_name.replace(/L/g, '<i class="flaticon-left-arrow"></i>');
 		action_name = action_name.replace(/R/g, '<i class="flaticon-right-arrow"></i>');
