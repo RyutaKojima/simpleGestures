@@ -12,7 +12,6 @@ const LibOption = function() {
 	 * @const
 	 */
 	this.OPTION_ID_LIST = [
-		"language",
 		"color_code",
 		"line_width"
 	];
@@ -23,6 +22,7 @@ const LibOption = function() {
 	this.GESTURE_ID_LIST = [
 		"gesture_close_tab",
 		"gesture_new_tab",
+		"gesture_pin_tab",
 		"gesture_reload",
 		"gesture_forward",
 		"gesture_back",
@@ -32,11 +32,15 @@ const LibOption = function() {
 		"gesture_reload_all",
 		"gesture_next_tab",
 		"gesture_prev_tab",
+		"gesture_close_right_tab_without_pinned",
+		"gesture_close_right_tab",
+		"gesture_close_left_tab_without_pinned",
+		"gesture_close_left_tab",
 		"gesture_close_all_background",
 		"gesture_close_all",
 		"gesture_open_option",
-		"gesture_open_extension",
-		"gesture_restart"
+		"gesture_open_extension"
+		// "gesture_restart"
 	];
 
 
@@ -121,7 +125,7 @@ LibOption.prototype.isTrailOn       = function () { return this.getParam("trail_
  */
 LibOption.prototype.createDefaultOptions = function () {
 	return {
-		"language": "English",
+		"language": "Japanese",
 		"color_code": "#FF0000",
 		"line_width": "3",
 		"command_text_on": true,

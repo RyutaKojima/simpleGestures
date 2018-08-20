@@ -19,20 +19,30 @@ $(() => {
 	setCanvasStyle(canvasForOption);
 
 	// オプションデータの表示
+	// type: テキスト
 	option.OPTION_ID_LIST.forEach((id_name) => {
 		$('#'+id_name).on('change', event => {
 			option.setParam(id_name, $(event.target).val());
 			saveOptions();
-			changeLanguage();
 		});
 	});
 
-	// チェックボックス
+	// type: チェックボックス
 	const check_ids = ['command_text_on', 'action_text_on', 'trail_on'];
 	check_ids.forEach((id_name) => {
 		$('#'+id_name).on('change', event => {
 			option.setParam(id_name, $(event.target).prop("checked"));
 			saveOptions();
+		});
+	});
+
+	// type: ラジオボタン
+	const radio_ids = ['language'];
+	radio_ids.forEach((id_name) => {
+		$('[name='+id_name+']').on('change', event => {
+			option.setParam(id_name, $(event.currentTarget).attr('value'));
+			saveOptions();
+			changeLanguage();
 		});
 	});
 
@@ -130,14 +140,14 @@ $(() => {
 
 	//
 	$('#reset_all').on('click', () => {
-		option.reset();
-		chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
-		initOptionView();
-		changeLanguage();
+		const confirmOk = window.confirm(lang.confirmOptionReset[option.getLanguage()]);
+		if (confirmOk) {
+			option.reset();
+			chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
+			initOptionView();
+			changeLanguage();
+		}
 	});
-
-	// language selector
-	$('#language').val(option.getLanguage());
 
 	// color wheel
 	const colorWheel = Raphael.colorwheel($("#input_example")[0],100);
@@ -173,36 +183,48 @@ const initOptionView = () => {
 		'action_text_on': option.isActionTextOn(),
 		'trail_on': option.isTrailOn()
 	};
-
+	const radioValues = {
+		"language": option.getLanguage()
+	};
 	const textValues = {
-		"language": option.getLanguage(),
 		"color_code": option.getColorCode(),
 		"line_width": option.getLineWidth()
 	};
 
-	// ジェスチャー
-	option.GESTURE_ID_LIST.forEach((key) => {
-		textValues[key] = option.getParam(key, '');
-	});
-
 	// 各DOMに設定値を適用
 	Object.keys(textValues).forEach((key) => {
 		const $inputTextElement = $('#'+key);
-		let setText = textValues[key];
+		const setText = textValues[key];
 
 		$inputTextElement.val(setText);
-
-		if ($inputTextElement.hasClass('input_gesture')) {
-			const setGestureText = setText ? contentScripts.replaceCommandToArrow(setText) : '&nbsp;';
-			const $viewsGestureElement = $inputTextElement.siblings('.views_gesture');
-
-			$viewsGestureElement.html(setGestureText);
-			$inputTextElement.hide();
-		}
 	});
 
 	Object.keys(checkValues).forEach((key) => {
 		$('#'+key).prop("checked", checkValues[key]);
+	});
+
+	Object.keys(radioValues).forEach((key) => {
+		const value = radioValues[key];
+		$('[name='+key+'][value='+value+']').prop("checked", true);
+	});
+
+	// ジェスチャー
+	option.GESTURE_ID_LIST.forEach((key) => {
+		const $inputTextElement = $('#'+key);
+		let setText = option.getParam(key, '');
+
+		$inputTextElement.val(setText);
+
+		if ( ! $inputTextElement.hasClass('input_gesture')) {
+			console.error('ジェスチャ設定に必須なDOM要素が見つかりません, {' + key + '}');
+			return;
+		}
+
+		const setGestureText = setText ? contentScripts.replaceCommandToArrow(setText) : '&nbsp;';
+		const $viewsGestureElement = $inputTextElement.siblings('.views_gesture');
+
+		$viewsGestureElement.html(setGestureText);
+		$inputTextElement.hide();
 	});
 };
 

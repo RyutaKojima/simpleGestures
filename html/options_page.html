@@ -10,6 +10,7 @@
 	<script src="../js/vendor/jquery-1.11.3.min.js"></script>
 	<script src="../js/vendor/raphael-min.2.1.4.js"></script>
 	<script src="../js/vendor/colorwheel.js"></script>
+	<script src="../js/app/lang.js"></script>
 	<script src="../js/app/debug_flg.js"></script>
 	<script src="../js/app/mouse.js"></script>
 	<script src="../js/app/keyboard.js"></script>
@@ -62,11 +63,14 @@
 							<td>
 								<div class="field">
 									<div class="control">
-										<div class="select">
-											<select id="language" name="language" size="1">
-												<option value="English">English</option>
-												<option value="Japanese">日本語</option>
-											</select>
+										<label for="languageEnglish" class="radio">
+											<input type="radio" name="language" value="English" id="languageEnglish">
+											English
+										</label>
+										<label for="languageJapanese" class="radio">
+											<input type="radio" name="language" value="Japanese" id="languageJapanese">
+											日本語
+										</label>
 										</div>
 									</div>
 								</div>
@@ -74,7 +78,7 @@
 						</tr>
 						<tr>
 							<th>
-								<span class="class_English">Trail color.</span>
+								<span class="class_English">Trail line color.</span>
 								<span class="class_Japanese">ラインの色</span>
 							</th>
 							<td>
@@ -164,17 +168,6 @@
 						<tbody>
 						<tr>
 							<th>
-								<span class="class_English">tab close</span>
-								<span class="class_Japanese">タブを閉じる</span>
-							</th>
-							<td>
-								<span class="views_gesture"></span>
-								<input type="text" class="input is-small input_gesture" id="gesture_close_tab" />
-								<button class="button is-small is-text reset_gesture" data-target="gesture_close_tab"><a class="delete"></a></button>
-							</td>
-						</tr>
-						<tr>
-							<th>
 								<span class="class_English">new tab(link open)</span>
 								<span class="class_Japanese">新しいタブ(リンクを開く)</span>
 							</th>
@@ -186,6 +179,17 @@
 						</tr>
 						<tr>
 							<th>
+								<span class="class_English">pin the tabs</span>
+								<span class="class_Japanese">タブを固定/解除</span>
+							</th>
+							<td>
+								<span class="views_gesture"></span>
+								<input type="text" class="input is-small input_gesture" id="gesture_pin_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_pin_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
 								<span class="class_English">reload</span>
 								<span class="class_Japanese">ページを再読み込み</span>
 							</th>
@@ -193,6 +197,17 @@
 								<span class="views_gesture"></span>
 								<input type="text" class="input is-small input_gesture" id="gesture_reload" />
 								<button class="button is-small is-text reset_gesture" data-target="gesture_reload"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">reload all</span>
+								<span class="class_Japanese">全てのページを再読み込み</span>
+							</th>
+							<td>
+								<span class="views_gesture"></span>
+								<input type="text" class="input is-small input_gesture" id="gesture_reload_all" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_reload_all"><a class="delete"></a></button>
 							</td>
 						</tr>
 						<tr>
@@ -241,28 +256,6 @@
 						</tr>
 						<tr>
 							<th>
-								<span class="class_English">open last tab</span>
-								<span class="class_Japanese">閉じたタブを開く</span>
-							</th>
-							<td>
-								<span class="views_gesture"></span>
-								<input type="text" class="input is-small input_gesture" id="gesture_last_tab" />
-								<button class="button is-small is-text reset_gesture" data-target="gesture_last_tab"><a class="delete"></a></button>
-							</td>
-						</tr>
-						<tr>
-							<th>
-								<span class="class_English">reload all</span>
-								<span class="class_Japanese">全てのページを再読み込み</span>
-							</th>
-							<td>
-								<span class="views_gesture"></span>
-								<input type="text" class="input is-small input_gesture" id="gesture_reload_all" />
-								<button class="button is-small is-text reset_gesture" data-target="gesture_reload_all"><a class="delete"></a></button>
-							</td>
-						</tr>
-						<tr>
-							<th>
 								<span class="class_English">next tab</span>
 								<span class="class_Japanese">次のタブ</span>
 							</th>
@@ -281,6 +274,72 @@
 								<span class="views_gesture"></span>
 								<input type="text" class="input is-small input_gesture" id="gesture_prev_tab" />
 								<button class="button is-small is-text reset_gesture" data-target="gesture_prev_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">open last tab</span>
+								<span class="class_Japanese">閉じたタブを開く</span>
+							</th>
+							<td>
+								<span class="views_gesture"></span>
+								<input type="text" class="input is-small input_gesture" id="gesture_last_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_last_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">tab close</span>
+								<span class="class_Japanese">タブを閉じる</span>
+							</th>
+							<td>
+								<span class="views_gesture"></span>
+								<input type="text" class="input is-small input_gesture" id="gesture_close_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_close_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">Close the left tab (without pinned)</span>
+								<span class="class_Japanese">左のタブを閉じる(固定されたタブを除く）</span>
+							</th>
+							<td>
+								<span class="views_gesture"></span>
+								<input type="text" class="input is-small input_gesture" id="gesture_close_left_tab_without_pinned" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_close_left_tab_without_pinned"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">Close the right tab (without pinned)</span>
+								<span class="class_Japanese">右のタブを閉じる(固定されたタブを除く）</span>
+							</th>
+							<td>
+								<span class="views_gesture"></span>
+								<input type="text" class="input is-small input_gesture" id="gesture_close_right_tab_without_pinned" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_close_right_tab_without_pinned"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">Close the left tab</span>
+								<span class="class_Japanese">左のタブを閉じる</span>
+							</th>
+							<td>
+								<span class="views_gesture"></span>
+								<input type="text" class="input is-small input_gesture" id="gesture_close_left_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_close_left_tab"><a class="delete"></a></button>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<span class="class_English">Close the right tab</span>
+								<span class="class_Japanese">右のタブを閉じる</span>
+							</th>
+							<td>
+								<span class="views_gesture"></span>
+								<input type="text" class="input is-small input_gesture" id="gesture_close_right_tab" />
+								<button class="button is-small is-text reset_gesture" data-target="gesture_close_right_tab"><a class="delete"></a></button>
 							</td>
 						</tr>
 						<tr>
