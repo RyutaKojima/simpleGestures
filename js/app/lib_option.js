@@ -12,7 +12,6 @@ const LibOption = function() {
 	 * @const
 	 */
 	this.OPTION_ID_LIST = [
-		"language",
 		"color_code",
 		"line_width"
 	];
