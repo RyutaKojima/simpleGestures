@@ -130,10 +130,13 @@ $(() => {
 
 	//
 	$('#reset_all').on('click', () => {
-		option.reset();
-		chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
-		initOptionView();
-		changeLanguage();
+		const confirmOk = window.confirm(lang.confirmOptionReset[option.getLanguage()]);
+		if (confirmOk) {
+			option.reset();
+			chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
+			initOptionView();
+			changeLanguage();
+		}
 	});
 
 	// language selector
