@@ -264,6 +264,90 @@ const gestureFunction = {
 			});
 		});
 	},
+	"close_right_tab_without_pinned": function () {
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+			const activeTab = tabs[0];
+
+			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
+				const removeTabsId = [];
+
+				tabsInCurrentWindow.forEach(tab => {
+					if (tab.pinned) {
+						return;
+					}
+
+					if (tab.index > activeTab.index) {
+						removeTabsId.push(tab.id);
+					}
+				});
+
+				removeTabsId.forEach(removeId => {
+					chrome.tabs.remove(removeId);
+				});
+			});
+		});
+	},
+	"close_right_tab": function () {
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+			const activeTab = tabs[0];
+
+			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
+				const removeTabsId = [];
+
+				tabsInCurrentWindow.forEach(tab => {
+					if (tab.index > activeTab.index) {
+						removeTabsId.push(tab.id);
+					}
+				});
+
+				removeTabsId.forEach(removeId => {
+					chrome.tabs.remove(removeId);
+				});
+			});
+		});
+	},
+	"close_left_tab_without_pinned": function () {
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+			const activeTab = tabs[0];
+
+			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
+				const removeTabsId = [];
+
+				tabsInCurrentWindow.forEach(tab => {
+					if (tab.pinned) {
+						return;
+					}
+
+					if (tab.index < activeTab.index) {
+						removeTabsId.push(tab.id);
+					}
+				});
+
+				removeTabsId.forEach(removeId => {
+					chrome.tabs.remove(removeId);
+				});
+			});
+		});
+	},
+	"close_left_tab": function () {
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+			const activeTab = tabs[0];
+
+			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
+				const removeTabsId = [];
+
+				tabsInCurrentWindow.forEach(tab => {
+					if (tab.index < activeTab.index) {
+						removeTabsId.push(tab.id);
+					}
+				});
+
+				removeTabsId.forEach(removeId => {
+					chrome.tabs.remove(removeId);
+				});
+			});
+		});
+	},
 	"close_all_background": function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			const current_tab = tabs[0];

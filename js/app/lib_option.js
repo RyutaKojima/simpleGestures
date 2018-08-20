@@ -31,11 +31,15 @@ const LibOption = function() {
 		"gesture_reload_all",
 		"gesture_next_tab",
 		"gesture_prev_tab",
+		"gesture_close_right_tab_without_pinned",
+		"gesture_close_right_tab",
+		"gesture_close_left_tab_without_pinned",
+		"gesture_close_left_tab",
 		"gesture_close_all_background",
 		"gesture_close_all",
 		"gesture_open_option",
-		"gesture_open_extension",
-		"gesture_restart"
+		"gesture_open_extension"
+		// "gesture_restart"
 	];
 
 
