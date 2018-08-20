@@ -121,7 +121,7 @@ LibOption.prototype.isTrailOn       = function () { return this.getParam("trail_
  */
 LibOption.prototype.createDefaultOptions = function () {
 	return {
-		"language": "English",
+		"language": "Japanese",
 		"color_code": "#FF0000",
 		"line_width": "3",
 		"command_text_on": true,
