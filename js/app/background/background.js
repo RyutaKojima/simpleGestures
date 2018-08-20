@@ -219,6 +219,12 @@ const gestureFunction = {
 			}
 		});
 	},
+	'pin_tab': () => {
+		chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+			const activeTab = tabs[0];
+			chrome.tabs.update(activeTab.id, {pinned: !activeTab.pinned});
+		});
+	},
 	"close_tab": function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			const current_tab = tabs[0];

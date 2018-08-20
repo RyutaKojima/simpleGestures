@@ -22,6 +22,7 @@ const LibOption = function() {
 	this.GESTURE_ID_LIST = [
 		"gesture_close_tab",
 		"gesture_new_tab",
+		"gesture_pin_tab",
 		"gesture_reload",
 		"gesture_forward",
 		"gesture_back",
