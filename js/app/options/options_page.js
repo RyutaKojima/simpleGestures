@@ -4,7 +4,7 @@ const canvasForOption = new TrailCanvas("gestureOptionCanvas", '10002');
 const contentScripts = new ContentScripts(null);
 
 option.load();
-canvasForOption.setCanvasSize(300, 300);
+canvasForOption.setCanvasSize(500, 500);
 
 /**
  * entry point (jQuery.ready)
@@ -108,6 +108,15 @@ $(() => {
 			ctx.globalAlpha = 0.5;
 			ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
 			ctx.globalAlpha = 1.0;
+
+			const helpTextColor = '#ECECEC';
+			if (option.isJapanese()) {
+				canvasForOption.drawText('この枠内にジェスチャを',  80, 180, helpTextColor);
+				canvasForOption.drawText('描いてください',        140, 260, helpTextColor);
+			} else {
+				canvasForOption.drawText('Please draw a gesture',  80, 180, helpTextColor);
+				canvasForOption.drawText('with this frame',       140, 260, helpTextColor);
+			}
 
 			const $canvas = $('#'+canvasForOption.getCanvasId());
 			$canvas.off();

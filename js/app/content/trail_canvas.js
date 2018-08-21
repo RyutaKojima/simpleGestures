@@ -77,6 +77,31 @@ TrailCanvas.prototype.clearCanvas = function () {
 };
 
 /**
+ * テキストを描画
+ * 
+ * @param text
+ * @param drawX
+ * @param drawY
+ * @param textColor
+ */
+TrailCanvas.prototype.drawText = function (text, drawX, drawY, textColor) {
+	const ctx = this.getContext2d();
+	if (ctx) {
+		const prevFillStyle = ctx.fillStyle;
+
+		if (textColor) {
+			ctx.fillStyle = textColor;
+		}
+
+		ctx.fillText(text, drawX, drawY);
+
+		if (textColor) {
+			ctx.fillStyle = prevFillStyle;
+		}
+	}
+};
+
+/**
  * 直線を描く
  * 
  * @param fromX
