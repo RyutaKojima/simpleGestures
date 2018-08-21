@@ -1,10 +1,12 @@
 {
   "name": "simplegestures",
-  "version": "0",
+  "version": "1.0.0",
   "description": "`simpleGesture` is Chrome extension to add mouse gestures.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint \"js/app/**/*.js\"",
+    "stylelint": "stylelint \"css/**/*.css\""
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/RyutaKojima/simpleGestures/issues"
   },
-  "homepage": "https://github.com/RyutaKojima/simpleGestures#readme"
+  "homepage": "https://github.com/RyutaKojima/simpleGestures#readme",
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "stylelint": "^9.5.0"
+  }
 }
