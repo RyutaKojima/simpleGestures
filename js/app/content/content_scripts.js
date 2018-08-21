@@ -15,15 +15,15 @@ const ContentScripts = function (trailCanvas) {
  * load option values.
  */
 ContentScripts.prototype.loadOption = function () {
-	const _this = this;
+	const that = this;
 
 	chrome.extension.sendMessage({msg: "load_options"}, function(response) {
 		if (response) {
-			_this.option.setRawStorageData(response.options_json);
+			that.option.setRawStorageData(response.options_json);
 
 			// reload setting for canvas.
-			_this.setCanvasStyle();
-			_this.createInfoDiv();
+			that.setCanvasStyle();
+			that.createInfoDiv();
 		}
 	});
 };
