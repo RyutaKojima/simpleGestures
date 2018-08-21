@@ -45,7 +45,7 @@ const LibOption = function() {
 
 
 	this.storageData = null;
-	this.options_instance = null;
+	this.optionsInstance = null;
 	this.gestureHash = {};
 };
 
@@ -75,9 +75,9 @@ LibOption.prototype.setRawStorageData = function (rawStorageData) {
 	this.storageData = rawStorageData;
 
 	if (this.storageData === null) {
-		this.options_instance = this.createDefaultOptions();
+		this.optionsInstance = this.createDefaultOptions();
 	} else {
-		this.options_instance = JSON.parse(this.storageData);
+		this.optionsInstance = JSON.parse(this.storageData);
 	}
 
 	this.gestureHash = {};
@@ -94,11 +94,11 @@ LibOption.prototype.setRawStorageData = function (rawStorageData) {
 };
 
 LibOption.prototype.enableGestureParam = function(paramName) { return (this.GESTURE_ID_LIST && this.GESTURE_ID_LIST.indexOf(paramName) !== -1); };
-LibOption.prototype.paramExists = function(paramName) { return (this.options_instance && this.options_instance.hasOwnProperty(paramName)); };
-LibOption.prototype.getParam = function(paramName, defaultValue) { return this.paramExists(paramName) ? this.options_instance[paramName] : defaultValue; };
+LibOption.prototype.paramExists = function(paramName) { return (this.optionsInstance && this.optionsInstance.hasOwnProperty(paramName)); };
+LibOption.prototype.getParam = function(paramName, defaultValue) { return this.paramExists(paramName) ? this.optionsInstance[paramName] : defaultValue; };
 LibOption.prototype.setParam = function(paramName, value) {
 	if (this.paramExists(paramName) || this.enableGestureParam(paramName)) {
-		this.options_instance[paramName] = value;
+		this.optionsInstance[paramName] = value;
 	}
 };
 
@@ -142,5 +142,5 @@ LibOption.prototype.createDefaultOptions = function () {
 };
 
 LibOption.prototype.save = function () {
-	localStorage.setItem(this.LOCAL_STRAGE_KEY, JSON.stringify(this.options_instance));
+	localStorage.setItem(this.LOCAL_STRAGE_KEY, JSON.stringify(this.optionsInstance));
 };

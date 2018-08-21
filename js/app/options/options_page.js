@@ -20,27 +20,27 @@ $(() => {
 
 	// オプションデータの表示
 	// type: テキスト
-	option.OPTION_ID_LIST.forEach((id_name) => {
-		$('#'+id_name).on('change', event => {
-			option.setParam(id_name, $(event.target).val());
+	option.OPTION_ID_LIST.forEach((idName) => {
+		$('#'+idName).on('change', event => {
+			option.setParam(idName, $(event.target).val());
 			saveOptions();
 		});
 	});
 
 	// type: チェックボックス
-	const check_ids = ['command_text_on', 'action_text_on', 'trail_on'];
-	check_ids.forEach((id_name) => {
-		$('#'+id_name).on('change', event => {
-			option.setParam(id_name, $(event.target).prop('checked'));
+	const checkIds = ['command_text_on', 'action_text_on', 'trail_on'];
+	checkIds.forEach((idName) => {
+		$('#'+idName).on('change', event => {
+			option.setParam(idName, $(event.target).prop('checked'));
 			saveOptions();
 		});
 	});
 
 	// type: ラジオボタン
-	const radio_ids = ['language'];
-	radio_ids.forEach((id_name) => {
-		$('[name='+id_name+']').on('change', event => {
-			option.setParam(id_name, $(event.currentTarget).attr('value'));
+	const radioIds = ['language'];
+	radioIds.forEach((idName) => {
+		$('[name='+idName+']').on('change', event => {
+			option.setParam(idName, $(event.currentTarget).attr('value'));
 			saveOptions();
 			changeLanguage();
 		});
@@ -122,15 +122,15 @@ $(() => {
 			$canvas.off();
 			$canvas
 				.mousedown(event => {
-					const tmp_x = event.pageX - $canvas.offset().left;
-					const tmp_y = event.pageY - $canvas.offset().top;
-					gestureForOption.startGesture(tmp_x, tmp_y, null);
+					const tmpX = event.pageX - $canvas.offset().left;
+					const tmpY = event.pageY - $canvas.offset().top;
+					gestureForOption.startGesture(tmpX, tmpY, null);
 					return false;
 				})
 				.mousemove(event => {
-					const tmp_x = event.pageX - $canvas.offset().left;
-					const tmp_y = event.pageY - $canvas.offset().top;
-					if (gestureForOption.registPoint(tmp_x, tmp_y)) {
+					const tmpX = event.pageX - $canvas.offset().left;
+					const tmpY = event.pageY - $canvas.offset().top;
+					if (gestureForOption.registPoint(tmpX, tmpY)) {
 						canvasForOption.drawLine(gestureForOption.getLastX(), gestureForOption.getLastY(), gestureForOption.getX(),     gestureForOption.getY() );
 					}
 

@@ -209,13 +209,13 @@ const gestureFunction = {
 		}
 
 		chrome.tabs.query({active: true}, function(tabs) {
-			const current_tab = tabs[0];
-			const append_index = current_tab.index+1;
+			const activeTab = tabs[0];
+			const appendIndex = activeTab.index+1;
 			if ( ! _url) {
-				chrome.tabs.create({index:append_index});
+				chrome.tabs.create({index:appendIndex});
 			}
 			else {
-				chrome.tabs.create({url:_url, index:append_index});
+				chrome.tabs.create({url:_url, index:appendIndex});
 			}
 		});
 	},
@@ -227,14 +227,14 @@ const gestureFunction = {
 	},
 	'close_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
-			chrome.tabs.remove(current_tab.id);
+			const activeTab = tabs[0];
+			chrome.tabs.remove(activeTab.id);
 		});
 	},
 	'reload': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
-			chrome.tabs.reload(current_tab.id);
+			const activeTab = tabs[0];
+			chrome.tabs.reload(activeTab.id);
 		});
 	},
 	'reload_all': function() {
@@ -246,26 +246,26 @@ const gestureFunction = {
 	},
 	'next_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
+			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
-				if (current_tab.index == tabs.length-1) {
+				if (activeTab.index == tabs.length-1) {
 					chrome.tabs.update(tabs[0].id, {active:true});
 				}
 				else {
-					chrome.tabs.update(tabs[current_tab.index+1].id, {active:true});
+					chrome.tabs.update(tabs[activeTab.index+1].id, {active:true});
 				}
 			});
 		});
 	},
 	'prev_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
+			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
-				if (current_tab.index == 0) {
+				if (activeTab.index == 0) {
 					chrome.tabs.update(tabs[tabs.length-1].id, {active:true});
 				}
 				else {
-					chrome.tabs.update(tabs[current_tab.index-1].id, {active:true});
+					chrome.tabs.update(tabs[activeTab.index-1].id, {active:true});
 				}
 			});
 		});
@@ -356,10 +356,10 @@ const gestureFunction = {
 	},
 	'close_all_background': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
+			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
 				tabs.forEach(function(tab){
-					if (tab.id != current_tab.id) {
+					if (tab.id != activeTab.id) {
 						chrome.tabs.remove(tab.id);
 					}
 				});
@@ -407,7 +407,7 @@ const gestureFunction = {
  *
  * @param {type} param
  */
-chrome.extension.onMessage.addListener(function onMessage_handler(request, sender, sendResponse) {
+chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	const reqFunc = requestFunction[request.msg];
 	if (typeof reqFunc === 'function') {
 		sendResponse(reqFunc(request, sender));

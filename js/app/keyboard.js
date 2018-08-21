@@ -7,12 +7,12 @@ const Keyboard = function() {
 	/** @const */
 	this.KEY_CTRL = 17;
 
-	this.locked_count = 0;
+	this.lockedCount = 0;
 
 	/**
 	 * キーボードの入力状態を記録する配列
 	 */
-	this.key_buffer = [];
+	this.keyBuffer = [];
 };
 
 /**
@@ -21,18 +21,18 @@ const Keyboard = function() {
 Keyboard.prototype.reset = function() {
 	console.log('reset keyboard');
 
-	this.key_buffer = [];
+	this.keyBuffer = [];
 };
 
 /**
  * キーボードの押されたイベントをロックする
  */
 Keyboard.prototype.lock = function() {
-	this.locked_count++;
+	this.lockedCount++;
 };
 Keyboard.prototype.unlock = function() {
-	if (this.locked_count) {
-		this.locked_count--;
+	if (this.lockedCount) {
+		this.lockedCount--;
 	}
 };
 
@@ -42,7 +42,7 @@ Keyboard.prototype.unlock = function() {
  * @returns bool
  */
 Keyboard.prototype.isOn = function(keyCode) {
-	return this.key_buffer[keyCode];
+	return this.keyBuffer[keyCode];
 };
 
 /**
@@ -50,13 +50,13 @@ Keyboard.prototype.isOn = function(keyCode) {
  * @param keyCode
  */
 Keyboard.prototype.setOn = function(keyCode) {
-	if (this.locked_count) {
+	if (this.lockedCount) {
 		return;
 	}
 
 	console.log('on keybord: '+keyCode);
 
-	this.key_buffer[keyCode] = true;
+	this.keyBuffer[keyCode] = true;
 };
 
 /**
@@ -66,5 +66,5 @@ Keyboard.prototype.setOn = function(keyCode) {
 Keyboard.prototype.setOff = function(keyCode) {
 	console.log('off keybord: '+keyCode);
 
-	this.key_buffer[keyCode] = false;
+	this.keyBuffer[keyCode] = false;
 };

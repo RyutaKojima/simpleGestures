@@ -7,6 +7,7 @@
     },
     "rules": {
         "prefer-const": "error",
+        "camelcase": "error",
         "quotes": ["error", "single"],
         "linebreak-style": ["error", "unix"],
         "semi": ["error", "always"],
