@@ -19,7 +19,7 @@ const Keyboard = function() {
  * 現在の入力状態をリセットする
  */
 Keyboard.prototype.reset = function() {
-	console.log("reset keyboard");
+	console.log('reset keyboard');
 
 	this.key_buffer = [];
 };
@@ -54,7 +54,7 @@ Keyboard.prototype.setOn = function(keyCode) {
 		return;
 	}
 
-	console.log("on keybord: "+keyCode);
+	console.log('on keybord: '+keyCode);
 
 	this.key_buffer[keyCode] = true;
 };
@@ -64,7 +64,7 @@ Keyboard.prototype.setOn = function(keyCode) {
  * @param keyCode
  */
 Keyboard.prototype.setOff = function(keyCode) {
-	console.log("off keybord: "+keyCode);
+	console.log('off keybord: '+keyCode);
 
 	this.key_buffer[keyCode] = false;
 };

@@ -26,7 +26,7 @@ const getNowGestureActionName = function () {
  * @type {{load_options: requestFunction.load_options}}
  */
 const requestFunction = {
-	reset_input: function(request) {
+	'reset_input': function(request) {
 		inputKeyboard.lock();
 		inputKeyboard.reset();
 		inputMouse.reset();
@@ -35,28 +35,28 @@ const requestFunction = {
 			inputKeyboard.unlock();
 		}, 100);
 	},
-	reload_option: function() {
+	'reload_option': function() {
 		option.load();
 	},
-	load_options: function(request) {
-		return {message: "yes", "options_json": option.getRawStorageData()};
+	'load_options': function(request) {
+		return {message: 'yes', 'options_json': option.getRawStorageData()};
 	},
-	keydown: function(request) {
+	'keydown': function(request) {
 		inputKeyboard.setOn(request.keyCode);
 
-		return {message: "yes"};
+		return {message: 'yes'};
 	},
-	keyup: function (request) {
+	'keyup': function (request) {
 		inputKeyboard.setOff(request.keyCode);
 
-		return {message: "yes"};
+		return {message: 'yes'};
 	},
-	mousedown: function(request) {
-		responseString = request.which === inputMouse.LEFT_BUTTON ? "LEFT" : "RIGHT";
+	'mousedown': function(request) {
+		responseString = request.which === inputMouse.LEFT_BUTTON ? 'LEFT' : 'RIGHT';
 		console.log(responseString);
 
 		const response = {
-			message: "yes",
+			message: 'yes',
 			action: null,
 			href: request.href,
 			gestureString: '',
@@ -84,7 +84,7 @@ const requestFunction = {
 				lockerOn = true;
 				response.canvas.clear = true;
 
-				response.action = "back";
+				response.action = 'back';
 			}
 		}
 		else if (request.which === inputMouse.RIGHT_BUTTON) {
@@ -94,13 +94,13 @@ const requestFunction = {
 			if (inputMouse.isLeft() && inputMouse.isRight()) {
 				lockerOn = true;
 
-				response.action = "forward";
+				response.action = 'forward';
 			}
 
 			mainGestureMan.clear();
 
 			if ( ! lockerOn) {
-				console.log("select request.href: " + request.href );
+				console.log('select request.href: ' + request.href );
 
 				response.canvas.draw = true;
 				mainGestureMan.startGesture(request.x, request.y, request.href);
@@ -109,10 +109,10 @@ const requestFunction = {
 
 		return response;
 	},
-	mousemove: function(request) {
+	'mousemove': function(request) {
 		// mousemove の event.whichには、最初に押されたボタンが入る。
 		const response = {
-			message: "yes",
+			message: 'yes',
 			action: null,
 			href: request.href,
 			gestureString: mainGestureMan.getGestureString(),
@@ -148,11 +148,11 @@ const requestFunction = {
 
 		return response;
 	},
-	mouseup: function(request) {
+	'mouseup': function(request) {
 		const doAction = getNowGestureActionName();
 
 		const response = {
-			message: "yes",
+			message: 'yes',
 			action: null,
 			href: mainGestureMan.getURL(),
 			gestureString: mainGestureMan.getGestureString(),
@@ -201,7 +201,7 @@ const requestFunction = {
  * @type type
  */
 const gestureFunction = {
-	"new_tab": function(options) {
+	'new_tab': function(options) {
 		let _url = '';
 
 		if (options && typeof options.href !== 'undefined') {
@@ -225,26 +225,26 @@ const gestureFunction = {
 			chrome.tabs.update(activeTab.id, {pinned: !activeTab.pinned});
 		});
 	},
-	"close_tab": function() {
+	'close_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			const current_tab = tabs[0];
 			chrome.tabs.remove(current_tab.id);
 		});
 	},
-	"reload": function() {
+	'reload': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			const current_tab = tabs[0];
 			chrome.tabs.reload(current_tab.id);
 		});
 	},
-	"reload_all": function() {
+	'reload_all': function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
 			tabs.forEach(function(tab){
 				chrome.tabs.reload(tab.id);
 			});
 		});
 	},
-	"next_tab": function() {
+	'next_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			const current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
@@ -257,7 +257,7 @@ const gestureFunction = {
 			});
 		});
 	},
-	"prev_tab": function() {
+	'prev_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			const current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
@@ -270,7 +270,7 @@ const gestureFunction = {
 			});
 		});
 	},
-	"close_right_tab_without_pinned": function () {
+	'close_right_tab_without_pinned': function () {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
@@ -293,7 +293,7 @@ const gestureFunction = {
 			});
 		});
 	},
-	"close_right_tab": function () {
+	'close_right_tab': function () {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
@@ -312,7 +312,7 @@ const gestureFunction = {
 			});
 		});
 	},
-	"close_left_tab_without_pinned": function () {
+	'close_left_tab_without_pinned': function () {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
@@ -335,7 +335,7 @@ const gestureFunction = {
 			});
 		});
 	},
-	"close_left_tab": function () {
+	'close_left_tab': function () {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
@@ -354,7 +354,7 @@ const gestureFunction = {
 			});
 		});
 	},
-	"close_all_background": function() {
+	'close_all_background': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			const current_tab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
@@ -366,20 +366,20 @@ const gestureFunction = {
 			});
 		});
 	},
-	"close_all": function() {
+	'close_all': function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
 			tabs.forEach(function(tab){
 				chrome.tabs.remove(tab.id);
 			});
 		});
 	},
-	"open_option": function() {
+	'open_option': function() {
 		chrome.tabs.create({
-			"url": chrome.extension.getURL("html/options_page.html"),
+			'url': chrome.extension.getURL('html/options_page.html'),
 		});
 	},
-	"open_extension": function() {
-		const chromeExtURL = "chrome://extensions/";
+	'open_extension': function() {
+		const chromeExtURL = 'chrome://extensions/';
 		chrome.tabs.getAllInWindow(null, function(tabs) {
 			tabs.forEach(function(tab){
 				if (tab.url == chromeExtURL) {
@@ -390,10 +390,10 @@ const gestureFunction = {
 			chrome.tabs.create({url:chromeExtURL, selected:true});
 		});
 	},
-	"restart": function() {
-		chrome.tabs.create({url:"chrome://restart", selected:true});
+	'restart': function() {
+		chrome.tabs.create({url:'chrome://restart', selected:true});
 	},
-	"last_tab": function() {
+	'last_tab': function() {
 		chrome.sessions.getRecentlyClosed({maxResults:1}, function(sessions){
 			if (sessions.length) {
 				chrome.sessions.restore();
@@ -412,6 +412,6 @@ chrome.extension.onMessage.addListener(function onMessage_handler(request, sende
 	if (typeof reqFunc === 'function') {
 		sendResponse(reqFunc(request, sender));
 	} else {
-		sendResponse({message: "unknown command"});
+		sendResponse({message: 'unknown command'});
 	}
 });

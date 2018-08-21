@@ -1,5 +1,5 @@
 (function(){
-	const trailCanvas = new TrailCanvas("gestureTrailCanvas", "1000000");
+	const trailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
 	const contentScripts = new ContentScripts(trailCanvas);
 
 	var nextMenuSkip = false;
@@ -93,7 +93,7 @@
 			}
 
 			if (response.canvas.draw) {
-				nextMenuSkip = (response.gestureString != "");
+				nextMenuSkip = (response.gestureString != '');
 
 				if (trailCanvas.getCanvas()) {
 					document.body.appendChild(trailCanvas.getCanvas());
@@ -133,7 +133,7 @@
 
 			// console.log(response);
 
-			nextMenuSkip = (response.gestureString != "");
+			nextMenuSkip = (response.gestureString != '');
 
 			if (response.action) {
 				nextMenuSkip = true;

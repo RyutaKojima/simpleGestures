@@ -6,40 +6,40 @@ const LibOption = function() {
 	 * ローカル領域に保存するときのキー
 	 * @const
 	 */
-	this.LOCAL_STRAGE_KEY = "options";
+	this.LOCAL_STRAGE_KEY = 'options';
 
 	/**
 	 * @const
 	 */
 	this.OPTION_ID_LIST = [
-		"color_code",
-		"line_width"
+		'color_code',
+		'line_width'
 	];
 
 	/**
 	 * @const
 	 */
 	this.GESTURE_ID_LIST = [
-		"gesture_close_tab",
-		"gesture_new_tab",
-		"gesture_pin_tab",
-		"gesture_reload",
-		"gesture_forward",
-		"gesture_back",
-		"gesture_scroll_top",
-		"gesture_scroll_bottom",
-		"gesture_last_tab",
-		"gesture_reload_all",
-		"gesture_next_tab",
-		"gesture_prev_tab",
-		"gesture_close_right_tab_without_pinned",
-		"gesture_close_right_tab",
-		"gesture_close_left_tab_without_pinned",
-		"gesture_close_left_tab",
-		"gesture_close_all_background",
-		"gesture_close_all",
-		"gesture_open_option",
-		"gesture_open_extension"
+		'gesture_close_tab',
+		'gesture_new_tab',
+		'gesture_pin_tab',
+		'gesture_reload',
+		'gesture_forward',
+		'gesture_back',
+		'gesture_scroll_top',
+		'gesture_scroll_bottom',
+		'gesture_last_tab',
+		'gesture_reload_all',
+		'gesture_next_tab',
+		'gesture_prev_tab',
+		'gesture_close_right_tab_without_pinned',
+		'gesture_close_right_tab',
+		'gesture_close_left_tab_without_pinned',
+		'gesture_close_left_tab',
+		'gesture_close_all_background',
+		'gesture_close_all',
+		'gesture_open_option',
+		'gesture_open_extension'
 		// "gesture_restart"
 	];
 
@@ -84,7 +84,7 @@ LibOption.prototype.setRawStorageData = function (rawStorageData) {
 	this.GESTURE_ID_LIST.forEach(function(key){
 		if (that.paramExists(key)) {
 			const command = that.getParam(key, null);
-			const action = key.replace("gesture_", "");
+			const action = key.replace('gesture_', '');
 			if (command) {
 				// cut "gesture_" prefix
 				that.gestureHash[command] = action;
@@ -112,12 +112,12 @@ LibOption.prototype.getGestureActionName = function(command) {
 
 LibOption.prototype.isJapanese      = function () { return (this.getLanguage() === 'Japanese'); };
 LibOption.prototype.isEnglish       = function () { return (this.getLanguage() === 'English'); };
-LibOption.prototype.getLanguage     = function () { return this.getParam("language",   'English'); };
-LibOption.prototype.getColorCode    = function () { return this.getParam("color_code", '#FF0000'); };
-LibOption.prototype.getLineWidth    = function () { return this.getParam("line_width",      1); };
-LibOption.prototype.isCommandTextOn = function () { return this.getParam("command_text_on", true); };
-LibOption.prototype.isActionTextOn  = function () { return this.getParam("action_text_on",  true); };
-LibOption.prototype.isTrailOn       = function () { return this.getParam("trail_on",        true); };
+LibOption.prototype.getLanguage     = function () { return this.getParam('language',   'English'); };
+LibOption.prototype.getColorCode    = function () { return this.getParam('color_code', '#FF0000'); };
+LibOption.prototype.getLineWidth    = function () { return this.getParam('line_width',      1); };
+LibOption.prototype.isCommandTextOn = function () { return this.getParam('command_text_on', true); };
+LibOption.prototype.isActionTextOn  = function () { return this.getParam('action_text_on',  true); };
+LibOption.prototype.isTrailOn       = function () { return this.getParam('trail_on',        true); };
 
 /**
  * default option setting
@@ -125,19 +125,19 @@ LibOption.prototype.isTrailOn       = function () { return this.getParam("trail_
  */
 LibOption.prototype.createDefaultOptions = function () {
 	return {
-		"language": "Japanese",
-		"color_code": "#FF0000",
-		"line_width": "3",
-		"command_text_on": true,
-		"action_text_on": true,
-		"trail_on": true,
+		'language': 'Japanese',
+		'color_code': '#FF0000',
+		'line_width': '3',
+		'command_text_on': true,
+		'action_text_on': true,
+		'trail_on': true,
 		// Default gesture
-		"gesture_close_tab":   "DR",  // ↓→
-		"gesture_forward":     "R",   // →
-		"gesture_back":        "L",   // ←
-		"gesture_new_tab":     "D",   // ↓
-		"gesture_reload":      "DU",  // ↓↑
-		"gesture_open_option": "RDLU" // →↓←↑
+		'gesture_close_tab':   'DR',  // ↓→
+		'gesture_forward':     'R',   // →
+		'gesture_back':        'L',   // ←
+		'gesture_new_tab':     'D',   // ↓
+		'gesture_reload':      'DU',  // ↓↑
+		'gesture_open_option': 'RDLU' // →↓←↑
 	};
 };
 

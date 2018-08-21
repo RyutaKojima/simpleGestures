@@ -12,7 +12,7 @@ const LibGesture = function() {
 	this._lastX = -1;
 	this._lastY = -1;
 	this._lastDirection = null;
-	this._strGestureCommand = "";
+	this._strGestureCommand = '';
 	this._linkUrl = null;
 };
 
@@ -29,7 +29,7 @@ LibGesture.prototype.clear = function() {
 	this._lastX = -1;
 	this._lastY = -1;
 	this._lastDirection = null;
-	this._strGestureCommand = "";
+	this._strGestureCommand = '';
 	this._linkUrl = null;
 };
 
@@ -74,9 +74,9 @@ LibGesture.prototype.registPoint = function(x, y) {
 				}
 				else {
 					// gesture cancel
-					this._strGestureCommand = "";
+					this._strGestureCommand = '';
 					for (let i = 0; i < this.COMMAND_MAX_LENGTH; i++) {
-						this._strGestureCommand += "-";
+						this._strGestureCommand += '-';
 					}
 				}
 			}
@@ -131,15 +131,15 @@ LibGesture.prototype.calcRotation = function (x, y, lastX, lastY) {
  */
 LibGesture.prototype.rotationToDirection = function (rotation) {
 	if (rotation >= -45.0 && rotation < 45.0) {
-		return "R";
+		return 'R';
 	}
 	else if (rotation >= 45.0 && rotation < 135.0) {
-		return "D";
+		return 'D';
 	}
 	else if (rotation >= -135.0 && rotation < -45.0) {
-		return "U";
+		return 'U';
 	}
 	else {
-		return "L";
+		return 'L';
 	}
 };

@@ -13,11 +13,11 @@ const TrailCanvas = function(_Id, _zIndex) {
 	this.myCanvas.style.zIndex   = _zIndex;
 
 	// Set in the center position.
-	this.myCanvas.style.top      = "0px";
-	this.myCanvas.style.left     = "0px";
-	this.myCanvas.style.right    = "0px";
-	this.myCanvas.style.bottom   = "0px";
-	this.myCanvas.style.margin   = "auto";
+	this.myCanvas.style.top      = '0px';
+	this.myCanvas.style.left     = '0px';
+	this.myCanvas.style.right    = '0px';
+	this.myCanvas.style.bottom   = '0px';
+	this.myCanvas.style.margin   = 'auto';
 	this.myCanvas.style.position = 'fixed';
 	this.myCanvas.style.overflow = 'visible';
 };

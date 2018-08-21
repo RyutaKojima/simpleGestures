@@ -1,6 +1,6 @@
 const gestureForOption = new LibGesture();
 const option = new LibOption();
-const canvasForOption = new TrailCanvas("gestureOptionCanvas", '10002');
+const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
 const contentScripts = new ContentScripts(null);
 
 option.load();
@@ -31,7 +31,7 @@ $(() => {
 	const check_ids = ['command_text_on', 'action_text_on', 'trail_on'];
 	check_ids.forEach((id_name) => {
 		$('#'+id_name).on('change', event => {
-			option.setParam(id_name, $(event.target).prop("checked"));
+			option.setParam(id_name, $(event.target).prop('checked'));
 			saveOptions();
 		});
 	});
@@ -152,18 +152,18 @@ $(() => {
 		const confirmOk = window.confirm(lang.confirmOptionReset[option.getLanguage()]);
 		if (confirmOk) {
 			option.reset();
-			chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
+			chrome.extension.sendMessage({msg: 'reload_option'}, (response) => {});
 			initOptionView();
 			changeLanguage();
 		}
 	});
 
 	// color wheel
-	const colorWheel = Raphael.colorwheel($("#input_example")[0],100);
-	colorWheel.input($("#color_code")[0]);
+	const colorWheel = Raphael.colorwheel($('#input_example')[0],100);
+	colorWheel.input($('#color_code')[0]);
 	colorWheel.color(option.getColorCode());
 	colorWheel.onchange(() => {
-		$("#color_code").triggerHandler('change');
+		$('#color_code').triggerHandler('change');
 	});
 });
 
@@ -178,7 +178,7 @@ const setCanvasStyle = (canvas) => {
 	canvas.setLineStyle('#000000', 1);
 
 	const ctx = canvas.getCanvas().getContext('2d');
-	ctx.font = "bold 30px 'Arial'";
+	ctx.font = 'bold 30px \'Arial\'';
 	ctx.textBaseline = 'top';
 //	ctx.fillStyle = "#FF0000";
 };
@@ -193,11 +193,11 @@ const initOptionView = () => {
 		'trail_on': option.isTrailOn()
 	};
 	const radioValues = {
-		"language": option.getLanguage()
+		'language': option.getLanguage()
 	};
 	const textValues = {
-		"color_code": option.getColorCode(),
-		"line_width": option.getLineWidth()
+		'color_code': option.getColorCode(),
+		'line_width': option.getLineWidth()
 	};
 
 	// 各DOMに設定値を適用
@@ -209,12 +209,12 @@ const initOptionView = () => {
 	});
 
 	Object.keys(checkValues).forEach((key) => {
-		$('#'+key).prop("checked", checkValues[key]);
+		$('#'+key).prop('checked', checkValues[key]);
 	});
 
 	Object.keys(radioValues).forEach((key) => {
 		const value = radioValues[key];
-		$('[name='+key+'][value='+value+']').prop("checked", true);
+		$('[name='+key+'][value='+value+']').prop('checked', true);
 	});
 
 	// ジェスチャー
@@ -299,5 +299,5 @@ const changeLanguage = () => {
 
 const saveOptions = () => {
 	option.save();
-	chrome.extension.sendMessage({msg: "reload_option"}, (response) => {});
+	chrome.extension.sendMessage({msg: 'reload_option'}, (response) => {});
 };

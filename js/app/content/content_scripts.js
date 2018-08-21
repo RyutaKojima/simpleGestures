@@ -103,7 +103,7 @@ ContentScripts.prototype.draw = function (lineParam, commandName, actionName) {
 
 			if (this.option.isActionTextOn()) {
 				if (actionName !== $divAction.html()) {
-					$divAction.html( (actionName != null) ? actionName : "");
+					$divAction.html( (actionName != null) ? actionName : '');
 				}
 			} else {
 				$divAction.html('');
