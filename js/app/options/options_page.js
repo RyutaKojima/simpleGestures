@@ -164,7 +164,7 @@ $(() => {
 	colorWheel.color(option.getColorCode());
 	colorWheel.onchange(() => {
 		$("#color_code").triggerHandler('change');
-	})
+	});
 });
 
 $(document).on('contextmenu', () => {
@@ -220,7 +220,7 @@ const initOptionView = () => {
 	// ジェスチャー
 	option.GESTURE_ID_LIST.forEach((key) => {
 		const $inputTextElement = $('#'+key);
-		let setText = option.getParam(key, '');
+		const setText = option.getParam(key, '');
 
 		$inputTextElement.val(setText);
 
