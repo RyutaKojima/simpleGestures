@@ -12,3 +12,5 @@ https://developer.chrome.com/extensions/tabs
 
 ## chrome.input.ime
 https://developer.chrome.com/extensions/input_ime
+
+test
