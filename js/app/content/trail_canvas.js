@@ -1,23 +1,26 @@
 /**
  * TrailCanvas
+ *
+ * @param {number} _Id
+ * @param {number} _zIndex
  * @constructor
  */
 const TrailCanvas = function(_Id, _zIndex) {
 	this.myCanvas = document.createElement('canvas');
 	this.myCanvas.id = _Id;
 
-	//------------------------------
+	// ------------------------------
 	// Style settings.
-	//------------------------------
+	// ------------------------------
 	// Set priority
-	this.myCanvas.style.zIndex   = _zIndex;
+	this.myCanvas.style.zIndex = _zIndex;
 
 	// Set in the center position.
-	this.myCanvas.style.top      = '0px';
-	this.myCanvas.style.left     = '0px';
-	this.myCanvas.style.right    = '0px';
-	this.myCanvas.style.bottom   = '0px';
-	this.myCanvas.style.margin   = 'auto';
+	this.myCanvas.style.top = '0px';
+	this.myCanvas.style.left = '0px';
+	this.myCanvas.style.right = '0px';
+	this.myCanvas.style.bottom = '0px';
+	this.myCanvas.style.margin = 'auto';
 	this.myCanvas.style.position = 'fixed';
 	this.myCanvas.style.overflow = 'visible';
 };
@@ -34,11 +37,11 @@ TrailCanvas.prototype.getContext2d = function() {
 
 /**
  * キャンバスのサイズを変更
- * 
+ *
  * @param {type} _width
  * @param {type} _height
  */
-TrailCanvas.prototype.setCanvasSize = function (_width, _height) {
+TrailCanvas.prototype.setCanvasSize = function(_width, _height) {
 	if (this.myCanvas) {
 //		this.myCanvas.style.width    = _width + "px";
 //		this.myCanvas.style.height   = _height + "px";
@@ -52,22 +55,22 @@ TrailCanvas.prototype.setCanvasSize = function (_width, _height) {
  *
  * @param {type} _color
  * @param {type} _width
- * @returns {undefined}
+ * @return {undefined}
  */
-TrailCanvas.prototype.setLineStyle = function (_color, _width) {
+TrailCanvas.prototype.setLineStyle = function(_color, _width) {
 	const ctx = this.getContext2d();
 	if ( ! ctx) {
 		return;
 	}
 
 	ctx.strokeStyle = _color;
-	ctx.lineWidth   = _width;
+	ctx.lineWidth = _width;
 };
 
 /**
  * キャンバスをクリア
  */
-TrailCanvas.prototype.clearCanvas = function () {
+TrailCanvas.prototype.clearCanvas = function() {
 	const ctx = this.getContext2d();
 	if ( ! ctx) {
 		return;
@@ -78,13 +81,13 @@ TrailCanvas.prototype.clearCanvas = function () {
 
 /**
  * テキストを描画
- * 
- * @param text
- * @param drawX
- * @param drawY
- * @param textColor
+ *
+ * @param {string} text
+ * @param {number} drawX
+ * @param {number} drawY
+ * @param {string} textColor
  */
-TrailCanvas.prototype.drawText = function (text, drawX, drawY, textColor) {
+TrailCanvas.prototype.drawText = function(text, drawX, drawY, textColor) {
 	const ctx = this.getContext2d();
 	if (ctx) {
 		const prevFillStyle = ctx.fillStyle;
@@ -103,13 +106,13 @@ TrailCanvas.prototype.drawText = function (text, drawX, drawY, textColor) {
 
 /**
  * 直線を描く
- * 
- * @param fromX
- * @param fromY
- * @param toX
- * @param toY
+ *
+ * @param {number} fromX
+ * @param {number} fromY
+ * @param {number} toX
+ * @param {number} toY
  */
-TrailCanvas.prototype.drawLine = function (fromX, fromY, toX, toY) {
+TrailCanvas.prototype.drawLine = function(fromX, fromY, toX, toY) {
 	const ctx = this.getContext2d();
 	if (ctx) {
 		ctx.beginPath();

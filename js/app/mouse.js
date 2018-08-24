@@ -19,17 +19,15 @@ const Mouse = function() {
 /**
  * マウスイベントから、リンクURLを取得して返す
  *
- * @param mouseevent
- * @returns {*}
+ * @param {Object} mouseevent
+ * @return {*}
  */
-Mouse.getHref = function (mouseevent) {
+Mouse.getHref = function(mouseevent) {
 	if (mouseevent.target.href) {
 		return mouseevent.target.href;
-	}
-	else if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
+	} else if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
 		return mouseevent.target.parentElement.href;
-	}
-	else {
+	} else {
 		return null;
 	}
 };
@@ -43,8 +41,8 @@ Mouse.prototype.reset = function() {
 
 /**
  * 基本操作メソッド
- * @param btnCode
- * @returns {*}
+ * @param {numeric} btnCode
+ * @return {*}
  */
 Mouse.prototype.isOn = function(btnCode) {
 	return this.btnBuffer[btnCode];
@@ -58,8 +56,6 @@ Mouse.prototype.setOff = function(btnCode) {
 	this.btnBuffer[btnCode] = false;
 };
 
-// --------------------------------------------------------------------------------
-// for Left Button
 
 Mouse.prototype.isLeft = function() {
 	return this.btnBuffer[this.LEFT_BUTTON];
@@ -69,8 +65,7 @@ Mouse.prototype.setLeft = function(_flg) {
 	this.btnBuffer[this.LEFT_BUTTON] = _flg;
 };
 
-// --------------------------------------------------------------------------------
-// for Right Button
+
 Mouse.prototype.isRight = function() {
 	return this.btnBuffer[this.RIGHT_BUTTON];
 };

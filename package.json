@@ -21,6 +21,7 @@
   "homepage": "https://github.com/RyutaKojima/simpleGestures#readme",
   "devDependencies": {
     "eslint": "^5.4.0",
+    "eslint-config-google": "^0.9.1",
     "stylelint": "^9.5.0"
   }
 }

@@ -13,7 +13,7 @@ const LibOption = function() {
 	 */
 	this.OPTION_ID_LIST = [
 		'color_code',
-		'line_width'
+		'line_width',
 	];
 
 	/**
@@ -39,7 +39,7 @@ const LibOption = function() {
 		'gesture_close_all_background',
 		'gesture_close_all',
 		'gesture_open_option',
-		'gesture_open_extension'
+		'gesture_open_extension',
 		// "gesture_restart"
 	];
 
@@ -51,25 +51,25 @@ const LibOption = function() {
 
 /**
  *
- * @returns {undefined}
+ * @return {undefined}
  */
-LibOption.prototype.reset = function () {
+LibOption.prototype.reset = function() {
 //	localStorage.removeItem(this.LOCAL_STRAGE_KEY);
 	localStorage.clear();
 
 	this.load();
 };
 
-LibOption.prototype.load = function () {
+LibOption.prototype.load = function() {
 	this.storageData = localStorage.getItem(this.LOCAL_STRAGE_KEY);
 	this.setRawStorageData(this.storageData);
 };
 
-LibOption.prototype.getRawStorageData = function () {
+LibOption.prototype.getRawStorageData = function() {
 	return this.storageData;
 };
 
-LibOption.prototype.setRawStorageData = function (rawStorageData) {
+LibOption.prototype.setRawStorageData = function(rawStorageData) {
 	const that = this;
 
 	this.storageData = rawStorageData;
@@ -81,7 +81,7 @@ LibOption.prototype.setRawStorageData = function (rawStorageData) {
 	}
 
 	this.gestureHash = {};
-	this.GESTURE_ID_LIST.forEach(function(key){
+	this.GESTURE_ID_LIST.forEach(function(key) {
 		if (that.paramExists(key)) {
 			const command = that.getParam(key, null);
 			const action = key.replace('gesture_', '');
@@ -93,9 +93,15 @@ LibOption.prototype.setRawStorageData = function (rawStorageData) {
 	});
 };
 
-LibOption.prototype.enableGestureParam = function(paramName) { return (this.GESTURE_ID_LIST && this.GESTURE_ID_LIST.indexOf(paramName) !== -1); };
-LibOption.prototype.paramExists = function(paramName) { return (this.optionsInstance && this.optionsInstance.hasOwnProperty(paramName)); };
-LibOption.prototype.getParam = function(paramName, defaultValue) { return this.paramExists(paramName) ? this.optionsInstance[paramName] : defaultValue; };
+LibOption.prototype.enableGestureParam = function(paramName) {
+ return (this.GESTURE_ID_LIST && this.GESTURE_ID_LIST.indexOf(paramName) !== -1);
+};
+LibOption.prototype.paramExists = function(paramName) {
+ return (this.optionsInstance && this.optionsInstance.hasOwnProperty(paramName));
+};
+LibOption.prototype.getParam = function(paramName, defaultValue) {
+ return this.paramExists(paramName) ? this.optionsInstance[paramName] : defaultValue;
+};
 LibOption.prototype.setParam = function(paramName, value) {
 	if (this.paramExists(paramName) || this.enableGestureParam(paramName)) {
 		this.optionsInstance[paramName] = value;
@@ -110,20 +116,36 @@ LibOption.prototype.getGestureActionName = function(command) {
 	return null;
 };
 
-LibOption.prototype.isJapanese      = function () { return (this.getLanguage() === 'Japanese'); };
-LibOption.prototype.isEnglish       = function () { return (this.getLanguage() === 'English'); };
-LibOption.prototype.getLanguage     = function () { return this.getParam('language',   'English'); };
-LibOption.prototype.getColorCode    = function () { return this.getParam('color_code', '#FF0000'); };
-LibOption.prototype.getLineWidth    = function () { return this.getParam('line_width',      1); };
-LibOption.prototype.isCommandTextOn = function () { return this.getParam('command_text_on', true); };
-LibOption.prototype.isActionTextOn  = function () { return this.getParam('action_text_on',  true); };
-LibOption.prototype.isTrailOn       = function () { return this.getParam('trail_on',        true); };
+LibOption.prototype.isJapanese = function() {
+ return (this.getLanguage() === 'Japanese');
+};
+LibOption.prototype.isEnglish = function() {
+ return (this.getLanguage() === 'English');
+};
+LibOption.prototype.getLanguage = function() {
+ return this.getParam('language', 'English');
+};
+LibOption.prototype.getColorCode = function() {
+ return this.getParam('color_code', '#FF0000');
+};
+LibOption.prototype.getLineWidth = function() {
+ return this.getParam('line_width', 1);
+};
+LibOption.prototype.isCommandTextOn = function() {
+ return this.getParam('command_text_on', true);
+};
+LibOption.prototype.isActionTextOn = function() {
+ return this.getParam('action_text_on', true);
+};
+LibOption.prototype.isTrailOn = function() {
+ return this.getParam('trail_on', true);
+};
 
 /**
  * default option setting
- * @returns {Object|LibOption.prototype.createDefaultOptions.tmp_obj}
+ * @return {Object|LibOption.prototype.createDefaultOptions.tmp_obj}
  */
-LibOption.prototype.createDefaultOptions = function () {
+LibOption.prototype.createDefaultOptions = function() {
 	return {
 		'language': 'Japanese',
 		'color_code': '#FF0000',
@@ -132,15 +154,15 @@ LibOption.prototype.createDefaultOptions = function () {
 		'action_text_on': true,
 		'trail_on': true,
 		// Default gesture
-		'gesture_close_tab':   'DR',  // ↓→
-		'gesture_forward':     'R',   // →
-		'gesture_back':        'L',   // ←
-		'gesture_new_tab':     'D',   // ↓
-		'gesture_reload':      'DU',  // ↓↑
-		'gesture_open_option': 'RDLU' // →↓←↑
+		'gesture_close_tab': 'DR', // ↓→
+		'gesture_forward': 'R', // →
+		'gesture_back': 'L', // ←
+		'gesture_new_tab': 'D', // ↓
+		'gesture_reload': 'DU', // ↓↑
+		'gesture_open_option': 'RDLU', // →↓←↑
 	};
 };
 
-LibOption.prototype.save = function () {
+LibOption.prototype.save = function() {
 	localStorage.setItem(this.LOCAL_STRAGE_KEY, JSON.stringify(this.optionsInstance));
 };

@@ -1,13 +1,13 @@
-(function(){
+(function() {
 	const trailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
 	const contentScripts = new ContentScripts(trailCanvas);
 
-	var nextMenuSkip = false;
+	let nextMenuSkip = false;
 
 	/**
 	 * 画面表示をすべてクリア
 	 */
-	const clearAllDisplay = function () {
+	const clearAllDisplay = function() {
 		if (trailCanvas) {
 			trailCanvas.clearCanvas();
 
@@ -24,17 +24,17 @@
 		}
 	};
 
-	//console.log("$(window).ready: frames=" + window.frames.length);
+	// console.log("$(window).ready: frames=" + window.frames.length);
 	trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
 	contentScripts.loadOption();
 	contentScripts.setCanvasStyle();
 	contentScripts.createInfoDiv();
 
-	//--------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
 	// Event Handler
-	//--------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
 	window.addEventListener('focus', function onFocus() {
-		chrome.extension.sendMessage({ msg: 'reset_input', event:'focus' }, function(response) {});
+		chrome.extension.sendMessage({msg: 'reset_input', event: 'focus'}, (response) => {});
 	});
 
 	$(window).on('resize', () => {
@@ -43,21 +43,21 @@
 
 	$(document).on('keydown', function onKeyDown(e) {
 		if (! e.originalEvent.repeat) {
-			chrome.extension.sendMessage({msg: 'keydown', keyCode: e.keyCode}, function(response) {});
+			chrome.extension.sendMessage({msg: 'keydown', keyCode: e.keyCode}, (response) => {});
 		}
 	});
 
 	$(document).on('keyup', function onKeyUp(e) {
-		chrome.extension.sendMessage({msg: 'keyup', keyCode: e.keyCode}, function(response) {});
+		chrome.extension.sendMessage({msg: 'keyup', keyCode: e.keyCode}, (response) => {});
 	});
 
-	$(document).on('mousedown', function onMouseDown(event) {
+	$(document).on('mousedown', (event) => {
 		const sendMouseDownParam = {
 			msg: 'mousedown',
 			which: event.which,
 			href: Mouse.getHref(event),
 			x: event.pageX - $(window).scrollLeft(),
-			y: event.pageY - $(window).scrollTop()
+			y: event.pageY - $(window).scrollTop(),
 		};
 		chrome.extension.sendMessage(sendMouseDownParam, function(response) {
 			if (response === null) {
@@ -78,14 +78,16 @@
 	});
 
 	$(document).on('mousemove', function onMouseMove(event) {
-		// console.log("(" + event.pageX + ", " + event.pageY + ")" + event.which + ",frm=" + window.frames.length);
+		// console.log('(' + event.pageX + ', ' + event.pageY + ')'
+		// 	+ event.which + ',frm=' + window.frames.length
+		// );
 
 		const sendMouseMoveParam = {
 			msg: 'mousemove',
 			which: event.which,
 			href: '',
 			x: event.pageX - $(window).scrollLeft(),
-			y: event.pageY - $(window).scrollTop()
+			y: event.pageY - $(window).scrollTop(),
 		};
 		chrome.extension.sendMessage(sendMouseMoveParam, function(response) {
 			if (response === null) {
@@ -124,7 +126,7 @@
 			which: event.which,
 			href: '',
 			x: event.pageX - $(window).scrollLeft(),
-			y: event.pageY - $(window).scrollTop()
+			y: event.pageY - $(window).scrollTop(),
 		};
 		chrome.extension.sendMessage(sendMouseUpParam, function(response) {
 			if (response === null) {
@@ -158,5 +160,4 @@
 
 		return true;
 	});
-
 })();

@@ -38,8 +38,9 @@ Keyboard.prototype.unlock = function() {
 
 /**
  * 指定したキーが押されているか判定する。 押されていたら true
- * @param keyCode
- * @returns bool
+ *
+ * @param {number} keyCode
+ * @return {bool}
  */
 Keyboard.prototype.isOn = function(keyCode) {
 	return this.keyBuffer[keyCode];
@@ -47,7 +48,8 @@ Keyboard.prototype.isOn = function(keyCode) {
 
 /**
  * キーを押された状態に設定する
- * @param keyCode
+ *
+ * @param {number} keyCode
  */
 Keyboard.prototype.setOn = function(keyCode) {
 	if (this.lockedCount) {
@@ -61,7 +63,8 @@ Keyboard.prototype.setOn = function(keyCode) {
 
 /**
  * キーを離した状態に設定する
- * @param keyCode
+ *
+ * @param {number} keyCode
  */
 Keyboard.prototype.setOff = function(keyCode) {
 	console.log('off keybord: '+keyCode);

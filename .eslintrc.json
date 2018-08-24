@@ -1,4 +1,5 @@
 {
+    "extends": "google",
     "env": {
         "browser": true
     },
@@ -6,38 +7,8 @@
         "ecmaVersion": 6
     },
     "rules": {
-        "prefer-const": "error",
-        "camelcase": "error",
-        "quotes": ["error", "single"],
-        "linebreak-style": ["error", "unix"],
-        "semi": ["error", "always"],
-        "no-unreachable": "error",
-        "curly": ["error", "multi-line"],
-        "no-eval": "error",
-        "no-extra-bind": "error",
-        "no-fallthrough": ["error", { "commentPattern": "no[\\s\\w]*break|through" }],
-        "no-floating-decimal": "error",
-        "no-invalid-this": "error",
-        "no-new-wrappers": "error",
-        "no-process-env": "error",
-        "no-proto": "error",
-        "no-return-assign": "error",
-        "no-script-url": "error",
-        "no-sequences": "error",
-        "no-throw-literal": "error",
-        "no-void": "error",
-        "no-with": "error",
-        "no-cond-assign": "error",
-        "no-dupe-args": "error",
-        "no-dupe-keys": "error",
-        "no-duplicate-case": "error",
-        "no-func-assign": "error",
-        "no-obj-calls": "error",
-        "no-sparse-arrays": "error",
-        "valid-typeof": "error",
-        "no-unexpected-multiline": "error",
-        "consistent-this": [2, "that"],
-        "no-unneeded-ternary": "error",
-        "semi-spacing": ["off", { "before": false, "after": true }]
+        "no-tabs": "off",
+        "no-unused-vars": "off",
+        "max-len": ["error", { "code": 100 }]
     }
 }

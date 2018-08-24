@@ -4,14 +4,15 @@ const mainGestureMan = new LibGesture();
 const option = new LibOption();
 option.load();
 
-var lockerOn = false;
-var nextMenuSkip = true;
+let lockerOn = false;
+let nextMenuSkip = true;
 
 /**
  * 現在のジェスチャ軌跡に対応するアクション名を返す
- * @returns {*}
+ *
+ * @return {null|string}
  */
-const getNowGestureActionName = function () {
+const getNowGestureActionName = function() {
 	const gestureString = mainGestureMan.getGestureString();
 	if ( ! gestureString) {
 		return null;
@@ -22,16 +23,16 @@ const getNowGestureActionName = function () {
 
 /**
  * フロントからのメッセージリクエストに対する処理
- * 
+ *
  * @type {{load_options: requestFunction.load_options}}
  */
 const requestFunction = {
-	'reset_input': function(request) {
+	'reset_input': (request) => {
 		inputKeyboard.lock();
 		inputKeyboard.reset();
 		inputMouse.reset();
 
-		setTimeout(function(){
+		setTimeout(() => {
 			inputKeyboard.unlock();
 		}, 100);
 	},
@@ -39,14 +40,14 @@ const requestFunction = {
 		option.load();
 	},
 	'load_options': function(request) {
-		return {message: 'yes', 'options_json': option.getRawStorageData()};
+		return {'message': 'yes', 'options_json': option.getRawStorageData()};
 	},
-	'keydown': function(request) {
+	'keydown': (request) => {
 		inputKeyboard.setOn(request.keyCode);
 
 		return {message: 'yes'};
 	},
-	'keyup': function (request) {
+	'keyup': (request) => {
 		inputKeyboard.setOff(request.keyCode);
 
 		return {message: 'yes'};
@@ -68,7 +69,7 @@ const requestFunction = {
 				y: request.y,
 				toX: request.x,
 				toY: request.y,
-			}
+			},
 		};
 
 		// Ctrlが押された状態だと、マウスジェスチャ無効な仕様
@@ -86,8 +87,7 @@ const requestFunction = {
 
 				response.action = 'back';
 			}
-		}
-		else if (request.which === inputMouse.RIGHT_BUTTON) {
+		} else if (request.which === inputMouse.RIGHT_BUTTON) {
 			nextMenuSkip = false;
 
 			// locker gesture
@@ -124,7 +124,7 @@ const requestFunction = {
 				y: request.y,
 				toX: request.x,
 				toY: request.y,
-			}
+			},
 		};
 
 		if (request.which == 0) {
@@ -164,7 +164,7 @@ const requestFunction = {
 				y: request.y,
 				toX: request.x,
 				toY: request.y,
-			}
+			},
 		};
 
 		inputMouse.setOff(request.which);
@@ -172,17 +172,15 @@ const requestFunction = {
 		if (request.which === inputMouse.RIGHT_BUTTON) {
 			if (lockerOn) {
 				nextMenuSkip = true;
-			}
-			else if (doAction) {
+			} else if (doAction) {
 				nextMenuSkip = true;
 
 				if (typeof gestureFunction[doAction] === 'function') {
 					const optionParams = {
-						href: mainGestureMan.getURL()
+						href: mainGestureMan.getURL(),
 					};
 					gestureFunction[doAction](optionParams);
-				}
-				else {
+				} else {
 					// バックグラウンドで処理できないものはフロントに任せる
 					response.action = doAction;
 				}
@@ -212,15 +210,14 @@ const gestureFunction = {
 			const activeTab = tabs[0];
 			const appendIndex = activeTab.index+1;
 			if ( ! _url) {
-				chrome.tabs.create({index:appendIndex});
-			}
-			else {
-				chrome.tabs.create({url:_url, index:appendIndex});
+				chrome.tabs.create({index: appendIndex});
+			} else {
+				chrome.tabs.create({url: _url, index: appendIndex});
 			}
 		});
 	},
 	'pin_tab': () => {
-		chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+		chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
 			const activeTab = tabs[0];
 			chrome.tabs.update(activeTab.id, {pinned: !activeTab.pinned});
 		});
@@ -239,7 +236,7 @@ const gestureFunction = {
 	},
 	'reload_all': function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			tabs.forEach(function(tab){
+			tabs.forEach((tab) => {
 				chrome.tabs.reload(tab.id);
 			});
 		});
@@ -249,10 +246,9 @@ const gestureFunction = {
 			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
 				if (activeTab.index == tabs.length-1) {
-					chrome.tabs.update(tabs[0].id, {active:true});
-				}
-				else {
-					chrome.tabs.update(tabs[activeTab.index+1].id, {active:true});
+					chrome.tabs.update(tabs[0].id, {active: true});
+				} else {
+					chrome.tabs.update(tabs[activeTab.index+1].id, {active: true});
 				}
 			});
 		});
@@ -262,22 +258,21 @@ const gestureFunction = {
 			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
 				if (activeTab.index == 0) {
-					chrome.tabs.update(tabs[tabs.length-1].id, {active:true});
-				}
-				else {
-					chrome.tabs.update(tabs[activeTab.index-1].id, {active:true});
+					chrome.tabs.update(tabs[tabs.length-1].id, {active: true});
+				} else {
+					chrome.tabs.update(tabs[activeTab.index-1].id, {active: true});
 				}
 			});
 		});
 	},
-	'close_right_tab_without_pinned': function () {
+	'close_right_tab_without_pinned': function() {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
 			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
 				const removeTabsId = [];
 
-				tabsInCurrentWindow.forEach(tab => {
+				tabsInCurrentWindow.forEach((tab) => {
 					if (tab.pinned) {
 						return;
 					}
@@ -287,39 +282,39 @@ const gestureFunction = {
 					}
 				});
 
-				removeTabsId.forEach(removeId => {
+				removeTabsId.forEach((removeId) => {
 					chrome.tabs.remove(removeId);
 				});
 			});
 		});
 	},
-	'close_right_tab': function () {
+	'close_right_tab': function() {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
 			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
 				const removeTabsId = [];
 
-				tabsInCurrentWindow.forEach(tab => {
+				tabsInCurrentWindow.forEach((tab) => {
 					if (tab.index > activeTab.index) {
 						removeTabsId.push(tab.id);
 					}
 				});
 
-				removeTabsId.forEach(removeId => {
+				removeTabsId.forEach((removeId) => {
 					chrome.tabs.remove(removeId);
 				});
 			});
 		});
 	},
-	'close_left_tab_without_pinned': function () {
+	'close_left_tab_without_pinned': function() {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
 			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
 				const removeTabsId = [];
 
-				tabsInCurrentWindow.forEach(tab => {
+				tabsInCurrentWindow.forEach((tab) => {
 					if (tab.pinned) {
 						return;
 					}
@@ -329,26 +324,26 @@ const gestureFunction = {
 					}
 				});
 
-				removeTabsId.forEach(removeId => {
+				removeTabsId.forEach((removeId) => {
 					chrome.tabs.remove(removeId);
 				});
 			});
 		});
 	},
-	'close_left_tab': function () {
+	'close_left_tab': function() {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
 			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
 				const removeTabsId = [];
 
-				tabsInCurrentWindow.forEach(tab => {
+				tabsInCurrentWindow.forEach((tab) => {
 					if (tab.index < activeTab.index) {
 						removeTabsId.push(tab.id);
 					}
 				});
 
-				removeTabsId.forEach(removeId => {
+				removeTabsId.forEach((removeId) => {
 					chrome.tabs.remove(removeId);
 				});
 			});
@@ -358,7 +353,7 @@ const gestureFunction = {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
-				tabs.forEach(function(tab){
+				tabs.forEach(function(tab) {
 					if (tab.id != activeTab.id) {
 						chrome.tabs.remove(tab.id);
 					}
@@ -368,7 +363,7 @@ const gestureFunction = {
 	},
 	'close_all': function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			tabs.forEach(function(tab){
+			tabs.forEach((tab) => {
 				chrome.tabs.remove(tab.id);
 			});
 		});
@@ -381,20 +376,20 @@ const gestureFunction = {
 	'open_extension': function() {
 		const chromeExtURL = 'chrome://extensions/';
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			tabs.forEach(function(tab){
+			tabs.forEach((tab) => {
 				if (tab.url == chromeExtURL) {
-					chrome.tabs.update(tab.id, {selected:true});
+					chrome.tabs.update(tab.id, {selected: true});
 					return;
 				}
 			});
-			chrome.tabs.create({url:chromeExtURL, selected:true});
+			chrome.tabs.create({url: chromeExtURL, selected: true});
 		});
 	},
 	'restart': function() {
-		chrome.tabs.create({url:'chrome://restart', selected:true});
+		chrome.tabs.create({url: 'chrome://restart', selected: true});
 	},
 	'last_tab': function() {
-		chrome.sessions.getRecentlyClosed({maxResults:1}, function(sessions){
+		chrome.sessions.getRecentlyClosed({maxResults: 1}, (sessions) => {
 			if (sessions.length) {
 				chrome.sessions.restore();
 			}
