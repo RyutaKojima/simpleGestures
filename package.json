@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint \"js/app/**/*.js\"",
+    "eslint-fix": "eslint --fix \"js/app/**/*.js\"",
     "stylelint": "stylelint \"css/**/*.css\""
   },
   "repository": {
@@ -20,6 +21,7 @@
   "homepage": "https://github.com/RyutaKojima/simpleGestures#readme",
   "devDependencies": {
     "eslint": "^5.4.0",
+    "eslint-config-google": "^0.9.1",
     "stylelint": "^9.5.0"
   }
 }

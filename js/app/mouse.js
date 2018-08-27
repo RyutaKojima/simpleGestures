@@ -13,23 +13,21 @@ const Mouse = function() {
 	/**
 	 * マウスの入力状態を記録する配列
 	 */
-	this.btn_buffer = [];
+	this.btnBuffer = [];
 };
 
 /**
  * マウスイベントから、リンクURLを取得して返す
  *
- * @param mouseevent
- * @returns {*}
+ * @param {Object} mouseevent
+ * @return {*}
  */
-Mouse.getHref = function (mouseevent) {
+Mouse.getHref = function(mouseevent) {
 	if (mouseevent.target.href) {
 		return mouseevent.target.href;
-	}
-	else if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
+	} else if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
 		return mouseevent.target.parentElement.href;
-	}
-	else {
+	} else {
 		return null;
 	}
 };
@@ -38,43 +36,40 @@ Mouse.getHref = function (mouseevent) {
  * 現在の入力状態をリセットする
  */
 Mouse.prototype.reset = function() {
-	this.btn_buffer = [];
+	this.btnBuffer = [];
 };
 
 /**
  * 基本操作メソッド
- * @param btnCode
- * @returns {*}
+ * @param {numeric} btnCode
+ * @return {*}
  */
 Mouse.prototype.isOn = function(btnCode) {
-	return this.btn_buffer[btnCode];
+	return this.btnBuffer[btnCode];
 };
 
 Mouse.prototype.setOn = function(btnCode) {
-	this.btn_buffer[btnCode] = true;
+	this.btnBuffer[btnCode] = true;
 };
 
 Mouse.prototype.setOff = function(btnCode) {
-	this.btn_buffer[btnCode] = false;
+	this.btnBuffer[btnCode] = false;
 };
 
-// --------------------------------------------------------------------------------
-// for Left Button
 
 Mouse.prototype.isLeft = function() {
-	return this.btn_buffer[this.LEFT_BUTTON];
+	return this.btnBuffer[this.LEFT_BUTTON];
 };
 
 Mouse.prototype.setLeft = function(_flg) {
-	this.btn_buffer[this.LEFT_BUTTON] = _flg;
+	this.btnBuffer[this.LEFT_BUTTON] = _flg;
 };
 
-// --------------------------------------------------------------------------------
-// for Right Button
+
 Mouse.prototype.isRight = function() {
-	return this.btn_buffer[this.RIGHT_BUTTON];
+	return this.btnBuffer[this.RIGHT_BUTTON];
 };
 
 Mouse.prototype.setRight = function(_flg) {
-	this.btn_buffer[this.RIGHT_BUTTON] = _flg;
+	this.btnBuffer[this.RIGHT_BUTTON] = _flg;
 };

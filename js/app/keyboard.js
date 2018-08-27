@@ -7,64 +7,67 @@ const Keyboard = function() {
 	/** @const */
 	this.KEY_CTRL = 17;
 
-	this.locked_count = 0;
+	this.lockedCount = 0;
 
 	/**
 	 * キーボードの入力状態を記録する配列
 	 */
-	this.key_buffer = [];
+	this.keyBuffer = [];
 };
 
 /**
  * 現在の入力状態をリセットする
  */
 Keyboard.prototype.reset = function() {
-	console.log("reset keyboard");
+	console.log('reset keyboard');
 
-	this.key_buffer = [];
+	this.keyBuffer = [];
 };
 
 /**
  * キーボードの押されたイベントをロックする
  */
 Keyboard.prototype.lock = function() {
-	this.locked_count++;
+	this.lockedCount++;
 };
 Keyboard.prototype.unlock = function() {
-	if (this.locked_count) {
-		this.locked_count--;
+	if (this.lockedCount) {
+		this.lockedCount--;
 	}
 };
 
 /**
  * 指定したキーが押されているか判定する。 押されていたら true
- * @param keyCode
- * @returns bool
+ *
+ * @param {number} keyCode
+ * @return {bool}
  */
 Keyboard.prototype.isOn = function(keyCode) {
-	return this.key_buffer[keyCode];
+	return this.keyBuffer[keyCode];
 };
 
 /**
  * キーを押された状態に設定する
- * @param keyCode
+ *
+ * @param {number} keyCode
  */
 Keyboard.prototype.setOn = function(keyCode) {
-	if (this.locked_count) {
+	if (this.lockedCount) {
 		return;
 	}
 
-	console.log("on keybord: "+keyCode);
+	console.log('on keybord: '+keyCode);
 
-	this.key_buffer[keyCode] = true;
+	this.keyBuffer[keyCode] = true;
 };
 
 /**
  * キーを離した状態に設定する
- * @param keyCode
+ *
+ * @param {number} keyCode
  */
 Keyboard.prototype.setOff = function(keyCode) {
-	console.log("off keybord: "+keyCode);
+	console.log('off keybord: '+keyCode);
 
-	this.key_buffer[keyCode] = false;
+	this.keyBuffer[keyCode] = false;
 };
