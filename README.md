@@ -12,6 +12,6 @@ simpleGestures is GoogleChorome extension that adds a simple mouse gesture.
 The MIT License
 
 ### Style Guide(コーディング規約)
-Google JavaScript Style Guide に準拠します。(現状は対応していません)  
-英語：https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml  
-日本語：http://www38.atwiki.jp/aias-jsstyleguide2/pages/1.html  
+Google JavaScript Style Guide に準拠します。
+英語：https://google.github.io/styleguide/jsguide.html
+日本語：http://www38.atwiki.jp/aias-jsstyleguide2/pages/1.html
