@@ -4,14 +4,15 @@ const mainGestureMan = new LibGesture();
 const option = new LibOption();
 option.load();
 
-var lockerOn = false;
-var nextMenuSkip = true;
+let lockerOn = false;
+let nextMenuSkip = true;
 
 /**
  * 現在のジェスチャ軌跡に対応するアクション名を返す
- * @returns {*}
+ *
+ * @return {null|string}
  */
-const getNowGestureActionName = function () {
+const getNowGestureActionName = function() {
 	const gestureString = mainGestureMan.getGestureString();
 	if ( ! gestureString) {
 		return null;
@@ -22,41 +23,41 @@ const getNowGestureActionName = function () {
 
 /**
  * フロントからのメッセージリクエストに対する処理
- * 
+ *
  * @type {{load_options: requestFunction.load_options}}
  */
 const requestFunction = {
-	reset_input: function(request) {
+	'reset_input': (request) => {
 		inputKeyboard.lock();
 		inputKeyboard.reset();
 		inputMouse.reset();
 
-		setTimeout(function(){
+		setTimeout(() => {
 			inputKeyboard.unlock();
 		}, 100);
 	},
-	reload_option: function() {
+	'reload_option': function() {
 		option.load();
 	},
-	load_options: function(request) {
-		return {message: "yes", "options_json": option.getRawStorageData()};
+	'load_options': function(request) {
+		return {'message': 'yes', 'options_json': option.getRawStorageData()};
 	},
-	keydown: function(request) {
+	'keydown': (request) => {
 		inputKeyboard.setOn(request.keyCode);
 
-		return {message: "yes"};
+		return {message: 'yes'};
 	},
-	keyup: function (request) {
+	'keyup': (request) => {
 		inputKeyboard.setOff(request.keyCode);
 
-		return {message: "yes"};
+		return {message: 'yes'};
 	},
-	mousedown: function(request) {
-		responseString = request.which === inputMouse.LEFT_BUTTON ? "LEFT" : "RIGHT";
+	'mousedown': function(request) {
+		responseString = request.which === inputMouse.LEFT_BUTTON ? 'LEFT' : 'RIGHT';
 		console.log(responseString);
 
 		const response = {
-			message: "yes",
+			message: 'yes',
 			action: null,
 			href: request.href,
 			gestureString: '',
@@ -68,7 +69,7 @@ const requestFunction = {
 				y: request.y,
 				toX: request.x,
 				toY: request.y,
-			}
+			},
 		};
 
 		// Ctrlが押された状態だと、マウスジェスチャ無効な仕様
@@ -84,23 +85,22 @@ const requestFunction = {
 				lockerOn = true;
 				response.canvas.clear = true;
 
-				response.action = "back";
+				response.action = 'back';
 			}
-		}
-		else if (request.which === inputMouse.RIGHT_BUTTON) {
+		} else if (request.which === inputMouse.RIGHT_BUTTON) {
 			nextMenuSkip = false;
 
 			// locker gesture
 			if (inputMouse.isLeft() && inputMouse.isRight()) {
 				lockerOn = true;
 
-				response.action = "forward";
+				response.action = 'forward';
 			}
 
 			mainGestureMan.clear();
 
 			if ( ! lockerOn) {
-				console.log("select request.href: " + request.href );
+				console.log('select request.href: ' + request.href );
 
 				response.canvas.draw = true;
 				mainGestureMan.startGesture(request.x, request.y, request.href);
@@ -109,10 +109,10 @@ const requestFunction = {
 
 		return response;
 	},
-	mousemove: function(request) {
+	'mousemove': function(request) {
 		// mousemove の event.whichには、最初に押されたボタンが入る。
 		const response = {
-			message: "yes",
+			message: 'yes',
 			action: null,
 			href: request.href,
 			gestureString: mainGestureMan.getGestureString(),
@@ -124,7 +124,7 @@ const requestFunction = {
 				y: request.y,
 				toX: request.x,
 				toY: request.y,
-			}
+			},
 		};
 
 		if (request.which == 0) {
@@ -148,11 +148,11 @@ const requestFunction = {
 
 		return response;
 	},
-	mouseup: function(request) {
+	'mouseup': function(request) {
 		const doAction = getNowGestureActionName();
 
 		const response = {
-			message: "yes",
+			message: 'yes',
 			action: null,
 			href: mainGestureMan.getURL(),
 			gestureString: mainGestureMan.getGestureString(),
@@ -164,7 +164,7 @@ const requestFunction = {
 				y: request.y,
 				toX: request.x,
 				toY: request.y,
-			}
+			},
 		};
 
 		inputMouse.setOff(request.which);
@@ -172,17 +172,15 @@ const requestFunction = {
 		if (request.which === inputMouse.RIGHT_BUTTON) {
 			if (lockerOn) {
 				nextMenuSkip = true;
-			}
-			else if (doAction) {
+			} else if (doAction) {
 				nextMenuSkip = true;
 
 				if (typeof gestureFunction[doAction] === 'function') {
 					const optionParams = {
-						href: mainGestureMan.getURL()
+						href: mainGestureMan.getURL(),
 					};
 					gestureFunction[doAction](optionParams);
-				}
-				else {
+				} else {
 					// バックグラウンドで処理できないものはフロントに任せる
 					response.action = doAction;
 				}
@@ -201,7 +199,7 @@ const requestFunction = {
  * @type type
  */
 const gestureFunction = {
-	"new_tab": function(options) {
+	'new_tab': function(options) {
 		let _url = '';
 
 		if (options && typeof options.href !== 'undefined') {
@@ -209,75 +207,72 @@ const gestureFunction = {
 		}
 
 		chrome.tabs.query({active: true}, function(tabs) {
-			const current_tab = tabs[0];
-			const append_index = current_tab.index+1;
+			const activeTab = tabs[0];
+			const appendIndex = activeTab.index+1;
 			if ( ! _url) {
-				chrome.tabs.create({index:append_index});
-			}
-			else {
-				chrome.tabs.create({url:_url, index:append_index});
+				chrome.tabs.create({index: appendIndex});
+			} else {
+				chrome.tabs.create({url: _url, index: appendIndex});
 			}
 		});
 	},
 	'pin_tab': () => {
-		chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+		chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
 			const activeTab = tabs[0];
 			chrome.tabs.update(activeTab.id, {pinned: !activeTab.pinned});
 		});
 	},
-	"close_tab": function() {
+	'close_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
-			chrome.tabs.remove(current_tab.id);
+			const activeTab = tabs[0];
+			chrome.tabs.remove(activeTab.id);
 		});
 	},
-	"reload": function() {
+	'reload': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
-			chrome.tabs.reload(current_tab.id);
+			const activeTab = tabs[0];
+			chrome.tabs.reload(activeTab.id);
 		});
 	},
-	"reload_all": function() {
+	'reload_all': function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			tabs.forEach(function(tab){
+			tabs.forEach((tab) => {
 				chrome.tabs.reload(tab.id);
 			});
 		});
 	},
-	"next_tab": function() {
+	'next_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
+			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
-				if (current_tab.index == tabs.length-1) {
-					chrome.tabs.update(tabs[0].id, {active:true});
-				}
-				else {
-					chrome.tabs.update(tabs[current_tab.index+1].id, {active:true});
+				if (activeTab.index == tabs.length-1) {
+					chrome.tabs.update(tabs[0].id, {active: true});
+				} else {
+					chrome.tabs.update(tabs[activeTab.index+1].id, {active: true});
 				}
 			});
 		});
 	},
-	"prev_tab": function() {
+	'prev_tab': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
+			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
-				if (current_tab.index == 0) {
-					chrome.tabs.update(tabs[tabs.length-1].id, {active:true});
-				}
-				else {
-					chrome.tabs.update(tabs[current_tab.index-1].id, {active:true});
+				if (activeTab.index == 0) {
+					chrome.tabs.update(tabs[tabs.length-1].id, {active: true});
+				} else {
+					chrome.tabs.update(tabs[activeTab.index-1].id, {active: true});
 				}
 			});
 		});
 	},
-	"close_right_tab_without_pinned": function () {
+	'close_right_tab_without_pinned': function() {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
 			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
 				const removeTabsId = [];
 
-				tabsInCurrentWindow.forEach(tab => {
+				tabsInCurrentWindow.forEach((tab) => {
 					if (tab.pinned) {
 						return;
 					}
@@ -287,39 +282,39 @@ const gestureFunction = {
 					}
 				});
 
-				removeTabsId.forEach(removeId => {
+				removeTabsId.forEach((removeId) => {
 					chrome.tabs.remove(removeId);
 				});
 			});
 		});
 	},
-	"close_right_tab": function () {
+	'close_right_tab': function() {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
 			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
 				const removeTabsId = [];
 
-				tabsInCurrentWindow.forEach(tab => {
+				tabsInCurrentWindow.forEach((tab) => {
 					if (tab.index > activeTab.index) {
 						removeTabsId.push(tab.id);
 					}
 				});
 
-				removeTabsId.forEach(removeId => {
+				removeTabsId.forEach((removeId) => {
 					chrome.tabs.remove(removeId);
 				});
 			});
 		});
 	},
-	"close_left_tab_without_pinned": function () {
+	'close_left_tab_without_pinned': function() {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
 			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
 				const removeTabsId = [];
 
-				tabsInCurrentWindow.forEach(tab => {
+				tabsInCurrentWindow.forEach((tab) => {
 					if (tab.pinned) {
 						return;
 					}
@@ -329,72 +324,72 @@ const gestureFunction = {
 					}
 				});
 
-				removeTabsId.forEach(removeId => {
+				removeTabsId.forEach((removeId) => {
 					chrome.tabs.remove(removeId);
 				});
 			});
 		});
 	},
-	"close_left_tab": function () {
+	'close_left_tab': function() {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			const activeTab = tabs[0];
 
 			chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
 				const removeTabsId = [];
 
-				tabsInCurrentWindow.forEach(tab => {
+				tabsInCurrentWindow.forEach((tab) => {
 					if (tab.index < activeTab.index) {
 						removeTabsId.push(tab.id);
 					}
 				});
 
-				removeTabsId.forEach(removeId => {
+				removeTabsId.forEach((removeId) => {
 					chrome.tabs.remove(removeId);
 				});
 			});
 		});
 	},
-	"close_all_background": function() {
+	'close_all_background': function() {
 		chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-			const current_tab = tabs[0];
+			const activeTab = tabs[0];
 			chrome.tabs.getAllInWindow(null, function(tabs) {
-				tabs.forEach(function(tab){
-					if (tab.id != current_tab.id) {
+				tabs.forEach(function(tab) {
+					if (tab.id != activeTab.id) {
 						chrome.tabs.remove(tab.id);
 					}
 				});
 			});
 		});
 	},
-	"close_all": function() {
+	'close_all': function() {
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			tabs.forEach(function(tab){
+			tabs.forEach((tab) => {
 				chrome.tabs.remove(tab.id);
 			});
 		});
 	},
-	"open_option": function() {
+	'open_option': function() {
 		chrome.tabs.create({
-			"url": chrome.extension.getURL("html/options_page.html"),
+			'url': chrome.extension.getURL('html/options_page.html'),
 		});
 	},
-	"open_extension": function() {
-		const chromeExtURL = "chrome://extensions/";
+	'open_extension': function() {
+		const chromeExtURL = 'chrome://extensions/';
 		chrome.tabs.getAllInWindow(null, function(tabs) {
-			tabs.forEach(function(tab){
+			tabs.forEach((tab) => {
 				if (tab.url == chromeExtURL) {
-					chrome.tabs.update(tab.id, {selected:true});
+					chrome.tabs.update(tab.id, {selected: true});
 					return;
 				}
 			});
-			chrome.tabs.create({url:chromeExtURL, selected:true});
+			chrome.tabs.create({url: chromeExtURL, selected: true});
 		});
 	},
-	"restart": function() {
-		chrome.tabs.create({url:"chrome://restart", selected:true});
+	'restart': function() {
+		chrome.tabs.create({url: 'chrome://restart', selected: true});
 	},
-	"last_tab": function() {
-		chrome.sessions.getRecentlyClosed({maxResults:1}, function(sessions){
+	'last_tab': function() {
+		chrome.sessions.getRecentlyClosed({maxResults: 1}, (sessions) => {
 			if (sessions.length) {
 				chrome.sessions.restore();
 			}
@@ -407,11 +402,11 @@ const gestureFunction = {
  *
  * @param {type} param
  */
-chrome.extension.onMessage.addListener(function onMessage_handler(request, sender, sendResponse) {
+chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	const reqFunc = requestFunction[request.msg];
 	if (typeof reqFunc === 'function') {
 		sendResponse(reqFunc(request, sender));
 	} else {
-		sendResponse({message: "unknown command"});
+		sendResponse({message: 'unknown command'});
 	}
 });
