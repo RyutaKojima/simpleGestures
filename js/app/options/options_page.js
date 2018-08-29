@@ -290,8 +290,9 @@ const changeTab = ($target) => {
 const changeLanguage = () => {
 	const $langEn = $('.class_English');
 	const $langJa = $('.class_Japanese');
+	const currentLanguage = option.getLanguage();
 
-	switch (option.getLanguage()) {
+	switch (currentLanguage) {
 		default:
 			// no break;
 		case 'English':
@@ -303,6 +304,14 @@ const changeLanguage = () => {
 			$langJa.show();
 			break;
 	}
+
+	$('input.input_gesture').each((index, target) => {
+		const id = target.id;
+		const $target = $(target);
+		const text = lang.gesture[id][currentLanguage];
+
+		$target.parent().siblings('th').text(text);
+	});
 };
 
 const saveOptions = () => {
