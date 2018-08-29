@@ -110,13 +110,18 @@ const requestFunction = {
 		return response;
 	},
 	'mousemove': function(request) {
+		const doAction = getNowGestureActionName();
+		const displayActionName = doAction
+								? lang.gesture['gesture_' + doAction][option.getLanguage()]
+								: '';
+
 		// mousemove の event.whichには、最初に押されたボタンが入る。
 		const response = {
 			message: 'yes',
 			action: null,
 			href: request.href,
 			gestureString: mainGestureMan.getGestureString(),
-			gestureAction: getNowGestureActionName(),
+			gestureAction: displayActionName,
 			canvas: {
 				clear: false,
 				draw: false,
@@ -150,13 +155,16 @@ const requestFunction = {
 	},
 	'mouseup': function(request) {
 		const doAction = getNowGestureActionName();
+		const displayActionName = doAction
+								? lang.gesture['gesture_' + doAction][option.getLanguage()]
+								: '';
 
 		const response = {
 			message: 'yes',
 			action: null,
 			href: mainGestureMan.getURL(),
 			gestureString: mainGestureMan.getGestureString(),
-			gestureAction: doAction,
+			gestureAction: displayActionName,
 			canvas: {
 				clear: false,
 				draw: false,
