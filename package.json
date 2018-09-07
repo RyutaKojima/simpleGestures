@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint \"js/app/**/*.js\"",
     "eslint-fix": "eslint --fix \"js/app/**/*.js\"",
-    "stylelint": "stylelint \"css/**/*.css\""
+    "stylelint": "stylelint \"css/**/*.css\"",
+    "build": "webpack --config webpack.dev.js",
+    "build-dev": "webpack --config webpack.dev.js --watch"
   },
   "repository": {
     "type": "git",
@@ -20,8 +22,20 @@
   },
   "homepage": "https://github.com/RyutaKojima/simpleGestures#readme",
   "devDependencies": {
+    "@webpack-cli/init": "^0.1.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^1.0.0",
     "eslint": "^5.4.0",
     "eslint-config-google": "^0.9.1",
-    "stylelint": "^9.5.0"
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.21.0",
+    "stylelint": "^9.5.0",
+    "uglifyjs-webpack-plugin": "^1.3.0",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0"
   }
 }
