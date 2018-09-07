@@ -1,6 +1,8 @@
 simpleGestures
 ====
 
+[![Build Status](https://travis-ci.org/RyutaKojima/simpleGestures.svg?branch=master)](https://travis-ci.org/RyutaKojima/simpleGestures)
+
 ### Overview (概要)
 シンプルな動作とオプション設定を目指したGoogleChrome拡張機能のマウスジェスチャです。  
 simpleGestures is GoogleChorome extension that adds a simple mouse gesture.
