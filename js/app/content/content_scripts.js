@@ -19,7 +19,7 @@ const ContentScripts = function(trailCanvas) {
 ContentScripts.prototype.loadOption = function() {
 	const that = this;
 
-	chrome.extension.sendMessage({msg: 'load_options'}, function(response) {
+	chrome.runtime.sendMessage({msg: 'load_options'}, function(response) {
 		if (response) {
 			that.option.setRawStorageData(response.options_json);
 
