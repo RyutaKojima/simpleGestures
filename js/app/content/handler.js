@@ -34,7 +34,7 @@
 	// Event Handler
 	// ------------------------------------------------------------------------
 	window.addEventListener('focus', function onFocus() {
-		chrome.extension.sendMessage({msg: 'reset_input', event: 'focus'}, (response) => {});
+		chrome.runtime.sendMessage({msg: 'reset_input', event: 'focus'}, function(response) {});
 	});
 
 	$(window).on('resize', () => {
@@ -43,12 +43,12 @@
 
 	$(document).on('keydown', function onKeyDown(e) {
 		if (! e.originalEvent.repeat) {
-			chrome.extension.sendMessage({msg: 'keydown', keyCode: e.keyCode}, (response) => {});
+			chrome.runtime.sendMessage({msg: 'keydown', keyCode: e.keyCode}, (response) => {});
 		}
 	});
 
 	$(document).on('keyup', function onKeyUp(e) {
-		chrome.extension.sendMessage({msg: 'keyup', keyCode: e.keyCode}, (response) => {});
+		chrome.runtime.sendMessage({msg: 'keyup', keyCode: e.keyCode}, (response) => {});
 	});
 
 	$(document).on('mousedown', (event) => {
@@ -59,7 +59,7 @@
 			x: event.pageX - $(window).scrollLeft(),
 			y: event.pageY - $(window).scrollTop(),
 		};
-		chrome.extension.sendMessage(sendMouseDownParam, function(response) {
+		chrome.runtime.sendMessage(sendMouseDownParam, function(response) {
 			if (response === null) {
 				return;
 			}
@@ -89,7 +89,7 @@
 			x: event.pageX - $(window).scrollLeft(),
 			y: event.pageY - $(window).scrollTop(),
 		};
-		chrome.extension.sendMessage(sendMouseMoveParam, function(response) {
+		chrome.runtime.sendMessage(sendMouseMoveParam, function(response) {
 			if (response === null) {
 				return;
 			}
@@ -128,7 +128,7 @@
 			x: event.pageX - $(window).scrollLeft(),
 			y: event.pageY - $(window).scrollTop(),
 		};
-		chrome.extension.sendMessage(sendMouseUpParam, function(response) {
+		chrome.runtime.sendMessage(sendMouseUpParam, function(response) {
 			if (response === null) {
 				return;
 			}

@@ -378,7 +378,7 @@ const gestureFunction = {
 	},
 	'open_option': function() {
 		chrome.tabs.create({
-			'url': chrome.extension.getURL('html/options_page.html'),
+			'url': chrome.runtime.getURL.getURL('html/options_page.html'),
 		});
 	},
 	'open_extension': function() {
@@ -410,7 +410,7 @@ const gestureFunction = {
  *
  * @param {type} param
  */
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	const reqFunc = requestFunction[request.msg];
 	if (typeof reqFunc === 'function') {
 		sendResponse(reqFunc(request, sender));
