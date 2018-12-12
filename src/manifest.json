@@ -21,7 +21,7 @@
 			"js/app/keyboard.js",
 			"js/app/lib_option.js",
 			"js/app/content/lib_gesture.js",
-			"js/app/background/background.js"
+			"js/background.js"
 		]
 	},
 	"content_scripts": [{
@@ -41,7 +41,7 @@
 			"js/app/content/lib_gesture.js",
 			"js/app/content/trail_canvas.js",
 			"js/app/content/content_scripts.js",
-			"js/app/content/handler.js"
+			"js/handler.js"
 		],
 		"all_frames": true,
 		"run_at": "document_start"
