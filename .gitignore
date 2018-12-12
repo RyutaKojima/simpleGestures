@@ -4,3 +4,5 @@
 
 # other
 /node_modules/
+
+dist/

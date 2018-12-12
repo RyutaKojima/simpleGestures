@@ -1,8 +1,7 @@
-const webpack = require('webpack')
-const path = require('path')
+const webpack = require('webpack');
+const path = require('path');
 
-
-
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 /*
  * SplitChunksPlugin is enabled by default and replaced
@@ -27,10 +26,10 @@ const path = require('path')
 
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-
-
-
 module.exports = {
+
+  mode: 'production',
+
   module: {
     rules: [{
       include: [path.resolve(__dirname, 'src')],
@@ -40,46 +39,101 @@ module.exports = {
         plugins: ['syntax-dynamic-import'],
 
         presets: [['env', {
-          'modules': false
-        }]]
+          'modules': false,
+        }]],
       },
 
-      test: /\.js$/
+      test: /\.js$/,
     }, {
       test: /\.(scss|css)$/,
 
       use: [{
-        loader: 'style-loader'
+        loader: 'style-loader',
       }, {
-        loader: 'css-loader'
+        loader: 'css-loader',
       }, {
-        loader: 'sass-loader'
-      }]
-    }]
+        loader: 'sass-loader',
+      }],
+    }],
   },
 
-  entry: ./src/js/app/content/index,
+  entry: {
+    handler: './src/js/app/content/handler',
+    background: './src/js/app/background/background',
+  },
 
   output: {
-    filename: '[name].[chunkhash].js',
-    path: path.resolve(__dirname, 'dist')
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist/js'),
   },
 
-  mode: 'development',
-
   optimization: {
+    minimize: false,
     splitChunks: {
       cacheGroups: {
         vendors: {
           priority: -10,
-          test: /[\\/]node_modules[\\/]/
-        }
+          test: /[\\/]node_modules[\\/]/,
+        },
       },
 
       chunks: 'async',
       minChunks: 1,
       minSize: 30000,
-      name: true
-    }
-  }
-}
+      name: true,
+    },
+  },
+
+  plugins: [
+    new CopyWebpackPlugin([
+          {
+            from: path.join(__dirname, 'src', 'manifest.json'),
+            to: path.join(__dirname, 'dist'),
+          },
+     ]),
+      new CopyWebpackPlugin(
+          [
+              {
+                  from: '',
+                  to: path.join(__dirname, 'dist/img/'),
+              },
+          ],
+          {
+              context: 'src/img',
+          },
+      ),
+      new CopyWebpackPlugin(
+          [
+              {
+                  from: '',
+                  to: path.join(__dirname, 'dist/html/'),
+              },
+          ],
+          {
+              context: 'src/html',
+          },
+      ),
+      new CopyWebpackPlugin(
+          [
+              {
+                  from: '',
+                  to: path.join(__dirname, 'dist/css/'),
+              },
+          ],
+          {
+              context: 'src/css',
+          },
+      ),
+      new CopyWebpackPlugin(
+          [
+              {
+                  from: '',
+                  to: path.join(__dirname, 'dist/js/'),
+              },
+          ],
+          {
+              context: 'src/js',
+          },
+      ),
+  ],
+};
