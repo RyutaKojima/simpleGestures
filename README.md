@@ -2,6 +2,7 @@ simpleGestures
 ====
 
 [![Build Status](https://travis-ci.org/RyutaKojima/simpleGestures.svg?branch=master)](https://travis-ci.org/RyutaKojima/simpleGestures)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3d52042de99c11e3f8b4/maintainability)](https://codeclimate.com/github/RyutaKojima/simpleGestures/maintainability)
 
 ### Overview (概要)
 シンプルな動作とオプション設定を目指したGoogleChrome拡張機能のマウスジェスチャです。  
