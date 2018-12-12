@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "eslint \"js/app/**/*.js\"",
-    "eslint-fix": "eslint --fix \"js/app/**/*.js\"",
+    "eslint": "eslint \"src/js/app/**/*.js\"",
+    "eslint-fix": "eslint --fix \"src/js/app/**/*.js\"",
     "stylelint": "stylelint \"css/**/*.css\"",
     "build": "webpack --config webpack.dev.js",
     "build-dev": "webpack --config webpack.dev.js --watch"
