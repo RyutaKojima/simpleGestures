@@ -378,7 +378,7 @@ const gestureFunction = {
 	},
 	'open_option': function() {
 		chrome.tabs.create({
-			'url': chrome.runtime.getURL.getURL('html/options_page.html'),
+			'url': chrome.runtime.getURL('html/options_page.html'),
 		});
 	},
 	'open_extension': function() {
