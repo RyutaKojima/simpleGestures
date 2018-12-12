@@ -11,6 +11,26 @@ simpleGestures is GoogleChorome extension that adds a simple mouse gesture.
 ### Install (インストール)
 [公開版をGoogleChromeにインストール](https://chrome.google.com/webstore/detail/simplegestures/flfminafiamnggnldfpilnfnmbgmiegn)
 
+## How to build
+
+1. clone source
+
+```
+git clone git@github.com:RyutaKojima/simpleGestures.git
+```
+
+2. package install
+
+```
+npm install
+```
+
+3. Build
+
+```
+npm run build
+```
+
 ### License (ライセンス)
 The MIT License
 
