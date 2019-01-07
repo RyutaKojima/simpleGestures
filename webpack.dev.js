@@ -38,9 +38,13 @@ module.exports = {
       options: {
         plugins: ['syntax-dynamic-import'],
 
-        presets: [['env', {
-          'modules': false,
-        }]],
+        presets: [
+          [
+            '@babel/preset-env', {
+              'modules': false,
+            },
+          ],
+        ],
       },
 
       test: /\.js$/,
@@ -86,54 +90,54 @@ module.exports = {
 
   plugins: [
     new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, 'src', 'manifest.json'),
+        to: path.join(__dirname, 'dist'),
+      },
+    ]),
+    new CopyWebpackPlugin(
+        [
           {
-            from: path.join(__dirname, 'src', 'manifest.json'),
-            to: path.join(__dirname, 'dist'),
+            from: '',
+            to: path.join(__dirname, 'dist/img/'),
           },
-     ]),
-      new CopyWebpackPlugin(
-          [
-              {
-                  from: '',
-                  to: path.join(__dirname, 'dist/img/'),
-              },
-          ],
+        ],
+        {
+          context: 'src/img',
+        },
+    ),
+    new CopyWebpackPlugin(
+        [
           {
-              context: 'src/img',
+            from: '',
+            to: path.join(__dirname, 'dist/html/'),
           },
-      ),
-      new CopyWebpackPlugin(
-          [
-              {
-                  from: '',
-                  to: path.join(__dirname, 'dist/html/'),
-              },
-          ],
+        ],
+        {
+          context: 'src/html',
+        },
+    ),
+    new CopyWebpackPlugin(
+        [
           {
-              context: 'src/html',
+            from: '',
+            to: path.join(__dirname, 'dist/css/'),
           },
-      ),
-      new CopyWebpackPlugin(
-          [
-              {
-                  from: '',
-                  to: path.join(__dirname, 'dist/css/'),
-              },
-          ],
+        ],
+        {
+          context: 'src/css',
+        },
+    ),
+    new CopyWebpackPlugin(
+        [
           {
-              context: 'src/css',
+            from: '',
+            to: path.join(__dirname, 'dist/js/'),
           },
-      ),
-      new CopyWebpackPlugin(
-          [
-              {
-                  from: '',
-                  to: path.join(__dirname, 'dist/js/'),
-              },
-          ],
-          {
-              context: 'src/js',
-          },
-      ),
+        ],
+        {
+          context: 'src/js',
+        },
+    ),
   ],
 };
