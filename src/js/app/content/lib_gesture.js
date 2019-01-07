@@ -2,47 +2,47 @@
  * @constructor
  */
 const LibGesture = function() {
-	/** @const */
-	this.COMMAND_MAX_LENGTH = 14;
-	/** @const */
-	this.GESTURE_START_DISTANCE = 10;
+  /** @const */
+  this.COMMAND_MAX_LENGTH = 14;
+  /** @const */
+  this.GESTURE_START_DISTANCE = 10;
 
-	this._nowX = -1;
-	this._nowY = -1;
-	this._lastX = -1;
-	this._lastY = -1;
-	this._lastDirection = null;
-	this._strGestureCommand = '';
-	this._linkUrl = null;
+  this._nowX = -1;
+  this._nowY = -1;
+  this._lastX = -1;
+  this._lastY = -1;
+  this._lastDirection = null;
+  this._strGestureCommand = '';
+  this._linkUrl = null;
 };
 
 LibGesture.prototype.getLastX = function() {
- return this._lastX;
+  return this._lastX;
 };
 LibGesture.prototype.getLastY = function() {
- return this._lastY;
+  return this._lastY;
 };
 LibGesture.prototype.getX = function() {
- return this._nowX;
+  return this._nowX;
 };
 LibGesture.prototype.getY = function() {
- return this._nowY;
+  return this._nowY;
 };
 LibGesture.prototype.getURL = function() {
- return this._linkUrl;
+  return this._linkUrl;
 };
 LibGesture.prototype.getGestureString = function() {
- return this._strGestureCommand;
+  return this._strGestureCommand;
 };
 
 LibGesture.prototype.clear = function() {
-	this._nowX = -1;
-	this._nowY = -1;
-	this._lastX = -1;
-	this._lastY = -1;
-	this._lastDirection = null;
-	this._strGestureCommand = '';
-	this._linkUrl = null;
+  this._nowX = -1;
+  this._nowY = -1;
+  this._lastX = -1;
+  this._lastY = -1;
+  this._lastDirection = null;
+  this._strGestureCommand = '';
+  this._linkUrl = null;
 };
 
 /**
@@ -54,13 +54,13 @@ LibGesture.prototype.clear = function() {
  * @return {undefined}
  */
 LibGesture.prototype.startGesture = function(x, y, url) {
-	this.clear();
+  this.clear();
 
-	this._nowX = x;
-	this._nowY = y;
-	this._lastX = x;
-	this._lastY = y;
-	this._linkUrl = url;
+  this._nowX = x;
+  this._nowY = y;
+  this._lastX = x;
+  this._lastY = y;
+  this._linkUrl = url;
 };
 
 /**
@@ -70,38 +70,38 @@ LibGesture.prototype.startGesture = function(x, y, url) {
  * @return {Boolean}
  */
 LibGesture.prototype.registPoint = function(x, y) {
-	if (this._lastX !== -1 && this._lastY !== -1) {
-		const distance = this.calcDistance(x, y, this._lastX, this._lastY);
-//		console.log('Distance: ' + distance);
-		if (distance > this.GESTURE_START_DISTANCE) {
-			const rotation = this.calcRotation(x, y, this._lastX, this._lastY);
-			const charDirection = this.rotationToDirection(rotation);
-//			console.log('Rotation: ' + rotation + ' Direction: ' + charDirection);
+  if (this._lastX !== -1 && this._lastY !== -1) {
+    const distance = this.calcDistance(x, y, this._lastX, this._lastY);
+    //		console.log('Distance: ' + distance);
+    if (distance > this.GESTURE_START_DISTANCE) {
+      const rotation = this.calcRotation(x, y, this._lastX, this._lastY);
+      const charDirection = this.rotationToDirection(rotation);
+      //			console.log('Rotation: ' + rotation + ' Direction: ' + charDirection);
 
-			if (this._lastDirection !== charDirection) {
-				this._lastDirection = charDirection;
+      if (this._lastDirection !== charDirection) {
+        this._lastDirection = charDirection;
 
-				if (this._strGestureCommand.length < this.COMMAND_MAX_LENGTH) {
-					this._strGestureCommand += charDirection;
-				} else {
-					// gesture cancel
-					this._strGestureCommand = '';
-					for (let i = 0; i < this.COMMAND_MAX_LENGTH; i++) {
-						this._strGestureCommand += '-';
-					}
-				}
-			}
+        if (this._strGestureCommand.length < this.COMMAND_MAX_LENGTH) {
+          this._strGestureCommand += charDirection;
+        } else {
+          // gesture cancel
+          this._strGestureCommand = '';
+          for (let i = 0; i < this.COMMAND_MAX_LENGTH; i++) {
+            this._strGestureCommand += '-';
+          }
+        }
+      }
 
-			this._lastX = this._nowX;
-			this._lastY = this._nowY;
-			this._nowX = x;
-			this._nowY = y;
+      this._lastX = this._nowX;
+      this._lastY = this._nowY;
+      this._nowX = x;
+      this._nowY = y;
 
-			return true;
-		}
-	}
+      return true;
+    }
+  }
 
-	return false;
+  return false;
 };
 
 /**
@@ -120,7 +120,7 @@ LibGesture.prototype.endGesture = function() {};
  * @return {number}
  */
 LibGesture.prototype.calcDistance = function(x, y, lastX, lastY) {
-	return Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
+  return Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
 };
 
 /**
@@ -132,9 +132,9 @@ LibGesture.prototype.calcDistance = function(x, y, lastX, lastY) {
  * @return {number}
  */
 LibGesture.prototype.calcRotation = function(x, y, lastX, lastY) {
-	const radian = Math.atan2(y - lastY, x - lastX);
-	// console.log("rotate: " + rotation);
-	return radian * 180 / Math.PI;
+  const radian = Math.atan2(y - lastY, x - lastX);
+  // console.log("rotate: " + rotation);
+  return radian * 180 / Math.PI;
 };
 
 /**
@@ -144,13 +144,13 @@ LibGesture.prototype.calcRotation = function(x, y, lastX, lastY) {
  * @return {string}
  */
 LibGesture.prototype.rotationToDirection = function(rotation) {
-	if (rotation >= -45.0 && rotation < 45.0) {
-		return 'R';
-	} else if (rotation >= 45.0 && rotation < 135.0) {
-		return 'D';
-	} else if (rotation >= -135.0 && rotation < -45.0) {
-		return 'U';
-	} else {
-		return 'L';
-	}
+  if (rotation >= -45.0 && rotation < 45.0) {
+    return 'R';
+  } else if (rotation >= 45.0 && rotation < 135.0) {
+    return 'D';
+  } else if (rotation >= -135.0 && rotation < -45.0) {
+    return 'U';
+  } else {
+    return 'L';
+  }
 };
