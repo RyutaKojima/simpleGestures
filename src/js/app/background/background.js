@@ -1,4 +1,5 @@
 import Mouse from '../mouse';
+import Keyboard from '../keyboard'
 
 const inputMouse = new Mouse();
 const inputKeyboard = new Keyboard();
@@ -72,7 +73,7 @@ const requestFunction = {
     };
 
     // Ctrlが押された状態だと、マウスジェスチャ無効な仕様
-    if (inputKeyboard.isOn(inputKeyboard.KEY_CTRL)) {
+    if (inputKeyboard.isOn(Keyboard.KEY_CTRL)) {
       console.log('on KEY_CTRL. skip gesture.');
       return;
     }

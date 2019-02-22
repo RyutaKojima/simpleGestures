@@ -17,7 +17,6 @@
 		"scripts": [
 			"js/app/debug_flg.js",
 			"js/app/lang.js",
-			"js/app/keyboard.js",
 			"js/app/lib_option.js",
 			"js/app/content/lib_gesture.js",
 			"js/background.js"
@@ -34,7 +33,6 @@
 			"js/vendor/jquery-1.11.3.min.js",
 			"js/app/debug_flg.js",
 			"js/app/lang.js",
-			"js/app/keyboard.js",
 			"js/app/lib_option.js",
 			"js/app/content/lib_gesture.js",
 			"js/app/content/trail_canvas.js",
