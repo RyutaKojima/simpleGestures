@@ -1,75 +1,99 @@
 /**
  * マウスの状態を管理する
- *
- * @constructor
  */
-const Mouse = function() {
-  /** @const */
-  this.LEFT_BUTTON = 1;
+class Mouse {
+  // 定数の定義
+  static get LEFT_BUTTON() {
+    return 1;
+  }
 
-  /** @const */
-  this.RIGHT_BUTTON = 3;
+  static get RIGHT_BUTTON() {
+    return 3;
+  }
+
+  constructor() {
+    /**
+     * マウスの入力状態を記録する配列
+     */
+    this.btnBuffer = [];
+  }
 
   /**
-	 * マウスの入力状態を記録する配列
-	 */
-  this.btnBuffer = [];
-};
-
-/**
- * マウスイベントから、リンクURLを取得して返す
- *
- * @param {Object} mouseevent
- * @return {*}
- */
-Mouse.getHref = function(mouseevent) {
-  if (mouseevent.target.href) {
-    return mouseevent.target.href;
-  } else if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
-    return mouseevent.target.parentElement.href;
-  } else {
+   * マウスイベントから、リンクURLを取得して返す
+   *
+   * @param {Object} mouseevent
+   * @return {*}
+   */
+  static getHref(mouseevent) {
+    if (mouseevent.target.href) {
+      return mouseevent.target.href;
+    }
+    if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
+      return mouseevent.target.parentElement.href;
+    }
     return null;
   }
-};
-
-/**
- * 現在の入力状態をリセットする
- */
-Mouse.prototype.reset = function() {
-  this.btnBuffer = [];
-};
-
-/**
- * 基本操作メソッド
- * @param {numeric} btnCode
- * @return {*}
- */
-Mouse.prototype.isOn = function(btnCode) {
-  return this.btnBuffer[btnCode];
-};
-
-Mouse.prototype.setOn = function(btnCode) {
-  this.btnBuffer[btnCode] = true;
-};
-
-Mouse.prototype.setOff = function(btnCode) {
-  this.btnBuffer[btnCode] = false;
-};
 
 
-Mouse.prototype.isLeft = function() {
-  return this.btnBuffer[this.LEFT_BUTTON];
-};
+  /**
+   * 現在の入力状態をリセットする
+   */
+  reset() {
+    this.btnBuffer = [];
+  }
 
-Mouse.prototype.setLeft = function(_flg) {
-  this.btnBuffer[this.LEFT_BUTTON] = _flg;
-};
+  /**
+   * 基本操作メソッド
+   * @param {numeric} btnCode
+   * @return {*}
+   */
+  isOn(btnCode) {
+    return this.btnBuffer[btnCode];
+  }
 
+  /**
+   *
+   * @param {string|numeric} btnCode
+   */
+  setOn(btnCode) {
+    this.btnBuffer[btnCode] = true;
+  }
 
-Mouse.prototype.isRight = function() {
-  return this.btnBuffer[this.RIGHT_BUTTON];
-};
+  /**
+   *
+   * @param {mixed} btnCode
+   */
+  setOff(btnCode) {
+    this.btnBuffer[btnCode] = false;
+  }
 
-Mouse.prototype.setRight = function(_flg) {
-  this.btnBuffer[this.RIGHT_BUTTON] = _flg;
-};
+  /**
+   * @returns {boolean}
+   */
+  isLeft() {
+    return this.btnBuffer[Mouse.LEFT_BUTTON];
+  }
+
+  /**
+   * @param {boolean} _flg
+   */
+  setLeft(_flg) {
+    this.btnBuffer[Mouse.LEFT_BUTTON] = _flg;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  isRight() {
+    return this.btnBuffer[Mouse.RIGHT_BUTTON];
+  }
+
+  /**
+   * @param {boolean} _flg
+   */
+  setRight(_flg) {
+    this.btnBuffer[Mouse.RIGHT_BUTTON] = _flg;
+  }
+}
+
+export default Mouse;

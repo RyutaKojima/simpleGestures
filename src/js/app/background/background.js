@@ -1,3 +1,5 @@
+import Mouse from '../mouse';
+
 const inputMouse = new Mouse();
 const inputKeyboard = new Keyboard();
 const mainGestureMan = new LibGesture();
@@ -53,9 +55,6 @@ const requestFunction = {
     return {message: 'yes'};
   },
   'mousedown': function(request) {
-    responseString = request.which === inputMouse.LEFT_BUTTON ? 'LEFT' : 'RIGHT';
-    console.log(responseString);
-
     const response = {
       message: 'yes',
       action: null,
@@ -80,14 +79,14 @@ const requestFunction = {
 
     inputMouse.setOn(request.which);
 
-    if (request.which === inputMouse.LEFT_BUTTON) {
+    if (request.which === Mouse.LEFT_BUTTON) {
       if (inputMouse.isLeft() && inputMouse.isRight()) {
         lockerOn = true;
         response.canvas.clear = true;
 
         response.action = 'back';
       }
-    } else if (request.which === inputMouse.RIGHT_BUTTON) {
+    } else if (request.which === Mouse.RIGHT_BUTTON) {
       nextMenuSkip = false;
 
       // locker gesture
@@ -139,7 +138,7 @@ const requestFunction = {
       return response;
     }
 
-    if (inputMouse.isRight() && request.which == inputMouse.RIGHT_BUTTON) {
+    if (inputMouse.isRight() && request.which == Mouse.RIGHT_BUTTON) {
       if ( ! lockerOn) {
         if (mainGestureMan.registPoint(request.x, request.y)) {
           response.canvas.draw = true;
@@ -177,7 +176,7 @@ const requestFunction = {
 
     inputMouse.setOff(request.which);
 
-    if (request.which === inputMouse.RIGHT_BUTTON) {
+    if (request.which === Mouse.RIGHT_BUTTON) {
       if (lockerOn) {
         nextMenuSkip = true;
       } else if (doAction) {

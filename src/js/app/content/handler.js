@@ -1,3 +1,5 @@
+import Mouse from '../mouse';
+
 (function() {
   const trailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
   const contentScripts = new ContentScripts(trailCanvas);
