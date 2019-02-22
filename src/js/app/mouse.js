@@ -2,20 +2,28 @@
  * マウスの状態を管理する
  */
 class Mouse {
-  // 定数の定義
-  static get LEFT_BUTTON() {
-    return 1;
-  }
-
-  static get RIGHT_BUTTON() {
-    return 3;
-  }
-
+  /**
+   * @constructor
+   */
   constructor() {
     /**
      * マウスの入力状態を記録する配列
      */
     this.btnBuffer = [];
+  }
+
+  /**
+   * @return {number}
+   */
+  static get LEFT_BUTTON() {
+    return 1;
+  }
+
+  /**
+   * @return {number}
+   */
+  static get RIGHT_BUTTON() {
+    return 3;
   }
 
   /**
@@ -68,7 +76,7 @@ class Mouse {
   }
 
   /**
-   * @returns {boolean}
+   * @return {boolean}
    */
   isLeft() {
     return this.btnBuffer[Mouse.LEFT_BUTTON];
@@ -82,7 +90,7 @@ class Mouse {
   }
 
   /**
-   * @returns {boolean}
+   * @return {boolean}
    */
   isRight() {
     return this.btnBuffer[Mouse.RIGHT_BUTTON];

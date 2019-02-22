@@ -1,13 +1,10 @@
 /**
  * キーボードの状態を管理する
  */
-
 class Keyboard {
-  // 定数の定義
-  static get KEY_CTRL() {
-    return 17;
-  }
-
+  /**
+   * @constructor
+   */
   constructor() {
     this.lockedCount = 0;
 
@@ -18,7 +15,16 @@ class Keyboard {
   }
 
   /**
+   * @return {number}
+   */
+  static get KEY_CTRL() {
+    return 17;
+  }
+
+  /**
    * 現在の入力状態をリセットする
+   *
+   * @return {Keyboard}
    */
   reset() {
     console.log('reset keyboard');
@@ -28,6 +34,8 @@ class Keyboard {
 
   /**
    * キーボードの押されたイベントをロックする
+   *
+   * @return {Keyboard}
    */
   lock() {
     this.lockedCount++;
@@ -36,6 +44,8 @@ class Keyboard {
 
   /**
    * キーボードの押されたイベントをロック解除する
+   *
+   * @return {Keyboard}
    */
   unlock() {
     if (this.lockedCount) {
@@ -58,11 +68,11 @@ class Keyboard {
    * キーを押された状態に設定する
    *
    * @param {number} keyCode
-   * @returns {this}
+   * @return {Keyboard}
    */
   setOn(keyCode) {
     if (this.lockedCount) {
-      return;
+      return this;
     }
 
     console.log('on keybord: ' + keyCode);
@@ -76,6 +86,7 @@ class Keyboard {
    * キーを離した状態に設定する
    *
    * @param {number} keyCode
+   * @return {Keyboard}
    */
   setOff(keyCode) {
     console.log('off keybord: ' + keyCode);
@@ -83,7 +94,6 @@ class Keyboard {
     this.keyBuffer[keyCode] = false;
     return this;
   }
-
 }
 
 export default Keyboard;

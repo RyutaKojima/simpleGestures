@@ -1,5 +1,5 @@
 import Mouse from '../mouse';
-import Keyboard from '../keyboard'
+import Keyboard from '../keyboard';
 
 const inputMouse = new Mouse();
 const inputKeyboard = new Keyboard();
