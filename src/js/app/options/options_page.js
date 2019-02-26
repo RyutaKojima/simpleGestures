@@ -1,3 +1,5 @@
+import lang from '../lang';
+
 const gestureForOption = new LibGesture();
 const option = new LibOption();
 const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');

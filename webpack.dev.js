@@ -42,6 +42,7 @@ module.exports = {
   entry: {
     handler: './src/js/app/content/handler',
     background: './src/js/app/background/background',
+    options_page: './src/js/app/options/options_page',
   },
 
   output: {

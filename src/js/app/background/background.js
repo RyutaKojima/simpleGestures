@@ -1,3 +1,4 @@
+import lang from '../lang';
 import Mouse from '../mouse';
 import Keyboard from '../keyboard';
 
