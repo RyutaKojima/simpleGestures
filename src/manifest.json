@@ -16,7 +16,6 @@
 	"background": {
 		"scripts": [
 			"js/app/debug_flg.js",
-			"js/app/lib_option.js",
 			"js/background.js"
 		]
 	},
@@ -30,7 +29,6 @@
 		"js": [
 			"js/vendor/jquery-1.11.3.min.js",
 			"js/app/debug_flg.js",
-			"js/app/lib_option.js",
 			"js/handler.js"
 		],
 		"all_frames": true,

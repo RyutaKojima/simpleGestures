@@ -1,3 +1,5 @@
+import LibOption from '../lib_option';
+
 /**
  * ジェスチャーを描画するキャンバス
  */

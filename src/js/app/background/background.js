@@ -2,6 +2,7 @@ import lang from '../lang';
 import Mouse from '../mouse';
 import Keyboard from '../keyboard';
 import LibGesture from '../content/lib_gesture';
+import LibOption from '../lib_option';
 
 const inputMouse = new Mouse();
 const inputKeyboard = new Keyboard();
