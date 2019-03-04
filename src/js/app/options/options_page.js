@@ -1,5 +1,6 @@
 import lang from '../lang';
 import ContentScripts from '../content/content_scripts';
+import TrailCanvas from '../content/trail_canvas';
 
 const gestureForOption = new LibGesture();
 const option = new LibOption();

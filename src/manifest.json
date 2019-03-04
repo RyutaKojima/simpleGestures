@@ -33,7 +33,6 @@
 			"js/app/debug_flg.js",
 			"js/app/lib_option.js",
 			"js/app/content/lib_gesture.js",
-			"js/app/content/trail_canvas.js",
 			"js/handler.js"
 		],
 		"all_frames": true,
