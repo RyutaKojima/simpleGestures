@@ -1,3 +1,4 @@
+import DEBUG_ON from '../debug_flg';
 import lang from '../lang';
 import Mouse from '../mouse';
 import Keyboard from '../keyboard';

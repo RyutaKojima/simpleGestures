@@ -111,11 +111,11 @@ module.exports = {
         [
           {
             from: '',
-            to: path.join(__dirname, 'dist/js/'),
+            to: path.join(__dirname, 'dist/js/vendor'),
           },
         ],
         {
-          context: 'src/js',
+          context: 'src/js/vendor',
         },
     ),
   ],

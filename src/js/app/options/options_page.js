@@ -1,3 +1,4 @@
+import DEBUG_ON from '../debug_flg';
 import lang from '../lang';
 import ContentScripts from '../content/content_scripts';
 import TrailCanvas from '../content/trail_canvas';
