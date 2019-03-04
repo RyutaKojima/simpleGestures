@@ -1,4 +1,5 @@
 import lang from '../lang';
+import ContentScripts from '../content/content_scripts';
 
 const gestureForOption = new LibGesture();
 const option = new LibOption();
