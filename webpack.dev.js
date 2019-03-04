@@ -1,30 +1,8 @@
-const webpack = require('webpack');
+// const webpack = require('webpack');
 const path = require('path');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
-/*
- * SplitChunksPlugin is enabled by default and replaced
- * deprecated CommonsChunkPlugin. It automatically identifies modules which
- * should be splitted of chunk by heuristics using module duplication count and
- * module category (i. e. node_modules). And splits the chunks…
- *
- * It is safe to remove "splitChunks" from the generated configuration
- * and was added as an educational example.
- *
- * https://webpack.js.org/plugins/split-chunks-plugin/
- *
- */
-
-/*
- * We've enabled UglifyJSPlugin for you! This minifies your app
- * in order to load faster and run less javascript.
- *
- * https://github.com/webpack-contrib/uglifyjs-webpack-plugin
- *
- */
-
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+// const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
 
@@ -64,6 +42,7 @@ module.exports = {
   entry: {
     handler: './src/js/app/content/handler',
     background: './src/js/app/background/background',
+    options_page: './src/js/app/options/options_page',
   },
 
   output: {
@@ -132,11 +111,11 @@ module.exports = {
         [
           {
             from: '',
-            to: path.join(__dirname, 'dist/js/'),
+            to: path.join(__dirname, 'dist/js/vendor'),
           },
         ],
         {
-          context: 'src/js',
+          context: 'src/js/vendor',
         },
     ),
   ],

@@ -1,73 +1,100 @@
 /**
  * キーボードの状態を管理する
- *
- * @constructor
  */
-const Keyboard = function() {
-  /** @const */
-  this.KEY_CTRL = 17;
+class Keyboard {
+  /**
+   * @constructor
+   */
+  constructor() {
+    this.lockedCount = 0;
 
-  this.lockedCount = 0;
+    /**
+     * キーボードの入力状態を記録する配列
+     */
+    this.keyBuffer = [];
+  }
 
   /**
-	 * キーボードの入力状態を記録する配列
-	 */
-  this.keyBuffer = [];
-};
-
-/**
- * 現在の入力状態をリセットする
- */
-Keyboard.prototype.reset = function() {
-  console.log('reset keyboard');
-
-  this.keyBuffer = [];
-};
-
-/**
- * キーボードの押されたイベントをロックする
- */
-Keyboard.prototype.lock = function() {
-  this.lockedCount++;
-};
-Keyboard.prototype.unlock = function() {
-  if (this.lockedCount) {
-    this.lockedCount--;
-  }
-};
-
-/**
- * 指定したキーが押されているか判定する。 押されていたら true
- *
- * @param {number} keyCode
- * @return {bool}
- */
-Keyboard.prototype.isOn = function(keyCode) {
-  return this.keyBuffer[keyCode];
-};
-
-/**
- * キーを押された状態に設定する
- *
- * @param {number} keyCode
- */
-Keyboard.prototype.setOn = function(keyCode) {
-  if (this.lockedCount) {
-    return;
+   * @return {number}
+   */
+  static get KEY_CTRL() {
+    return 17;
   }
 
-  console.log('on keybord: '+keyCode);
+  /**
+   * 現在の入力状態をリセットする
+   *
+   * @return {Keyboard}
+   */
+  reset() {
+    console.log('reset keyboard');
+    this.keyBuffer = [];
+    return this;
+  }
 
-  this.keyBuffer[keyCode] = true;
-};
+  /**
+   * キーボードの押されたイベントをロックする
+   *
+   * @return {Keyboard}
+   */
+  lock() {
+    this.lockedCount++;
+    return this;
+  }
 
-/**
- * キーを離した状態に設定する
- *
- * @param {number} keyCode
- */
-Keyboard.prototype.setOff = function(keyCode) {
-  console.log('off keybord: '+keyCode);
+  /**
+   * キーボードの押されたイベントをロック解除する
+   *
+   * @return {Keyboard}
+   */
+  unlock() {
+    if (this.lockedCount) {
+      this.lockedCount--;
+    }
+    return this;
+  }
 
-  this.keyBuffer[keyCode] = false;
-};
+  /**
+   * 指定したキーが押されているか判定する。 押されていたら true
+   *
+   * @param {number} keyCode
+   * @return {bool}
+   */
+  isOn(keyCode) {
+    return this.keyBuffer[keyCode];
+  }
+
+  /**
+   * キーを押された状態に設定する
+   *
+   * @param {number} keyCode
+   * @return {Keyboard}
+   */
+  setOn(keyCode) {
+    if (this.lockedCount) {
+      return this;
+    }
+
+    console.log('on keybord: ' + keyCode);
+
+    this.keyBuffer[keyCode] = true;
+
+    return this;
+  }
+
+  /**
+   * キーを離した状態に設定する
+   *
+   * @param {number} keyCode
+   * @return {Keyboard}
+   */
+  setOff(keyCode) {
+    console.log('off keybord: ' + keyCode);
+
+    this.keyBuffer[keyCode] = false;
+    return this;
+  }
+}
+
+export default Keyboard;
+

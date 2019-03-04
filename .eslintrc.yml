@@ -4,7 +4,7 @@ env:
 
 parserOptions:
     ecmaVersion: 2018
-    sourceType: script
+    sourceType: "module"
 
 rules: 
     no-tabs: off

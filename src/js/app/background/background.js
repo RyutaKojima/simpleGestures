@@ -1,3 +1,10 @@
+import DEBUG_ON from '../debug_flg';
+import lang from '../lang';
+import Mouse from '../mouse';
+import Keyboard from '../keyboard';
+import LibGesture from '../content/lib_gesture';
+import LibOption from '../lib_option';
+
 const inputMouse = new Mouse();
 const inputKeyboard = new Keyboard();
 const mainGestureMan = new LibGesture();
@@ -53,9 +60,6 @@ const requestFunction = {
     return {message: 'yes'};
   },
   'mousedown': function(request) {
-    responseString = request.which === inputMouse.LEFT_BUTTON ? 'LEFT' : 'RIGHT';
-    console.log(responseString);
-
     const response = {
       message: 'yes',
       action: null,
@@ -73,21 +77,21 @@ const requestFunction = {
     };
 
     // Ctrlが押された状態だと、マウスジェスチャ無効な仕様
-    if (inputKeyboard.isOn(inputKeyboard.KEY_CTRL)) {
+    if (inputKeyboard.isOn(Keyboard.KEY_CTRL)) {
       console.log('on KEY_CTRL. skip gesture.');
       return;
     }
 
     inputMouse.setOn(request.which);
 
-    if (request.which === inputMouse.LEFT_BUTTON) {
+    if (request.which === Mouse.LEFT_BUTTON) {
       if (inputMouse.isLeft() && inputMouse.isRight()) {
         lockerOn = true;
         response.canvas.clear = true;
 
         response.action = 'back';
       }
-    } else if (request.which === inputMouse.RIGHT_BUTTON) {
+    } else if (request.which === Mouse.RIGHT_BUTTON) {
       nextMenuSkip = false;
 
       // locker gesture
@@ -139,7 +143,7 @@ const requestFunction = {
       return response;
     }
 
-    if (inputMouse.isRight() && request.which == inputMouse.RIGHT_BUTTON) {
+    if (inputMouse.isRight() && request.which == Mouse.RIGHT_BUTTON) {
       if ( ! lockerOn) {
         if (mainGestureMan.registPoint(request.x, request.y)) {
           response.canvas.draw = true;
@@ -177,7 +181,7 @@ const requestFunction = {
 
     inputMouse.setOff(request.which);
 
-    if (request.which === inputMouse.RIGHT_BUTTON) {
+    if (request.which === Mouse.RIGHT_BUTTON) {
       if (lockerOn) {
         nextMenuSkip = true;
       } else if (doAction) {
