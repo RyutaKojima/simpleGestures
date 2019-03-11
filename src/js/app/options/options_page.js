@@ -140,7 +140,7 @@ $(() => {
             .mousemove((event) => {
               const tmpX = event.pageX - $canvas.offset().left;
               const tmpY = event.pageY - $canvas.offset().top;
-              if (gestureForOption.registPoint(tmpX, tmpY)) {
+              if (gestureForOption.registerPoint(tmpX, tmpY)) {
                 canvasForOption.drawLine(
                     gestureForOption.getLastX(), gestureForOption.getLastY(),
                     gestureForOption.getX(), gestureForOption.getY()

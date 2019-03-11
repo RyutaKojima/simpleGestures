@@ -163,7 +163,7 @@ const requestFunction = {
 
     if (inputMouse.isRight() && request.which == Mouse.RIGHT_BUTTON) {
       if ( ! lockerOn) {
-        if (mainGestureMan.registPoint(request.x, request.y)) {
+        if (mainGestureMan.registerPoint(request.x, request.y)) {
           response.canvas.draw = true;
           response.canvas.x = mainGestureMan.getLastX();
           response.canvas.y = mainGestureMan.getLastY();

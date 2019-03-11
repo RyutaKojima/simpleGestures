@@ -20,13 +20,7 @@ class LibGesture {
    * @constructor
    */
   constructor() {
-    this._nowX = -1;
-    this._nowY = -1;
-    this._lastX = -1;
-    this._lastY = -1;
-    this._lastDirection = null;
-    this._strGestureCommand = '';
-    this._linkUrl = null;
+    this.clear();
   }
 
   /**
@@ -106,43 +100,38 @@ class LibGesture {
 
   /**
    *
-   * @param {type} x
-   * @param {type} y
+   * @param {number} x
+   * @param {number} y
    * @return {Boolean}
    */
-  registPoint(x, y) {
-    if (this._lastX !== -1 && this._lastY !== -1) {
-      const distance = LibGesture.calcDistance(x, y, this._lastX, this._lastY);
-      //		console.log('Distance: ' + distance);
-      if (distance > LibGesture.GESTURE_START_DISTANCE) {
-        const rotation = LibGesture.calcRotation(x, y, this._lastX, this._lastY);
-        const charDirection = LibGesture.rotationToDirection(rotation);
-        //			console.log('Rotation: ' + rotation + ' Direction: ' + charDirection);
+  registerPoint(x, y) {
+    if (this._lastX === -1 || this._lastY === -1) {
+      return false;
+    }
 
-        if (this._lastDirection !== charDirection) {
-          this._lastDirection = charDirection;
+    if ( ! LibGesture.isDistanceThresholdExceeded(x, y, this._lastX, this._lastY)) {
+      return false;
+    }
 
-          if (this._strGestureCommand.length < LibGesture.COMMAND_MAX_LENGTH) {
-            this._strGestureCommand += charDirection;
-          } else {
-            // gesture cancel
-            this._strGestureCommand = '';
-            for (let i = 0; i < LibGesture.COMMAND_MAX_LENGTH; i++) {
-              this._strGestureCommand += '-';
-            }
-          }
-        }
+    const charDirection = LibGesture.getDirection(x, y, this._lastX, this._lastY);
 
-        this._lastX = this._nowX;
-        this._lastY = this._nowY;
-        this._nowX = x;
-        this._nowY = y;
+    if (this._lastDirection !== charDirection) {
+      this._lastDirection = charDirection;
 
-        return true;
+      if (this._strGestureCommand.length < LibGesture.COMMAND_MAX_LENGTH) {
+        this._strGestureCommand += charDirection;
+      } else {
+        // gesture cancel
+        this._strGestureCommand = '-'.repeat(LibGesture.COMMAND_MAX_LENGTH);
       }
     }
 
-    return false;
+    this._lastX = this._nowX;
+    this._lastY = this._nowY;
+    this._nowX = x;
+    this._nowY = y;
+
+    return true;
   }
 
   /**
@@ -153,7 +142,23 @@ class LibGesture {
   endGesture() {}
 
   /**
+   * ２点の距離が閾値を超えているか？
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {number} lastX
+   * @param {number} lastY
+   * @return {number}
+   */
+  static isDistanceThresholdExceeded(x, y, lastX, lastY) {
+    const distance = LibGesture.calcDistance(x, y, lastX, lastY);
+    //		console.log('Distance: ' + distance);
+    return distance > LibGesture.GESTURE_START_DISTANCE;
+  }
+
+  /**
    * ２点の座標から距離を計算して返す
+   *
    * @param {number} x
    * @param {number} y
    * @param {number} lastX
@@ -165,12 +170,29 @@ class LibGesture {
   }
 
   /**
-   * ２点の座標から角度を計算して返す
+   * ２点間の向きを返す
+   *
    * @param {number} x
    * @param {number} y
    * @param {number} lastX
    * @param {number} lastY
-   * @return {number}
+   * @return {string}
+   */
+  static getDirection(x, y, lastX, lastY) {
+    const rotation = LibGesture.calcRotation(x, y, lastX, lastY);
+    const charDirection = LibGesture.rotationToDirection(rotation);
+    //			console.log('Rotation: ' + rotation + ' Direction: ' + charDirection);
+    return charDirection;
+  }
+
+  /**
+   * ２点の座標から角度を計算して返す
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {number} lastX
+   * @param {number} lastY
+   * @return {float}
    */
   static calcRotation(x, y, lastX, lastY) {
     const radian = Math.atan2(y - lastY, x - lastX);
