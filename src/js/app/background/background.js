@@ -5,6 +5,24 @@ import Keyboard from '../keyboard';
 import LibGesture from '../content/lib_gesture';
 import LibOption from '../lib_option';
 
+import actionOpenNewTab from './Action/open_new_tab';
+import actionTogglePinTab from './Action/toggle_pin_tab';
+import actionCloseActiveTab from './Action/close_active_tab';
+import actionReload from './Action/reload';
+import actionReloadAll from './Action/reload_all';
+import actionNextTab from './Action/next_tab';
+import actionPrevTab from './Action/prev_tab';
+import actionCloseRightTabWithoutPinned from './Action/close_right_tab_without_pinned';
+import actionCloseRightTab from './Action/close_right_tab';
+import actionCloseLeftTabWithoutPinned from './Action/close_left_tab_without_pinned';
+import actionCloseLeftTab from './Action/close_left_tab';
+import actionCloseAllBackgroundTab from './Action/close_all_background_tab';
+import actionCloseAllTab from './Action/close_all_tab';
+import actionOpenOptionPage from './Action/open_option_page';
+import actionOpenExtensionPage from './Action/open_extension_page';
+import actionBrowserRestart from './Action/browser_restart';
+import actionRestoreLastTab from './Action/restore_last_tab';
+
 const inputMouse = new Mouse();
 const inputKeyboard = new Keyboard();
 const mainGestureMan = new LibGesture();
@@ -211,202 +229,23 @@ const requestFunction = {
  * @type type
  */
 const gestureFunction = {
-  'new_tab': function(options) {
-    let _url = '';
-
-    if (options && typeof options.href !== 'undefined') {
-      _url = options.href;
-    }
-
-    chrome.tabs.query({active: true}, function(tabs) {
-      const activeTab = tabs[0];
-      const appendIndex = activeTab.index+1;
-      if ( ! _url) {
-        chrome.tabs.create({index: appendIndex});
-      } else {
-        chrome.tabs.create({url: _url, index: appendIndex});
-      }
-    });
-  },
-  'pin_tab': () => {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      const activeTab = tabs[0];
-      chrome.tabs.update(activeTab.id, {pinned: !activeTab.pinned});
-    });
-  },
-  'close_tab': function() {
-    chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-      chrome.tabs.remove(activeTab.id);
-    });
-  },
-  'reload': function() {
-    chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-      chrome.tabs.reload(activeTab.id);
-    });
-  },
-  'reload_all': function() {
-    chrome.tabs.getAllInWindow(null, function(tabs) {
-      tabs.forEach((tab) => {
-        chrome.tabs.reload(tab.id);
-      });
-    });
-  },
-  'next_tab': function() {
-    chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-      chrome.tabs.getAllInWindow(null, function(tabs) {
-        if (activeTab.index == tabs.length-1) {
-          chrome.tabs.update(tabs[0].id, {active: true});
-        } else {
-          chrome.tabs.update(tabs[activeTab.index+1].id, {active: true});
-        }
-      });
-    });
-  },
-  'prev_tab': function() {
-    chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-      chrome.tabs.getAllInWindow(null, function(tabs) {
-        if (activeTab.index == 0) {
-          chrome.tabs.update(tabs[tabs.length-1].id, {active: true});
-        } else {
-          chrome.tabs.update(tabs[activeTab.index-1].id, {active: true});
-        }
-      });
-    });
-  },
-  'close_right_tab_without_pinned': function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-
-      chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
-        const removeTabsId = [];
-
-        tabsInCurrentWindow.forEach((tab) => {
-          if (tab.pinned) {
-            return;
-          }
-
-          if (tab.index > activeTab.index) {
-            removeTabsId.push(tab.id);
-          }
-        });
-
-        removeTabsId.forEach((removeId) => {
-          chrome.tabs.remove(removeId);
-        });
-      });
-    });
-  },
-  'close_right_tab': function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-
-      chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
-        const removeTabsId = [];
-
-        tabsInCurrentWindow.forEach((tab) => {
-          if (tab.index > activeTab.index) {
-            removeTabsId.push(tab.id);
-          }
-        });
-
-        removeTabsId.forEach((removeId) => {
-          chrome.tabs.remove(removeId);
-        });
-      });
-    });
-  },
-  'close_left_tab_without_pinned': function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-
-      chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
-        const removeTabsId = [];
-
-        tabsInCurrentWindow.forEach((tab) => {
-          if (tab.pinned) {
-            return;
-          }
-
-          if (tab.index < activeTab.index) {
-            removeTabsId.push(tab.id);
-          }
-        });
-
-        removeTabsId.forEach((removeId) => {
-          chrome.tabs.remove(removeId);
-        });
-      });
-    });
-  },
-  'close_left_tab': function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-
-      chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
-        const removeTabsId = [];
-
-        tabsInCurrentWindow.forEach((tab) => {
-          if (tab.index < activeTab.index) {
-            removeTabsId.push(tab.id);
-          }
-        });
-
-        removeTabsId.forEach((removeId) => {
-          chrome.tabs.remove(removeId);
-        });
-      });
-    });
-  },
-  'close_all_background': function() {
-    chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-      const activeTab = tabs[0];
-      chrome.tabs.getAllInWindow(null, function(tabs) {
-        tabs.forEach(function(tab) {
-          if (tab.id != activeTab.id) {
-            chrome.tabs.remove(tab.id);
-          }
-        });
-      });
-    });
-  },
-  'close_all': function() {
-    chrome.tabs.getAllInWindow(null, function(tabs) {
-      tabs.forEach((tab) => {
-        chrome.tabs.remove(tab.id);
-      });
-    });
-  },
-  'open_option': function() {
-    chrome.tabs.create({
-      'url': chrome.runtime.getURL('html/options_page.html'),
-    });
-  },
-  'open_extension': function() {
-    const chromeExtURL = 'chrome://extensions/';
-    chrome.tabs.getAllInWindow(null, function(tabs) {
-      tabs.forEach((tab) => {
-        if (tab.url == chromeExtURL) {
-          chrome.tabs.update(tab.id, {selected: true});
-          return;
-        }
-      });
-      chrome.tabs.create({url: chromeExtURL, selected: true});
-    });
-  },
-  'restart': function() {
-    chrome.tabs.create({url: 'chrome://restart', selected: true});
-  },
-  'last_tab': function() {
-    chrome.sessions.getRecentlyClosed({maxResults: 1}, (sessions) => {
-      if (sessions.length) {
-        chrome.sessions.restore();
-      }
-    });
-  },
+  'new_tab': actionOpenNewTab,
+  'pin_tab': actionTogglePinTab,
+  'close_tab': actionCloseActiveTab,
+  'reload': actionReload,
+  'reload_all': actionReloadAll,
+  'next_tab': actionNextTab,
+  'prev_tab': actionPrevTab,
+  'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
+  'close_right_tab': actionCloseRightTab,
+  'close_left_tab_without_pinned': actionCloseLeftTabWithoutPinned,
+  'close_left_tab': actionCloseLeftTab,
+  'close_all_background': actionCloseAllBackgroundTab,
+  'close_all': actionCloseAllTab,
+  'open_option': actionOpenOptionPage,
+  'open_extension': actionOpenExtensionPage,
+  'restart': actionBrowserRestart,
+  'last_tab': actionRestoreLastTab,
 };
 
 /**
