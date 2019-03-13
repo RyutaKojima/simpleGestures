@@ -1,12 +1,13 @@
 export default (options) => {
   const chromeExtURL = 'chrome://extensions/';
-  chrome.tabs.getAllInWindow(null, function(tabs) {
-    tabs.forEach((tab) => {
-      if (tab.url == chromeExtURL) {
-        chrome.tabs.update(tab.id, {selected: true});
-        return;
-      }
-    });
-    chrome.tabs.create({url: chromeExtURL, selected: true});
+
+  chrome.tabs.query({currentWindow: true}, function(tabsInCurrentWindow) {
+    const extensionTab = tabsInCurrentWindow.find((tab) => tab.url === chromeExtURL);
+
+    if (typeof extensionTab !== 'undefined') {
+      chrome.tabs.update(extensionTab.id, {active: true});
+    } else {
+      chrome.tabs.create({url: chromeExtURL, selected: true});
+    }
   });
 };

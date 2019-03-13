@@ -1,12 +1,15 @@
 export default (options) => {
-  chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-    const activeTab = tabs[0];
-    chrome.tabs.getAllInWindow(null, function(tabs) {
-      if (activeTab.index == 0) {
-        chrome.tabs.update(tabs[tabs.length-1].id, {active: true});
-      } else {
-        chrome.tabs.update(tabs[activeTab.index-1].id, {active: true});
-      }
-    });
+  chrome.tabs.query({currentWindow: true}, function(tabsInCurrentWindow) {
+    const activeTab = tabsInCurrentWindow.find((tab) => tab.active);
+    if (typeof activeTab === 'undefined') {
+      return;
+    }
+
+    const lastTabIndex = tabsInCurrentWindow.length - 1;
+    const setActiveTab = (activeTab.index == 0) ?
+        tabsInCurrentWindow[lastTabIndex] :
+        tabsInCurrentWindow[activeTab.index - 1];
+
+    chrome.tabs.update(setActiveTab.id, {active: true});
   });
 };
