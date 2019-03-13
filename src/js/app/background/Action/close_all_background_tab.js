@@ -1,12 +1,14 @@
 export default (options) => {
-  chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-    const activeTab = tabs[0];
-    chrome.tabs.getAllInWindow(null, function(tabs) {
-      tabs.forEach(function(tab) {
-        if (tab.id != activeTab.id) {
-          chrome.tabs.remove(tab.id);
-        }
-      });
+  chrome.tabs.query({currentWindow: true}, function(tabsInCurrentWindow) {
+    const activeTab = tabsInCurrentWindow.find((tab) => tab.active);
+    if (typeof activeTab === 'undefined') {
+      return;
+    }
+
+    tabsInCurrentWindow.forEach(function(tab) {
+      if (tab.id !== activeTab.id) {
+        chrome.tabs.remove(tab.id);
+      }
     });
   });
 };
