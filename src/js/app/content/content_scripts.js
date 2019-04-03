@@ -44,6 +44,14 @@ class ContentScripts {
    * create infomation div & update style.
    */
   createInfoDiv() {
+    this.createInfoDivElements();
+    this.setStyleForInfoDiv();
+  }
+
+  /**
+   * アクション名表示用のDIV要素を作る
+   */
+  createInfoDivElements() {
     const createDivElement = (id) => {
       const divElement = document.createElement('div');
       divElement.id = id;
@@ -61,14 +69,15 @@ class ContentScripts {
       this.infoDiv.appendChild(this.commandDiv);
       this.infoDiv.appendChild(this.actionNameDiv);
     }
+  }
 
-    const setWidth = 300;
-    const setHeight = 80;
-
+  /**
+   * アクション名表示用の要素にスタイルを設定する
+   */
+  setStyleForInfoDiv() {
     // style setting.
-    this.infoDiv.style.width = setWidth + 'px';
-    this.infoDiv.style.height = setHeight + 'px';
-
+    this.infoDiv.style.width = '300px';
+    this.infoDiv.style.height = '80px';
     // center position.
     this.infoDiv.style.top = '0px';
     this.infoDiv.style.left = '0px';
@@ -76,16 +85,13 @@ class ContentScripts {
     this.infoDiv.style.bottom = '0px';
     this.infoDiv.style.margin = 'auto';
     this.infoDiv.style.position = 'fixed';
-
     //	this.infoDiv.style.borderRadius = '3px';
     //	this.infoDiv.style.backgroundColor = '#FFFFEE';
-
     //	this.infoDiv.style.overflow = 'visible';
     //	this.infoDiv.style.overflow = 'block';
     this.infoDiv.style.textAlign = 'center';
     this.infoDiv.style.background = 'transparent';
     this.infoDiv.style.zIndex ='10001';
-
     this.infoDiv.style.fontFamily = 'Arial';
     this.infoDiv.style.fontSize = '30px';
     this.infoDiv.style.color = this.option.getColorCode();
