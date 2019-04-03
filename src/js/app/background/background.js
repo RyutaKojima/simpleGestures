@@ -1,4 +1,3 @@
-import DEBUG_ON from '../debug_flg';
 import lang from '../lang';
 import Mouse from '../mouse';
 import Keyboard from '../keyboard';
@@ -47,12 +46,54 @@ const getNowGestureActionName = function() {
 };
 
 /**
+ * Backgroundで処理できるアクションなら実行する
+ *
+ * @param {string} doAction
+ * @return {boolean}
+ */
+const executeGestureFunctionOnBackground = function(doAction) {
+  if (typeof gestureFunction[doAction] === 'function') {
+    const optionParams = {
+      href: mainGestureMan.getURL(),
+    };
+    gestureFunction[doAction](optionParams);
+
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * マウスイベントのレスポンスのテンプレート
+ *
+ * @return {Object}
+ */
+const mouseEventResponseTemplate = () => {
+  return {
+    message: 'yes',
+    action: null,
+    href: '',
+    gestureString: '',
+    gestureAction: '',
+    canvas: {
+      clear: false,
+      draw: false,
+      x: 0,
+      y: 0,
+      toX: 0,
+      toY: 0,
+    },
+  };
+};
+
+/**
  * フロントからのメッセージリクエストに対する処理
  *
  * @type {{load_options: requestFunction.load_options}}
  */
 const requestFunction = {
-  'reset_input': (request) => {
+  'reset_input': () => {
     inputKeyboard.lock();
     inputKeyboard.reset();
     inputMouse.reset();
@@ -64,7 +105,7 @@ const requestFunction = {
   'reload_option': function() {
     option.load();
   },
-  'load_options': function(request) {
+  'load_options': function() {
     return {'message': 'yes', 'options_json': option.getRawStorageData()};
   },
   'keydown': (request) => {
@@ -78,21 +119,12 @@ const requestFunction = {
     return {message: 'yes'};
   },
   'mousedown': function(request) {
-    const response = {
-      message: 'yes',
-      action: null,
-      href: request.href,
-      gestureString: '',
-      gestureAction: '',
-      canvas: {
-        clear: false,
-        draw: false,
-        x: request.x,
-        y: request.y,
-        toX: request.x,
-        toY: request.y,
-      },
-    };
+    const response = mouseEventResponseTemplate();
+    response.href = request.href;
+    response.canvas.x = request.x;
+    response.canvas.y = request.y;
+    response.canvas.toX = request.x;
+    response.canvas.toY = request.y;
 
     // Ctrlが押された状態だと、マウスジェスチャ無効な仕様
     if (inputKeyboard.isOn(Keyboard.KEY_CTRL)) {
@@ -134,34 +166,27 @@ const requestFunction = {
   'mousemove': function(request) {
     const doAction = getNowGestureActionName();
     const displayActionName = doAction
-								? lang.gesture['gesture_' + doAction][option.getLanguage()]
-								: '';
+        ? lang.gesture['gesture_' + doAction][option.getLanguage()]
+        : '';
 
     // mousemove の event.whichには、最初に押されたボタンが入る。
-    const response = {
-      message: 'yes',
-      action: null,
-      href: request.href,
-      gestureString: mainGestureMan.getGestureString(),
-      gestureAction: displayActionName,
-      canvas: {
-        clear: false,
-        draw: false,
-        x: request.x,
-        y: request.y,
-        toX: request.x,
-        toY: request.y,
-      },
-    };
+    const response = mouseEventResponseTemplate();
+    response.href = request.href;
+    response.gestureString = mainGestureMan.getGestureString();
+    response.gestureAction = displayActionName;
+    response.canvas.x = request.x;
+    response.canvas.y = request.y;
+    response.canvas.toX = request.x;
+    response.canvas.toY = request.y;
 
-    if (request.which == 0) {
+    if (request.which === 0) {
       inputMouse.reset();
       mainGestureMan.clear();
       response.canvas.clear = true;
       return response;
     }
 
-    if (inputMouse.isRight() && request.which == Mouse.RIGHT_BUTTON) {
+    if (inputMouse.isRight() && request.which === Mouse.RIGHT_BUTTON) {
       if ( ! lockerOn) {
         if (mainGestureMan.registerPoint(request.x, request.y)) {
           response.canvas.draw = true;
@@ -178,24 +203,17 @@ const requestFunction = {
   'mouseup': function(request) {
     const doAction = getNowGestureActionName();
     const displayActionName = doAction
-								? lang.gesture['gesture_' + doAction][option.getLanguage()]
-								: '';
+        ? lang.gesture['gesture_' + doAction][option.getLanguage()]
+        : '';
 
-    const response = {
-      message: 'yes',
-      action: null,
-      href: mainGestureMan.getURL(),
-      gestureString: mainGestureMan.getGestureString(),
-      gestureAction: displayActionName,
-      canvas: {
-        clear: false,
-        draw: false,
-        x: request.x,
-        y: request.y,
-        toX: request.x,
-        toY: request.y,
-      },
-    };
+    const response = mouseEventResponseTemplate();
+    response.href = mainGestureMan.getURL();
+    response.gestureString = mainGestureMan.getGestureString();
+    response.gestureAction = displayActionName;
+    response.canvas.x = request.x;
+    response.canvas.y = request.y;
+    response.canvas.toX = request.x;
+    response.canvas.toY = request.y;
 
     inputMouse.setOff(request.which);
 
@@ -205,12 +223,7 @@ const requestFunction = {
       } else if (doAction) {
         nextMenuSkip = true;
 
-        if (typeof gestureFunction[doAction] === 'function') {
-          const optionParams = {
-            href: mainGestureMan.getURL(),
-          };
-          gestureFunction[doAction](optionParams);
-        } else {
+        if ( ! executeGestureFunctionOnBackground(doAction)) {
           // バックグラウンドで処理できないものはフロントに任せる
           response.action = doAction;
         }
