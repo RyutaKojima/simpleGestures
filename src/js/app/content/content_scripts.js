@@ -44,6 +44,14 @@ class ContentScripts {
    * create infomation div & update style.
    */
   createInfoDiv() {
+    this.createInfoDivElements();
+    this.setStyleForInfoDiv();
+  }
+
+  /**
+   * アクション名表示用のDIV要素を作る
+   */
+  createInfoDivElements() {
     const createDivElement = (id) => {
       const divElement = document.createElement('div');
       divElement.id = id;
@@ -61,14 +69,15 @@ class ContentScripts {
       this.infoDiv.appendChild(this.commandDiv);
       this.infoDiv.appendChild(this.actionNameDiv);
     }
+  }
 
-    const setWidth = 300;
-    const setHeight = 80;
-
+  /**
+   * アクション名表示用の要素にスタイルを設定する
+   */
+  setStyleForInfoDiv() {
     // style setting.
-    this.infoDiv.style.width = setWidth + 'px';
-    this.infoDiv.style.height = setHeight + 'px';
-
+    this.infoDiv.style.width = '300px';
+    this.infoDiv.style.height = '80px';
     // center position.
     this.infoDiv.style.top = '0px';
     this.infoDiv.style.left = '0px';
@@ -76,16 +85,13 @@ class ContentScripts {
     this.infoDiv.style.bottom = '0px';
     this.infoDiv.style.margin = 'auto';
     this.infoDiv.style.position = 'fixed';
-
     //	this.infoDiv.style.borderRadius = '3px';
     //	this.infoDiv.style.backgroundColor = '#FFFFEE';
-
     //	this.infoDiv.style.overflow = 'visible';
     //	this.infoDiv.style.overflow = 'block';
     this.infoDiv.style.textAlign = 'center';
     this.infoDiv.style.background = 'transparent';
     this.infoDiv.style.zIndex ='10001';
-
     this.infoDiv.style.fontFamily = 'Arial';
     this.infoDiv.style.fontSize = '30px';
     this.infoDiv.style.color = this.option.getColorCode();
@@ -98,32 +104,54 @@ class ContentScripts {
    * @param {string} actionName
    */
   draw(lineParam, commandName, actionName) {
-    if (this.option.isTrailOn()) {
-      // append されているか調べる。document.getElementById で取得出来たらOK
-      const canvasId = this.trailCanvas.getCanvasId();
-      if (canvasId && document.getElementById(canvasId)) {
-        this.trailCanvas.drawLine(
-            lineParam.fromX, lineParam.fromY,
-            lineParam.toX, lineParam.toY
-        );
-      }
+    this.drawTrail(lineParam);
+    this.drawText(commandName, actionName);
+  }
+
+  /**
+   * ラインを描画する
+   *
+   * @param {Object} lineParam
+   */
+  drawTrail(lineParam) {
+    if ( ! this.option.isTrailOn()) {
+      return;
     }
 
-    if (this.infoDiv && document.getElementById(this.infoDiv.id)) {
-      const $divAction = $('#' + this.actionNameDiv.id);
-      if (this.option.isActionTextOn()) {
-        $divAction.html((actionName != null) ? actionName : '');
-      } else {
-        $divAction.html('');
-      }
+    // append されているか調べる。document.getElementById で取得出来たらOK
+    const canvasId = this.trailCanvas.getCanvasId();
+    if (document.getElementById(canvasId)) {
+      this.trailCanvas.drawLine(
+          lineParam.fromX, lineParam.fromY,
+          lineParam.toX, lineParam.toY
+      );
+    }
+  }
 
-      const $divCommand = $('#' + this.commandDiv.id);
-      if (this.option.isCommandTextOn()) {
-        commandName = this.replaceCommandToArrow(commandName);
-        $divCommand.html(commandName);
-      } else {
-        $divCommand.html('');
-      }
+  /**
+   * コマンド名、アクション名を描画する
+   *
+   * @param {string} commandName
+   * @param {string} actionName
+   */
+  drawText(commandName, actionName) {
+    if ( ! document.getElementById(this.infoDiv.id)) {
+      return;
+    }
+
+    const $divAction = $('#' + this.actionNameDiv.id);
+    if (this.option.isActionTextOn()) {
+      $divAction.html(actionName ? actionName : '');
+    } else {
+      $divAction.html('');
+    }
+
+    const $divCommand = $('#' + this.commandDiv.id);
+    if (this.option.isCommandTextOn()) {
+      commandName = ContentScripts.replaceCommandToArrow(commandName);
+      $divCommand.html(commandName);
+    } else {
+      $divCommand.html('');
     }
   }
 
@@ -166,12 +194,12 @@ class ContentScripts {
    * @param {string} actionName
    * @return {string}
    */
-  replaceCommandToArrow(actionName) {
+  static replaceCommandToArrow(actionName) {
     if (actionName) {
-      actionName = actionName.replace(/U/g, '<i class="flaticon-up-arrow"></i>');
-      actionName = actionName.replace(/L/g, '<i class="flaticon-left-arrow"></i>');
-      actionName = actionName.replace(/R/g, '<i class="flaticon-right-arrow"></i>');
-      actionName = actionName.replace(/D/g, '<i class="flaticon-down-arrow"></i>');
+      return actionName.replace(/U/g, '<i class="flaticon-up-arrow"></i>').
+          replace(/L/g, '<i class="flaticon-left-arrow"></i>').
+          replace(/R/g, '<i class="flaticon-right-arrow"></i>').
+          replace(/D/g, '<i class="flaticon-down-arrow"></i>');
     }
 
     return actionName;
