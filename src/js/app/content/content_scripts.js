@@ -98,32 +98,54 @@ class ContentScripts {
    * @param {string} actionName
    */
   draw(lineParam, commandName, actionName) {
-    if (this.option.isTrailOn()) {
-      // append されているか調べる。document.getElementById で取得出来たらOK
-      const canvasId = this.trailCanvas.getCanvasId();
-      if (canvasId && document.getElementById(canvasId)) {
-        this.trailCanvas.drawLine(
-            lineParam.fromX, lineParam.fromY,
-            lineParam.toX, lineParam.toY
-        );
-      }
+    this.drawTrail(lineParam);
+    this.drawText(commandName, actionName);
+  }
+
+  /**
+   * ラインを描画する
+   *
+   * @param {Object} lineParam
+   */
+  drawTrail(lineParam) {
+    if ( ! this.option.isTrailOn()) {
+      return;
     }
 
-    if (this.infoDiv && document.getElementById(this.infoDiv.id)) {
-      const $divAction = $('#' + this.actionNameDiv.id);
-      if (this.option.isActionTextOn()) {
-        $divAction.html((actionName != null) ? actionName : '');
-      } else {
-        $divAction.html('');
-      }
+    // append されているか調べる。document.getElementById で取得出来たらOK
+    const canvasId = this.trailCanvas.getCanvasId();
+    if (document.getElementById(canvasId)) {
+      this.trailCanvas.drawLine(
+          lineParam.fromX, lineParam.fromY,
+          lineParam.toX, lineParam.toY
+      );
+    }
+  }
 
-      const $divCommand = $('#' + this.commandDiv.id);
-      if (this.option.isCommandTextOn()) {
-        commandName = this.replaceCommandToArrow(commandName);
-        $divCommand.html(commandName);
-      } else {
-        $divCommand.html('');
-      }
+  /**
+   * コマンド名、アクション名を描画する
+   *
+   * @param {string} commandName
+   * @param {string} actionName
+   */
+  drawText(commandName, actionName) {
+    if ( ! document.getElementById(this.infoDiv.id)) {
+      return;
+    }
+
+    const $divAction = $('#' + this.actionNameDiv.id);
+    if (this.option.isActionTextOn()) {
+      $divAction.html(actionName ? actionName : '');
+    } else {
+      $divAction.html('');
+    }
+
+    const $divCommand = $('#' + this.commandDiv.id);
+    if (this.option.isCommandTextOn()) {
+      commandName = this.replaceCommandToArrow(commandName);
+      $divCommand.html(commandName);
+    } else {
+      $divCommand.html('');
     }
   }
 
