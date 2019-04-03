@@ -90,7 +90,7 @@ $(() => {
         }
 
         const setGestureText = inputGesture
-				? contentScripts.replaceCommandToArrow(inputGesture)
+				? ContentScripts.replaceCommandToArrow(inputGesture)
 				: '&nbsp;';
 
         $viewsGestureElement.html(setGestureText);
@@ -244,7 +244,7 @@ const initOptionView = () => {
       return;
     }
 
-    const setGestureText = setText ? contentScripts.replaceCommandToArrow(setText) : '&nbsp;';
+    const setGestureText = setText ? ContentScripts.replaceCommandToArrow(setText) : '&nbsp;';
     const $viewsGestureElement = $inputTextElement.siblings('.views_gesture');
 
     $viewsGestureElement.html(setGestureText);

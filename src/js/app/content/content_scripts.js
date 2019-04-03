@@ -142,7 +142,7 @@ class ContentScripts {
 
     const $divCommand = $('#' + this.commandDiv.id);
     if (this.option.isCommandTextOn()) {
-      commandName = this.replaceCommandToArrow(commandName);
+      commandName = ContentScripts.replaceCommandToArrow(commandName);
       $divCommand.html(commandName);
     } else {
       $divCommand.html('');
@@ -188,12 +188,12 @@ class ContentScripts {
    * @param {string} actionName
    * @return {string}
    */
-  replaceCommandToArrow(actionName) {
+  static replaceCommandToArrow(actionName) {
     if (actionName) {
-      actionName = actionName.replace(/U/g, '<i class="flaticon-up-arrow"></i>');
-      actionName = actionName.replace(/L/g, '<i class="flaticon-left-arrow"></i>');
-      actionName = actionName.replace(/R/g, '<i class="flaticon-right-arrow"></i>');
-      actionName = actionName.replace(/D/g, '<i class="flaticon-down-arrow"></i>');
+      return actionName.replace(/U/g, '<i class="flaticon-up-arrow"></i>').
+          replace(/L/g, '<i class="flaticon-left-arrow"></i>').
+          replace(/R/g, '<i class="flaticon-right-arrow"></i>').
+          replace(/D/g, '<i class="flaticon-down-arrow"></i>');
     }
 
     return actionName;
