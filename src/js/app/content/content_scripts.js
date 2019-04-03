@@ -44,20 +44,20 @@ class ContentScripts {
    * create infomation div & update style.
    */
   createInfoDiv() {
+    const createDivElement = (id) => {
+      const divElement = document.createElement('div');
+      divElement.id = id;
+      return divElement;
+    };
+
     if ( ! this.commandDiv) {
-      this.commandDiv = document.createElement('div');
-      this.commandDiv.id = 'gestureCommandDiv';
+      this.commandDiv = createDivElement('gestureCommandDiv');
     }
-
     if ( ! this.actionNameDiv) {
-      this.actionNameDiv = document.createElement('div');
-      this.actionNameDiv.id = 'gestureActionNameDiv';
+      this.actionNameDiv = createDivElement('gestureActionNameDiv');
     }
-
     if ( ! this.infoDiv) {
-      this.infoDiv = document.createElement('div');
-      this.infoDiv.id = 'infoDiv';
-
+      this.infoDiv = createDivElement('infoDiv');
       this.infoDiv.appendChild(this.commandDiv);
       this.infoDiv.appendChild(this.actionNameDiv);
     }
@@ -109,28 +109,20 @@ class ContentScripts {
       }
     }
 
-    if (this.infoDiv) {
-      if (document.getElementById(this.infoDiv.id)) {
-        const $divAction = $('#'+this.actionNameDiv.id);
+    if (this.infoDiv && document.getElementById(this.infoDiv.id)) {
+      const $divAction = $('#' + this.actionNameDiv.id);
+      if (this.option.isActionTextOn()) {
+        $divAction.html((actionName != null) ? actionName : '');
+      } else {
+        $divAction.html('');
+      }
 
-        if (this.option.isActionTextOn()) {
-          if (actionName !== $divAction.html()) {
-            $divAction.html( (actionName != null) ? actionName : '');
-          }
-        } else {
-          $divAction.html('');
-        }
-
-        const $divCommand = $('#'+this.commandDiv.id);
-        if (this.option.isCommandTextOn()) {
-          commandName = this.replaceCommandToArrow(commandName);
-
-          if (commandName !== $divCommand.html()) {
-            $divCommand.html(commandName);
-          }
-        } else {
-          $divCommand.html('');
-        }
+      const $divCommand = $('#' + this.commandDiv.id);
+      if (this.option.isCommandTextOn()) {
+        commandName = this.replaceCommandToArrow(commandName);
+        $divCommand.html(commandName);
+      } else {
+        $divCommand.html('');
       }
     }
   }
