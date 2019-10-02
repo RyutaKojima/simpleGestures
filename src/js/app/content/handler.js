@@ -38,11 +38,14 @@ import TrailCanvas from '../content/trail_canvas';
   // ------------------------------------------------------------------------
   // Event Handler
   // ------------------------------------------------------------------------
-  window.addEventListener('focus', function onFocus() {
-    chrome.runtime.sendMessage({msg: 'reset_input', event: 'focus'}, function(response) {});
+  /**
+   * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup'が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
+   */
+  window.addEventListener('focus', () => {
+    chrome.runtime.sendMessage({msg: 'reset_input', event: 'focus'}, (response) => {});
   });
 
-  $(window).on('resize', () => {
+  window.addEventListener('resize', () => {
     trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
   });
 
