@@ -15,10 +15,10 @@ class Keyboard {
   }
 
   /**
-   * @return {number}
+   * @return {string}
    */
   static get KEY_CTRL() {
-    return 17;
+    return 'Control';
   }
 
   /**

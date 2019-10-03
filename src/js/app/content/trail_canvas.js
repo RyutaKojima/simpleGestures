@@ -37,7 +37,7 @@ class TrailCanvas {
 
   /**
    * Getter
-   * @return {any}
+   * @return {string|null}
    */
   getCanvasId() {
     return (this.myCanvas) ? this.myCanvas.id : null;
