@@ -170,14 +170,10 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
    * コンテキストメニューの呼び出しをされたときに実行されるイベント。
    * falseを返すと、コンテキストメニューを無効にする。
    */
-  document.addEventListener('contextmenu', () => {
-    // console.log(arguments.callee.name);
-
+  document.addEventListener('contextmenu', (event) => {
     if (nextMenuSkip) {
       nextMenuSkip = false;
-      return false;
+      event.preventDefault();
     }
-
-    return true;
   });
 })();
