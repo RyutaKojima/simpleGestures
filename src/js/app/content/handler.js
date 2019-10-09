@@ -1,10 +1,15 @@
+/** @var chrome {Object} */
+/** @var chrome.runtime {Object} */
+/** @var chrome.runtime.sendMessage {function} */
 import DEBUG_ON from '../debug_flg';
 import Mouse from '../mouse';
 import ContentScripts from './content_scripts';
 import TrailCanvas from '../content/trail_canvas';
 
-const scrollTop = () => document.documentElement.scrollTop || document.body.scrollTop;
-const scrollLeft = () => document.documentElement.scrollLeft || document.body.scrollLeft;
+const scrollTop = () => document.documentElement.scrollTop ||
+    document.body.scrollTop;
+const scrollLeft = () => document.documentElement.scrollLeft ||
+    document.body.scrollLeft;
 
 (function() {
   const trailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
@@ -27,12 +32,12 @@ const scrollLeft = () => document.documentElement.scrollLeft || document.body.sc
 
     if (contentScripts.infoDiv) {
       if (document.getElementById(contentScripts.infoDiv.id)) {
-        document.body.removeChild(document.getElementById(contentScripts.infoDiv.id));
+        document.body.removeChild(
+            document.getElementById(contentScripts.infoDiv.id));
       }
     }
   };
 
-  // console.log("$(window).ready: frames=" + window.frames.length);
   trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
   contentScripts.loadOption();
   contentScripts.setCanvasStyle();
@@ -45,7 +50,8 @@ const scrollLeft = () => document.documentElement.scrollLeft || document.body.sc
    * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup'が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
    */
   window.addEventListener('focus', () => {
-    chrome.runtime.sendMessage({msg: 'reset_input', event: 'focus'}, (response) => {});
+    chrome.runtime.sendMessage({msg: 'reset_input', event: 'focus'}, () => {
+    });
   });
 
   window.addEventListener('resize', () => {
@@ -53,13 +59,15 @@ const scrollLeft = () => document.documentElement.scrollLeft || document.body.sc
   });
 
   document.addEventListener('keydown', (event) => {
-    if (! event.repeat) {
-      chrome.runtime.sendMessage({msg: 'keydown', keyCode: event.key}, (response) => {});
+    if (!event.repeat) {
+      chrome.runtime.sendMessage({msg: 'keydown', keyCode: event.key}, () => {
+      });
     }
   });
 
   document.addEventListener('keyup', (event) => {
-    chrome.runtime.sendMessage({msg: 'keyup', keyCode: event.key}, (response) => {});
+    chrome.runtime.sendMessage({msg: 'keyup', keyCode: event.key}, () => {
+    });
   });
 
   document.addEventListener('mousedown', (event) => {
@@ -122,7 +130,8 @@ const scrollLeft = () => document.documentElement.scrollLeft || document.body.sc
           toX: response.canvas.toX,
           toY: response.canvas.toY,
         };
-        contentScripts.draw(listParam, response.gestureString, response.gestureAction);
+        contentScripts.draw(listParam, response.gestureString,
+            response.gestureAction);
       }
 
       if (response.canvas.clear) {
@@ -158,10 +167,10 @@ const scrollLeft = () => document.documentElement.scrollLeft || document.body.sc
   });
 
   /**
-	 * コンテキストメニューの呼び出しをされたときに実行されるイベント。
-	 * falseを返すと、コンテキストメニューを無効にする。
-	 */
-  document.addEventListener('contextmenu', (event) => {
+   * コンテキストメニューの呼び出しをされたときに実行されるイベント。
+   * falseを返すと、コンテキストメニューを無効にする。
+   */
+  document.addEventListener('contextmenu', () => {
     // console.log(arguments.callee.name);
 
     if (nextMenuSkip) {
