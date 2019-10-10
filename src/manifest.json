@@ -27,7 +27,6 @@
 				"css/font/flaticon.css"
 			],
 			"js": [
-				"js/vendor/jquery-1.11.3.min.js",
 				"js/handler.js"
 			],
 			"all_frames": true,

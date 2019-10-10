@@ -37,7 +37,7 @@ class TrailCanvas {
 
   /**
    * Getter
-   * @return {any}
+   * @return {string|null}
    */
   getCanvasId() {
     return (this.myCanvas) ? this.myCanvas.id : null;
@@ -54,8 +54,8 @@ class TrailCanvas {
   /**
    * キャンバスのサイズを変更
    *
-   * @param {type} _width
-   * @param {type} _height
+   * @param {number} _width
+   * @param {number} _height
    */
   setCanvasSize(_width, _height) {
     if (this.myCanvas) {

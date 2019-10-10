@@ -139,19 +139,19 @@ class ContentScripts {
       return;
     }
 
-    const $divAction = $('#' + this.actionNameDiv.id);
+    const divAction = document.getElementById(this.actionNameDiv.id);
     if (this.option.isActionTextOn()) {
-      $divAction.html(actionName ? actionName : '');
+      divAction.innerHTML = actionName ? actionName : '';
     } else {
-      $divAction.html('');
+      divAction.innerHTML = '';
     }
 
-    const $divCommand = $('#' + this.commandDiv.id);
+    const divCommand = document.getElementById(this.commandDiv.id);
     if (this.option.isCommandTextOn()) {
       commandName = ContentScripts.replaceCommandToArrow(commandName);
-      $divCommand.html(commandName);
+      divCommand.innerHTML = commandName;
     } else {
-      $divCommand.html('');
+      divCommand.innerHTML = '';
     }
   }
 
@@ -180,7 +180,8 @@ class ContentScripts {
         break;
 
       case 'scroll_bottom':
-        window.scrollTo(0, $(document).height());
+        const bodyHeight = parseInt(window.getComputedStyle(document.body).height, 10);
+        window.scrollTo(0, bodyHeight);
         break;
 
       default:
