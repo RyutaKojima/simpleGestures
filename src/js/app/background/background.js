@@ -276,8 +276,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 /**
- * この拡張機能がインストールされたときに発生するイベント
+ * 拡張機能がインストール/アップデートされたときに発生するイベント
  */
-chrome.runtime.onInstalled.addListener(function() {
-  actionOpenOptionPage({});
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    actionOpenOptionPage({});
+  }
 });
