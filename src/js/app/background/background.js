@@ -274,3 +274,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     sendResponse({message: 'unknown command'});
   }
 });
+
+/**
+ * この拡張機能がインストールされたときに発生するイベント
+ */
+chrome.runtime.onInstalled.addListener(function (details) {
+  // console.log(details);
+  // Object reason: "install"__proto__: Object
+  // {previousVersion: "1.1.8", reason: "update"}previousVersion: "1.1.8"reason: "update"__proto__: Object
+
+  actionOpenOptionPage({});
+});
