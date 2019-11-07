@@ -5,38 +5,37 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 // const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-
   mode: 'production',
-
   module: {
-    rules: [{
-      include: [path.resolve(__dirname, 'src')],
-      loader: 'babel-loader',
-
-      options: {
-        plugins: ['syntax-dynamic-import'],
-
-        presets: [
-          [
-            '@babel/preset-env', {
-              'modules': false,
-            },
+    rules: [
+      {
+        include: [path.resolve(__dirname, 'src')],
+        loader: 'babel-loader',
+        options: {
+          test: /\.js$/,
+          plugins: ['syntax-dynamic-import'],
+          presets: [
+            [
+              '@babel/preset-env', {
+                'modules': false,
+                'targets': {
+                  'node': 'current',
+                },
+              },
+            ],
           ],
-        ],
-      },
-
-      test: /\.js$/,
-    }, {
-      test: /\.(scss|css)$/,
-
-      use: [{
-        loader: 'style-loader',
+        },
       }, {
-        loader: 'css-loader',
-      }, {
-        loader: 'sass-loader',
+        test: /\.(scss|css)$/,
+        use: [
+          {
+            loader: 'style-loader',
+          }, {
+            loader: 'css-loader',
+          }, {
+            loader: 'sass-loader',
+          }],
       }],
-    }],
   },
 
   entry: {
