@@ -1,6 +1,3 @@
-/** @var chrome {Object} */
-/** @var chrome.runtime {Object} */
-/** @var chrome.runtime.sendMessage {function} */
 import DEBUG_ON from '../debug_flg';
 import Mouse from '../mouse';
 import ContentScripts from './content_scripts';
@@ -16,6 +13,20 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
   const contentScripts = new ContentScripts(trailCanvas);
 
   let nextMenuSkip = false;
+
+  /**
+   * content_scripts->backgroundへのデータ送信
+   * @param {Object} param
+   * @return {Promise}
+   */
+  const sendMessageToBackground = (param) => {
+    /** @var chrome {Object} */
+    /** @var chrome.runtime {Object} */
+    /** @var chrome.runtime.sendMessage {function} */
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(param, (response) => resolve(response));
+    });
+  };
 
   /**
    * 画面表示をすべてクリア
@@ -50,8 +61,7 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
    * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup'が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
    */
   window.addEventListener('focus', () => {
-    chrome.runtime.sendMessage({msg: 'reset_input', event: 'focus'}, () => {
-    });
+    sendMessageToBackground({msg: 'reset_input', event: 'focus'});
   });
 
   window.addEventListener('resize', () => {
@@ -60,14 +70,12 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
 
   document.addEventListener('keydown', (event) => {
     if (!event.repeat) {
-      chrome.runtime.sendMessage({msg: 'keydown', keyCode: event.key}, () => {
-      });
+      sendMessageToBackground({msg: 'keydown', keyCode: event.key});
     }
   });
 
   document.addEventListener('keyup', (event) => {
-    chrome.runtime.sendMessage({msg: 'keyup', keyCode: event.key}, () => {
-    });
+    sendMessageToBackground({msg: 'keyup', keyCode: event.key});
   });
 
   document.addEventListener('mousedown', (event) => {
@@ -78,7 +86,7 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
-    chrome.runtime.sendMessage(sendMouseDownParam, function(response) {
+    sendMessageToBackground(sendMouseDownParam).then((response) => {
       if (response === null) {
         return;
       }
@@ -108,7 +116,7 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
-    chrome.runtime.sendMessage(sendMouseMoveParam, function(response) {
+    sendMessageToBackground(sendMouseMoveParam).then((response) => {
       if (response === null) {
         return;
       }
@@ -148,7 +156,7 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
-    chrome.runtime.sendMessage(sendMouseUpParam, function(response) {
+    sendMessageToBackground(sendMouseUpParam).then((response) => {
       if (response === null) {
         return;
       }
