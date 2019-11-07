@@ -17,11 +17,11 @@ canvasForOption.setCanvasSize(500, 500);
  * entry point (jQuery.ready)
  */
 $(() => {
-  initTabView();
+  initializeAndRegisterEventForTab();
 
   // 言語設定の変更
-  changeLanguage();
-  initOptionView();
+  reflectSelectedLanguageToScreen();
+  reflectOptionSettingsOnScreen();
 
   setCanvasStyle(canvasForOption);
 
@@ -49,134 +49,22 @@ $(() => {
     $('[name=' + idName + ']').on('change', (event) => {
       option.setParam(idName, $(event.currentTarget).attr('value'));
       saveOptions();
-      changeLanguage();
+      reflectSelectedLanguageToScreen();
     });
   });
 
-  // ジェスチャ割り当てクリアボタン
-  $('.reset_gesture').on('click', (event) => {
-    const name = $(event.currentTarget).data('target');
-    $('#' + name).val('').triggerHandler('change');
-  });
+  registerEventForGesture();
+  registerEventForAllReset();
 
-  // ジェスチャ設定
-  $('.views_gesture').on('click', (event) => {
-    const $viewsGestureElement = $(event.currentTarget);
-    $viewsGestureElement.siblings('.input_gesture').show().focus().trigger('click');
-  });
-
-  $('.input_gesture').on('blur', (event) => {
-    const $input = $(event.currentTarget);
-    const drawCanvasId = canvasForOption.getCanvasId();
-    const removeCanvas = document.getElementById(drawCanvasId);
-    if (removeCanvas) {
-      document.body.removeChild(removeCanvas);
-      const $canvas = $('#' + drawCanvasId);
-      $canvas.off();
-    }
-
-    $input.hide();
-  }).on('change', (event) => {
-    const $input = $(event.target);
-    const $viewsGestureElement = $input.siblings('.views_gesture');
-    const inputGesture = $input.val();
-
-    // Validation
-    if (!inputGesture.match(/^[DLUR]*$/)) {
-      $input.val($input.data('prevValue'));
-      return;
-    }
-
-    const setGestureText = inputGesture
-        ? ContentScripts.replaceCommandToArrow(inputGesture)
-        : '&nbsp;';
-
-    $viewsGestureElement.html(setGestureText);
-    $input.hide();
-
-    option.setParam($input.attr('id'), inputGesture);
-    saveOptions();
-  }).on('click', (event) => {
-    const $input = $(event.target);
-    const drawCanvas = canvasForOption.getCanvas();
-    const ctx = canvasForOption.getContext2d();
-
-    if (!drawCanvas || !ctx) {
-      return;
-    }
-
-    document.body.appendChild(drawCanvas);
-
-    $input.data('prevValue', $input.val());
-
-    gestureForOption.clear();
-    canvasForOption.clearCanvas();
-
-    ctx.globalAlpha = 0.5;
-    ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
-    ctx.globalAlpha = 1.0;
-
-    const helpTextColor = '#ECECEC';
-    if (option.isJapanese()) {
-      canvasForOption.drawText('この枠内にジェスチャを', 80, 180, helpTextColor);
-      canvasForOption.drawText('描いてください', 140, 260, helpTextColor);
-    } else {
-      canvasForOption.drawText('Please draw a gesture', 80, 180, helpTextColor);
-      canvasForOption.drawText('with this frame', 140, 260, helpTextColor);
-    }
-
-    const $canvas = $('#' + canvasForOption.getCanvasId());
-    $canvas.off();
-    $canvas.mousedown((event) => {
-      const tmpX = event.pageX - $canvas.offset().left;
-      const tmpY = event.pageY - $canvas.offset().top;
-      gestureForOption.startGesture(tmpX, tmpY, null);
-      return false;
-    }).mousemove((event) => {
-      const tmpX = event.pageX - $canvas.offset().left;
-      const tmpY = event.pageY - $canvas.offset().top;
-      if (gestureForOption.registerPoint(tmpX, tmpY)) {
-        canvasForOption.drawLine(
-            gestureForOption.getLastX(), gestureForOption.getLastY(),
-            gestureForOption.getX(), gestureForOption.getY(),
-        );
-      }
-
-      return false;
-    }).mouseup(() => {
-      const removeCanvas = document.getElementById(drawCanvas.id);
-      if (removeCanvas) {
-        document.body.removeChild(removeCanvas);
-      }
-
-      $input.val(gestureForOption.getGestureString()).triggerHandler('change');
-      return false;
-    });
-  });
-
-  //
-  $('#reset_all').on('click', () => {
-    const confirmOk = window.confirm(lang.confirmOptionReset[option.getLanguage()]);
-    if (confirmOk) {
-      option.reset();
-      chrome.extension.sendMessage({msg: 'reload_option'}, (response) => {
-      });
-      initOptionView();
-      changeLanguage();
-    }
-  });
-
-  // color wheel
-  const colorWheel = Raphael.colorwheel($('#input_example')[0], 100);
-  colorWheel.input($('#color_code')[0]);
-  colorWheel.color(option.getColorCode());
-  colorWheel.onchange(() => {
-    $('#color_code').triggerHandler('change');
-  });
+  setupColorWheel();
 });
 
-$(document).on('contextmenu', () => {
-  return false;
+/**
+ * コンテキストメニューの呼び出しをされたときに実行されるイベント。
+ * falseを返すと、コンテキストメニューを無効にする。
+ */
+document.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
 });
 
 /**
@@ -194,9 +82,9 @@ const setCanvasStyle = (canvas) => {
 };
 
 /**
- * オプション表示の初期化をする
+ * オプションの設定内容を画面に反映する
  */
-const initOptionView = () => {
+const reflectOptionSettingsOnScreen = () => {
   const checkValues = {
     'command_text_on': option.isCommandTextOn(),
     'action_text_on': option.isActionTextOn(),
@@ -248,23 +136,23 @@ const initOptionView = () => {
 };
 
 /**
- * タブ表示の初期化をする
+ * タブに関する初期化と設定を行う
  */
-const initTabView = () => {
-  const $defaultActiveTab = $('#tab_btn2.changeTab');
-  changeTab($defaultActiveTab);
-
+const initializeAndRegisterEventForTab = () => {
   $('.changeTab').on('click', (event) => {
-    const $target = $(event.currentTarget);
-    changeTab($target);
+    const $clickedTab = $(event.currentTarget);
+    reflectActiveTabToScreen($clickedTab);
   });
+
+  const $defaultActiveTab = $('#tab_btn2.changeTab');
+  reflectActiveTabToScreen($defaultActiveTab);
 };
 
 /**
- * change view tab.
+ * アクティブなタブを画面に反映する
  */
 let currentlySetColorClass = '';
-const changeTab = ($target) => {
+const reflectActiveTabToScreen = ($target) => {
   const showBodyId = $target.data('show-body');
   const setColorClass = $target.data('set-color');
 
@@ -287,9 +175,9 @@ const changeTab = ($target) => {
 };
 
 /**
- * change Language View.
+ * 使用言語の設定を画面に反映する
  */
-const changeLanguage = () => {
+const reflectSelectedLanguageToScreen = () => {
   const $langEn = $('.class_English');
   const $langJa = $('.class_Japanese');
   const currentLanguage = option.getLanguage();
@@ -313,6 +201,131 @@ const changeLanguage = () => {
     const text = lang.gesture[id][currentLanguage];
 
     $target.parent().siblings('th').text(text);
+  });
+};
+
+/**
+ * @param {jQuery} $input
+ */
+const createGestureInputComponent = ($input) => {
+  const drawCanvas = canvasForOption.getCanvas();
+  const ctx = canvasForOption.getContext2d();
+
+  if (!drawCanvas || !ctx) {
+    return;
+  }
+
+  document.body.appendChild(drawCanvas);
+  $input.data('prevValue', $input.val());
+  gestureForOption.clear();
+  canvasForOption.clearCanvas();
+  ctx.globalAlpha = 0.5;
+  ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+  ctx.globalAlpha = 1.0;
+
+  [
+    option.isJapanese() ? 'この枠内にジェスチャを' : 'Please draw a gesture',
+    option.isJapanese() ? '　　描いてください　　' : '   with this frame   ',
+  ].forEach((text, index) => {
+    canvasForOption.drawText(text, 80, 180 + (index * 80), '#ECECEC');
+  });
+
+  const $canvas = $('#' + canvasForOption.getCanvasId());
+  $canvas.off();
+  $canvas.on('mousedown', (event) => {
+    const tmpX = event.pageX - $canvas.offset().left;
+    const tmpY = event.pageY - $canvas.offset().top;
+    gestureForOption.startGesture(tmpX, tmpY, null);
+    return false;
+  }).on('mousemove', (event) => {
+    const tmpX = event.pageX - $canvas.offset().left;
+    const tmpY = event.pageY - $canvas.offset().top;
+    if (gestureForOption.registerPoint(tmpX, tmpY)) {
+      canvasForOption.drawLine(
+          gestureForOption.getLastX(), gestureForOption.getLastY(),
+          gestureForOption.getX(), gestureForOption.getY(),
+      );
+    }
+    return false;
+  }).on('mouseup', () => {
+    const removeCanvas = document.getElementById(drawCanvas.id);
+    if (removeCanvas) {
+      document.body.removeChild(removeCanvas);
+    }
+
+    $input.val(gestureForOption.getGestureString()).triggerHandler('change');
+    return false;
+  });
+};
+
+const registerEventForGesture = () => {
+  // ジェスチャ割り当てクリアボタン
+  $('.reset_gesture').on('click', (event) => {
+    const name = $(event.currentTarget).data('target');
+    $('#' + name).val('').triggerHandler('change');
+  });
+
+  // ジェスチャ設定
+  $('.views_gesture').on('click', (event) => {
+    const $viewsGestureElement = $(event.currentTarget);
+    $viewsGestureElement.siblings('.input_gesture').show().focus().trigger('click');
+  });
+
+  $('.input_gesture').on('blur', (event) => {
+    const $input = $(event.currentTarget);
+    const drawCanvasId = canvasForOption.getCanvasId();
+    const removeCanvas = document.getElementById(drawCanvasId);
+    if (removeCanvas) {
+      document.body.removeChild(removeCanvas);
+      const $canvas = $('#' + drawCanvasId);
+      $canvas.off();
+    }
+
+    $input.hide();
+  }).on('change', (event) => {
+    const $input = $(event.target);
+    const $viewsGestureElement = $input.siblings('.views_gesture');
+    const inputGesture = $input.val();
+
+    // Validation
+    if (!inputGesture.match(/^[DLUR]*$/)) {
+      $input.val($input.data('prevValue'));
+      return;
+    }
+
+    const setGestureText = inputGesture
+        ? ContentScripts.replaceCommandToArrow(inputGesture)
+        : '&nbsp;';
+
+    $viewsGestureElement.html(setGestureText);
+    $input.hide();
+
+    option.setParam($input.attr('id'), inputGesture);
+    saveOptions();
+  }).on('click', (event) => {
+    createGestureInputComponent($(event.target));
+  });
+};
+
+const registerEventForAllReset = () => {
+  $('#reset_all').on('click', () => {
+    const confirmOk = window.confirm(lang.confirmOptionReset[option.getLanguage()]);
+    if (confirmOk) {
+      option.reset();
+      chrome.extension.sendMessage({msg: 'reload_option'}, (response) => {
+      });
+      reflectOptionSettingsOnScreen();
+      reflectSelectedLanguageToScreen();
+    }
+  });
+};
+
+const setupColorWheel = () => {
+  const colorWheel = Raphael.colorwheel($('#input_example')[0], 100);
+  colorWheel.input($('#color_code')[0]);
+  colorWheel.color(option.getColorCode());
+  colorWheel.onchange(() => {
+    $('#color_code').triggerHandler('change');
   });
 };
 
