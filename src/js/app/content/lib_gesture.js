@@ -79,7 +79,6 @@ class LibGesture {
     this._linkUrl = null;
   }
 
-
   /**
    * ジェスチャの開始時に呼ぶ
    *
@@ -109,7 +108,7 @@ class LibGesture {
       return false;
     }
 
-    if ( ! LibGesture.isDistanceThresholdExceeded(x, y, this._lastX, this._lastY)) {
+    if (!LibGesture.isDistanceThresholdExceeded(x, y, this._lastX, this._lastY)) {
       return false;
     }
 
@@ -139,7 +138,8 @@ class LibGesture {
    *
    * @return {undefined}
    */
-  endGesture() {}
+  endGesture() {
+  }
 
   /**
    * ２点の距離が閾値を超えているか？
@@ -152,7 +152,7 @@ class LibGesture {
    */
   static isDistanceThresholdExceeded(x, y, lastX, lastY) {
     const distance = LibGesture.calcDistance(x, y, lastX, lastY);
-    //		console.log('Distance: ' + distance);
+    // console.log('Distance: ' + distance);
     return distance > LibGesture.GESTURE_START_DISTANCE;
   }
 
@@ -181,7 +181,7 @@ class LibGesture {
   static getDirection(x, y, lastX, lastY) {
     const rotation = LibGesture.calcRotation(x, y, lastX, lastY);
     const charDirection = LibGesture.rotationToDirection(rotation);
-    //			console.log('Rotation: ' + rotation + ' Direction: ' + charDirection);
+    // console.log('Rotation: ' + rotation + ' Direction: ' + charDirection);
     return charDirection;
   }
 

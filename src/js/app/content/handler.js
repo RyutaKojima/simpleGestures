@@ -1,6 +1,3 @@
-/** @var chrome {Object} */
-/** @var chrome.runtime {Object} */
-/** @var chrome.runtime.sendMessage {function} */
 import DEBUG_ON from '../debug_flg';
 import Mouse from '../mouse';
 import ContentScripts from './content_scripts';
@@ -16,6 +13,20 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
   const contentScripts = new ContentScripts(trailCanvas);
 
   let nextMenuSkip = false;
+
+  /**
+   * content_scripts->backgroundへのデータ送信
+   * @param {Object} param
+   * @return {Promise}
+   */
+  const sendMessageToBackground = (param) => {
+    /** @var chrome {Object} */
+    /** @var chrome.runtime {Object} */
+    /** @var chrome.runtime.sendMessage {function} */
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(param, (response) => resolve(response));
+    });
+  };
 
   /**
    * 画面表示をすべてクリア
@@ -49,28 +60,25 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
   /**
    * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup'が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
    */
-  window.addEventListener('focus', () => {
-    chrome.runtime.sendMessage({msg: 'reset_input', event: 'focus'}, () => {
-    });
+  window.addEventListener('focus', async () => {
+    await sendMessageToBackground({msg: 'reset_input', event: 'focus'});
   });
 
   window.addEventListener('resize', () => {
     trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
   });
 
-  document.addEventListener('keydown', (event) => {
+  document.addEventListener('keydown', async (event) => {
     if (!event.repeat) {
-      chrome.runtime.sendMessage({msg: 'keydown', keyCode: event.key}, () => {
-      });
+      await sendMessageToBackground({msg: 'keydown', keyCode: event.key});
     }
   });
 
-  document.addEventListener('keyup', (event) => {
-    chrome.runtime.sendMessage({msg: 'keyup', keyCode: event.key}, () => {
-    });
+  document.addEventListener('keyup', async (event) => {
+    await sendMessageToBackground({msg: 'keyup', keyCode: event.key});
   });
 
-  document.addEventListener('mousedown', (event) => {
+  document.addEventListener('mousedown', async (event) => {
     const sendMouseDownParam = {
       msg: 'mousedown',
       which: event.which,
@@ -78,27 +86,26 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
-    chrome.runtime.sendMessage(sendMouseDownParam, function(response) {
-      if (response === null) {
-        return;
-      }
+    const response = await sendMessageToBackground(sendMouseDownParam);
+    if (response === null) {
+      return;
+    }
 
-      if (response.action) {
-        nextMenuSkip = true;
-        contentScripts.exeAction(response.action);
-      }
+    if (response.action) {
+      nextMenuSkip = true;
+      contentScripts.exeAction(response.action);
+    }
 
-      if (response.canvas.clear) {
-        trailCanvas.clearCanvas();
-      }
+    if (response.canvas.clear) {
+      trailCanvas.clearCanvas();
+    }
 
-      contentScripts.loadOption();
-    });
+    contentScripts.loadOption();
   });
 
-  document.addEventListener('mousemove', (event) => {
+  document.addEventListener('mousemove', async (event) => {
     // console.log('(' + event.pageX + ', ' + event.pageY + ')'
-    // 	+ event.which + ',frm=' + window.frames.length
+    // +event.which + ',frm=' + window.frames.length;
     // );
 
     const sendMouseMoveParam = {
@@ -108,39 +115,38 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
-    chrome.runtime.sendMessage(sendMouseMoveParam, function(response) {
-      if (response === null) {
-        return;
+    const response = await sendMessageToBackground(sendMouseMoveParam);
+    if (response === null) {
+      return;
+    }
+
+    if (response.canvas.draw) {
+      nextMenuSkip = (response.gestureString !== '');
+
+      if (trailCanvas.getCanvas()) {
+        document.body.appendChild(trailCanvas.getCanvas());
       }
 
-      if (response.canvas.draw) {
-        nextMenuSkip = (response.gestureString !== '');
-
-        if (trailCanvas.getCanvas()) {
-          document.body.appendChild(trailCanvas.getCanvas());
-        }
-
-        if (contentScripts.infoDiv) {
-          document.body.appendChild(contentScripts.infoDiv);
-        }
-
-        const listParam = {
-          fromX: response.canvas.x,
-          fromY: response.canvas.y,
-          toX: response.canvas.toX,
-          toY: response.canvas.toY,
-        };
-        contentScripts.draw(listParam, response.gestureString,
-            response.gestureAction);
+      if (contentScripts.infoDiv) {
+        document.body.appendChild(contentScripts.infoDiv);
       }
 
-      if (response.canvas.clear) {
-        clearAllDisplay();
-      }
-    });
+      const listParam = {
+        fromX: response.canvas.x,
+        fromY: response.canvas.y,
+        toX: response.canvas.toX,
+        toY: response.canvas.toY,
+      };
+      contentScripts.draw(listParam, response.gestureString,
+          response.gestureAction);
+    }
+
+    if (response.canvas.clear) {
+      clearAllDisplay();
+    }
   });
 
-  document.addEventListener('mouseup', (event) => {
+  document.addEventListener('mouseup', async (event) => {
     const sendMouseUpParam = {
       msg: 'mouseup',
       which: event.which,
@@ -148,22 +154,21 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
-    chrome.runtime.sendMessage(sendMouseUpParam, function(response) {
-      if (response === null) {
-        return;
-      }
+    const response = await sendMessageToBackground(sendMouseUpParam);
+    if (response === null) {
+      return;
+    }
 
-      // console.log(response);
+    // console.log(response);
 
-      nextMenuSkip = (response.gestureString !== '');
+    nextMenuSkip = (response.gestureString !== '');
 
-      if (response.action) {
-        nextMenuSkip = true;
-        contentScripts.exeAction(response.action);
-      }
+    if (response.action) {
+      nextMenuSkip = true;
+      contentScripts.exeAction(response.action);
+    }
 
-      clearAllDisplay();
-    });
+    clearAllDisplay();
   });
 
   /**

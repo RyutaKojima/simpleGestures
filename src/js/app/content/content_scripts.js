@@ -85,10 +85,10 @@ class ContentScripts {
     this.infoDiv.style.bottom = '0px';
     this.infoDiv.style.margin = 'auto';
     this.infoDiv.style.position = 'fixed';
-    //	this.infoDiv.style.borderRadius = '3px';
-    //	this.infoDiv.style.backgroundColor = '#FFFFEE';
-    //	this.infoDiv.style.overflow = 'visible';
-    //	this.infoDiv.style.overflow = 'block';
+    // this.infoDiv.style.borderRadius = '3px';
+    // this.infoDiv.style.backgroundColor = '#FFFFEE';
+    // this.infoDiv.style.overflow = 'visible';
+    // this.infoDiv.style.overflow = 'block';
     this.infoDiv.style.textAlign = 'center';
     this.infoDiv.style.background = 'transparent';
     this.infoDiv.style.zIndex ='10001';
