@@ -105,7 +105,7 @@ const scrollLeft = () => document.documentElement.scrollLeft ||
 
   document.addEventListener('mousemove', async (event) => {
     // console.log('(' + event.pageX + ', ' + event.pageY + ')'
-    // 	+ event.which + ',frm=' + window.frames.length
+    // +event.which + ',frm=' + window.frames.length;
     // );
 
     const sendMouseMoveParam = {

@@ -59,8 +59,8 @@ class TrailCanvas {
    */
   setCanvasSize(_width, _height) {
     if (this.myCanvas) {
-      //		this.myCanvas.style.width    = _width + "px";
-      //		this.myCanvas.style.height   = _height + "px";
+      // this.myCanvas.style.width    = _width + "px";
+      // this.myCanvas.style.height   = _height + "px";
       this.myCanvas.width = _width;
       this.myCanvas.height = _height;
     }

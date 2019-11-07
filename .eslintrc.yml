@@ -7,7 +7,6 @@ parserOptions:
     sourceType: "module"
 
 rules: 
-    no-tabs: off
     no-unused-vars: off
     max-len: 
         - error
