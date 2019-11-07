@@ -82,10 +82,9 @@ class LibGesture {
   /**
    * ジェスチャの開始時に呼ぶ
    *
-   * @param {type} x
-   * @param {type} y
-   * @param {type} url
-   * @return {undefined}
+   * @param {int} x
+   * @param {int} y
+   * @param {null | string} url
    */
   startGesture(x, y, url) {
     this.clear();
