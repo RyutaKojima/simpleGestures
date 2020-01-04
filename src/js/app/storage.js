@@ -132,5 +132,4 @@ export default class MyStorage {
         break;
     }
   };
-
 }
