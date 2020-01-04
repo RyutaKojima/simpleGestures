@@ -100,7 +100,7 @@ export default class MyStorage {
           break;
 
         default:
-          reject('error');
+          reject(new Error('error'));
           break;
       }
     });
@@ -128,7 +128,7 @@ export default class MyStorage {
         break;
 
       default:
-        console.error(new Error('error'));
+        console.error('error');
         break;
     }
   };

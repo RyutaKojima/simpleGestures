@@ -73,16 +73,15 @@ class LibOption {
    * 永続化データを読み込み
    */
   async load() {
-    try {
-      this.storageData = await this.storage.load(this.LOCAL_STRAGE_KEY);
-      if ( ! this.storageData) {
-        this.storageData = await this.localStorage.load(this.LOCAL_STRAGE_KEY);
-        this.setRawStorageData(this.storageData);
-        this.save();
-      }
-    } catch (e) {
-      console.error(e);
+    this.storageData = await this.storage.load(this.LOCAL_STRAGE_KEY).catch((e) => {
       this.storageData = null;
+      console.error(e);
+    });
+
+    if ( ! this.storageData) {
+      this.storageData = await this.localStorage.load(this.LOCAL_STRAGE_KEY);
+      this.setRawStorageData(this.storageData);
+      this.save();
     }
 
     this.setRawStorageData(this.storageData);
