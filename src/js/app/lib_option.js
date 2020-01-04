@@ -1,3 +1,5 @@
+import MyStorage from './storage';
+
 /**
  * オプション情報管理
  */
@@ -11,6 +13,9 @@ class LibOption {
      * @const
      */
     this.LOCAL_STRAGE_KEY = 'options';
+
+    this.storage = new MyStorage(MyStorage.CHROME_STORAGE_LOCAL);
+    this.localStorage = new MyStorage(MyStorage.LOCAL_STORAGE);
 
     /**
      * @const
@@ -58,8 +63,8 @@ class LibOption {
    * @return {undefined}
    */
   reset() {
-    // localStorage.removeItem(this.LOCAL_STRAGE_KEY);
-    localStorage.clear();
+    this.localStorage.clear();
+    this.storage.clear();
 
     this.load();
   };
@@ -67,8 +72,18 @@ class LibOption {
   /**
    * 永続化データを読み込み
    */
-  load() {
-    this.storageData = localStorage.getItem(this.LOCAL_STRAGE_KEY);
+  async load() {
+    this.storageData = await this.storage.load(this.LOCAL_STRAGE_KEY).catch((e) => {
+      this.storageData = null;
+      console.error(e);
+    });
+
+    if ( ! this.storageData) {
+      this.storageData = await this.localStorage.load(this.LOCAL_STRAGE_KEY);
+      this.setRawStorageData(this.storageData);
+      this.save();
+    }
+
     this.setRawStorageData(this.storageData);
   };
 
@@ -259,7 +274,9 @@ class LibOption {
    * 永続化する
    */
   save() {
-    localStorage.setItem(this.LOCAL_STRAGE_KEY, JSON.stringify(this.optionsInstance));
+    const saveRawData = JSON.stringify(this.optionsInstance);
+    this.storage.save(this.LOCAL_STRAGE_KEY, saveRawData);
+    // this.localStorage.save(this.LOCAL_STRAGE_KEY, saveRawData);
   }
 }
 

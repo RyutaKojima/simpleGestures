@@ -10,54 +10,56 @@ const option = new LibOption();
 const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
 const contentScripts = new ContentScripts(null);
 
-option.load();
-canvasForOption.setCanvasSize(500, 500);
+(async () => {
+  await option.load();
+  canvasForOption.setCanvasSize(500, 500);
 
-/**
- * entry point (jQuery.ready)
- */
-$(() => {
-  initializeAndRegisterEventForTab();
+  /**
+   * entry point (jQuery.ready)
+   */
+  $(() => {
+    initializeAndRegisterEventForTab();
 
-  // 言語設定の変更
-  reflectSelectedLanguageToScreen();
-  reflectOptionSettingsOnScreen();
+    // 言語設定の変更
+    reflectSelectedLanguageToScreen();
+    reflectOptionSettingsOnScreen();
 
-  setCanvasStyle(canvasForOption);
+    setCanvasStyle(canvasForOption);
 
-  // オプションデータの表示
-  // type: テキスト
-  option.OPTION_ID_LIST.forEach((idName) => {
-    $('#' + idName).on('change', (event) => {
-      option.setParam(idName, $(event.target).val());
-      saveOptions();
+    // オプションデータの表示
+    // type: テキスト
+    option.OPTION_ID_LIST.forEach((idName) => {
+      $('#' + idName).on('change', (event) => {
+        option.setParam(idName, $(event.target).val());
+        saveOptions();
+      });
     });
-  });
 
-  // type: チェックボックス
-  const checkIds = ['command_text_on', 'action_text_on', 'trail_on'];
-  checkIds.forEach((idName) => {
-    $('#' + idName).on('change', (event) => {
-      option.setParam(idName, $(event.target).prop('checked'));
-      saveOptions();
+    // type: チェックボックス
+    const checkIds = ['command_text_on', 'action_text_on', 'trail_on'];
+    checkIds.forEach((idName) => {
+      $('#' + idName).on('change', (event) => {
+        option.setParam(idName, $(event.target).prop('checked'));
+        saveOptions();
+      });
     });
-  });
 
-  // type: ラジオボタン
-  const radioIds = ['language'];
-  radioIds.forEach((idName) => {
-    $('[name=' + idName + ']').on('change', (event) => {
-      option.setParam(idName, $(event.currentTarget).attr('value'));
-      saveOptions();
-      reflectSelectedLanguageToScreen();
+    // type: ラジオボタン
+    const radioIds = ['language'];
+    radioIds.forEach((idName) => {
+      $('[name=' + idName + ']').on('change', (event) => {
+        option.setParam(idName, $(event.currentTarget).attr('value'));
+        saveOptions();
+        reflectSelectedLanguageToScreen();
+      });
     });
+
+    registerEventForGesture();
+    registerEventForAllReset();
+
+    setupColorWheel();
   });
-
-  registerEventForGesture();
-  registerEventForAllReset();
-
-  setupColorWheel();
-});
+})();
 
 /**
  * コンテキストメニューの呼び出しをされたときに実行されるイベント。
