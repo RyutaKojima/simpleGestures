@@ -128,7 +128,7 @@ export default class MyStorage {
         break;
 
       default:
-        console.error('error');
+        console.error(new Error('error'));
         break;
     }
   };
