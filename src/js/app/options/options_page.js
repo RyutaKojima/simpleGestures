@@ -8,7 +8,6 @@ import LibOption from '../lib_option';
 const gestureForOption = new LibGesture();
 const option = new LibOption();
 const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
-const contentScripts = new ContentScripts(null);
 
 (async () => {
   await option.load();
@@ -288,11 +287,26 @@ const registerEventForGesture = () => {
     const $input = $(event.target);
     const $viewsGestureElement = $input.siblings('.views_gesture');
     const inputGesture = $input.val();
+    const targetActionName = $input.attr('id');
 
     // Validation
     if (!inputGesture.match(/^[DLUR]*$/)) {
       $input.val($input.data('prevValue'));
       return;
+    }
+
+    const registeredAction = inputGesture ? option.isGestureAlreadyExist(inputGesture) : false;
+    if (registeredAction !== false && registeredAction !== targetActionName) {
+      const gestureText = lang.gesture[registeredAction][option.getLanguage()];
+      if (window.confirm('すでに「' + gestureText + '」に設定されています。入れ替えますか？')) {
+        const $registeredAction = $('#' + registeredAction);
+        $registeredAction.val('').hide();
+        $registeredAction.siblings('.views_gesture').html('&nbsp;');
+        option.setParam(registeredAction, '');
+      } else {
+        $input.val($input.data('prevValue'));
+        return;
+      }
     }
 
     const setGestureText = inputGesture
@@ -302,7 +316,7 @@ const registerEventForGesture = () => {
     $viewsGestureElement.html(setGestureText);
     $input.hide();
 
-    option.setParam($input.attr('id'), inputGesture);
+    option.setParam(targetActionName, inputGesture);
     saveOptions();
   }).on('click', (event) => {
     createGestureInputComponent($(event.target));
@@ -314,7 +328,7 @@ const registerEventForAllReset = () => {
     const confirmOk = window.confirm(lang.confirmOptionReset[option.getLanguage()]);
     if (confirmOk) {
       option.reset();
-      chrome.extension.sendMessage({msg: 'reload_option'}, (response) => {
+      chrome.extension.sendMessage({msg: 'reload_option'}, () => {
       });
       reflectOptionSettingsOnScreen();
       reflectSelectedLanguageToScreen();
@@ -333,6 +347,6 @@ const setupColorWheel = () => {
 
 const saveOptions = () => {
   option.save();
-  chrome.extension.sendMessage({msg: 'reload_option'}, (response) => {
+  chrome.extension.sendMessage({msg: 'reload_option'}, () => {
   });
 };

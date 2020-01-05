@@ -248,6 +248,25 @@ class LibOption {
   }
 
   /**
+   * すでに同じジェスチャが何かのアクションに設定されている
+   *
+   * @param {string} gesture
+   * @return {boolean|string}
+   */
+  isGestureAlreadyExist(gesture) {
+    let actionName = false;
+    this.GESTURE_ID_LIST.forEach((key) => {
+      const setText = this.getParam(key, '');
+
+      if (gesture === setText) {
+        actionName = key;
+      }
+    });
+
+    return actionName;
+  }
+
+  /**
    * デフォルト設定
    *
    * @return {Object}
