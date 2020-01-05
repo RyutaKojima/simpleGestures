@@ -121,17 +121,12 @@ const reflectOptionSettingsOnScreen = () => {
     const $inputTextElement = $('#' + key);
     const setText = option.getParam(key, '');
 
-    $inputTextElement.val(setText);
-
     if (!$inputTextElement.hasClass('input_gesture')) {
       console.error('ジェスチャ設定に必須なDOM要素が見つかりません, {' + key + '}');
       return;
     }
 
-    const setGestureText = setText ? ContentScripts.replaceCommandToArrow(setText) : '&nbsp;';
-    const $viewsGestureElement = $inputTextElement.siblings('.views_gesture');
-
-    $viewsGestureElement.html(setGestureText);
+    setGestureInputComponent($inputTextElement, setText);
     $inputTextElement.hide();
   });
 };
@@ -211,7 +206,6 @@ const reflectSelectedLanguageToScreen = () => {
 const createGestureInputComponent = ($input) => {
   const drawCanvas = canvasForOption.getCanvas();
   const ctx = canvasForOption.getContext2d();
-
   if (!drawCanvas || !ctx) {
     return;
   }
@@ -254,22 +248,29 @@ const createGestureInputComponent = ($input) => {
       document.body.removeChild(removeCanvas);
     }
 
-    $input.val(gestureForOption.getGestureString()).triggerHandler('change');
+    setGestureInputComponent($input, gestureForOption.getGestureString());
+    $input.triggerHandler('change');
     return false;
   });
 };
 
+const setGestureInputComponent = ($input, gestureText) => {
+  const setGestureText = gestureText
+      ? ContentScripts.replaceCommandToArrow(gestureText)
+      : '&nbsp;';
+
+  $input.val(gestureText);
+  $input.siblings('.views_gesture').html(setGestureText);
+};
+
 const registerEventForGesture = () => {
-  // ジェスチャ割り当てクリアボタン
   $('.reset_gesture').on('click', (event) => {
     const name = $(event.currentTarget).data('target');
     $('#' + name).val('').triggerHandler('change');
   });
 
-  // ジェスチャ設定
   $('.views_gesture').on('click', (event) => {
-    const $viewsGestureElement = $(event.currentTarget);
-    $viewsGestureElement.siblings('.input_gesture').show().focus().trigger('click');
+    $(event.currentTarget).siblings('.input_gesture').show().focus().trigger('click');
   });
 
   $('.input_gesture').on('blur', (event) => {
@@ -278,42 +279,32 @@ const registerEventForGesture = () => {
     const removeCanvas = document.getElementById(drawCanvasId);
     if (removeCanvas) {
       document.body.removeChild(removeCanvas);
-      const $canvas = $('#' + drawCanvasId);
-      $canvas.off();
+      $('#' + drawCanvasId).off();
     }
-
     $input.hide();
   }).on('change', (event) => {
     const $input = $(event.target);
-    const $viewsGestureElement = $input.siblings('.views_gesture');
     const inputGesture = $input.val();
     const targetActionName = $input.attr('id');
 
-    // Validation
     if (!inputGesture.match(/^[DLUR]*$/)) {
-      $input.val($input.data('prevValue'));
+      setGestureInputComponent($input, $input.data('prevValue'));
       return;
     }
 
     const registeredAction = inputGesture ? option.isGestureAlreadyExist(inputGesture) : false;
     if (registeredAction !== false && registeredAction !== targetActionName) {
-      const gestureText = lang.gesture[registeredAction][option.getLanguage()];
-      if (window.confirm('すでに「' + gestureText + '」に設定されています。入れ替えますか？')) {
-        const $registeredAction = $('#' + registeredAction);
-        $registeredAction.val('').hide();
-        $registeredAction.siblings('.views_gesture').html('&nbsp;');
-        option.setParam(registeredAction, '');
-      } else {
-        $input.val($input.data('prevValue'));
+      const gestureLabel = lang.gesture[registeredAction][option.getLanguage()];
+      if ( ! window.confirm('すでに「' + gestureLabel + '」に設定されています。入れ替えますか？')) {
+        setGestureInputComponent($input, $input.data('prevValue'));
         return;
       }
+
+      setGestureInputComponent($('#' + registeredAction), '');
+      option.setParam(registeredAction, '');
     }
 
-    const setGestureText = inputGesture
-        ? ContentScripts.replaceCommandToArrow(inputGesture)
-        : '&nbsp;';
-
-    $viewsGestureElement.html(setGestureText);
+    setGestureInputComponent($input, inputGesture);
     $input.hide();
 
     option.setParam(targetActionName, inputGesture);
