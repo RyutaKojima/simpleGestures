@@ -255,9 +255,7 @@ const createGestureInputComponent = ($input) => {
 };
 
 const setGestureInputComponent = ($input, gestureText) => {
-  const setGestureText = gestureText
-      ? ContentScripts.replaceCommandToArrow(gestureText)
-      : '&nbsp;';
+  const setGestureText = gestureText ? ContentScripts.replaceCommandToArrow(gestureText) : '&nbsp;';
 
   $input.val(gestureText);
   $input.siblings('.views_gesture').html(setGestureText);
