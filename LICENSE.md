@@ -1,5 +1,3 @@
-訳注: オープンソースグループ・ジャパンによる MIT [ライセンスの日本語参考訳](https://osdn.jp/projects/opensource/wiki/licenses%2FMIT_license)
-
 The MIT License (MIT)
 
 Copyright (c) 2015 - RyutaKojima
