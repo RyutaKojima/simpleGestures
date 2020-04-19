@@ -12,6 +12,10 @@ export default {
       'Japanese': '新しいタブ(リンクを開く)',
       'English': 'new tab(link open)',
     },
+    'gesture_new_tab_background': {
+      'Japanese': '新しいタブ(リンクを裏で開く)',
+      'English': 'new tab(link open in the background)',
+    },
     'gesture_pin_tab': {
       'Japanese': 'タブを固定/解除',
       'English': 'pin the tabs',

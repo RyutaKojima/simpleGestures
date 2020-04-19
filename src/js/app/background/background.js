@@ -5,6 +5,7 @@ import LibGesture from '../content/lib_gesture';
 import LibOption from '../lib_option';
 
 import actionOpenNewTab from './Action/open_new_tab';
+import actionOpenNewTabBackGround from './Action/open_new_tab_background';
 import actionTogglePinTab from './Action/toggle_pin_tab';
 import actionCloseActiveTab from './Action/close_active_tab';
 import actionReload from './Action/reload';
@@ -243,6 +244,7 @@ const requestFunction = {
  */
 const gestureFunction = {
   'new_tab': actionOpenNewTab,
+  'new_tab_background': actionOpenNewTabBackGround,
   'pin_tab': actionTogglePinTab,
   'close_tab': actionCloseActiveTab,
   'reload': actionReload,
