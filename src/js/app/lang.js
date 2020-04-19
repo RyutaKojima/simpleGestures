@@ -9,12 +9,12 @@ export default {
       'English': 'tab close',
     },
     'gesture_new_tab': {
-      'Japanese': '新しいタブ(リンクを開く)',
-      'English': 'new tab(link open)',
+      'Japanese': '新しいタブ/新しいタブでリンクを開く',
+      'English': 'New tab/Open the link in a new tab',
     },
     'gesture_new_tab_background': {
-      'Japanese': '新しいタブ(リンクを裏で開く)',
-      'English': 'new tab(link open in the background)',
+      'Japanese': '新しいタブ/新しいタブでリンクを開く(バックグラウンドで開く)',
+      'English': 'New tab/Open the link in a new tab(in the background)',
     },
     'gesture_pin_tab': {
       'Japanese': 'タブを固定/解除',
@@ -81,7 +81,7 @@ export default {
       'English': 'close all tab',
     },
     'gesture_open_option': {
-      'Japanese': 'このページを開く',
+      'Japanese': 'simpleGestureの設定を開く',
       'English': 'open simpleGesture option page',
     },
     'gesture_open_extension': {
