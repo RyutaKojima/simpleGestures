@@ -3,10 +3,10 @@ import Mouse from '../mouse';
 import ContentScripts from './content_scripts';
 import TrailCanvas from '../content/trail_canvas';
 
-const scrollTop = () => document.documentElement.scrollTop ||
-    document.body.scrollTop;
-const scrollLeft = () => document.documentElement.scrollLeft ||
-    document.body.scrollLeft;
+const scrollTop = () => (document.documentElement && document.documentElement.scrollTop) ||
+    (document.body && document.body.scrollTop);
+const scrollLeft = () => (document.documentElement && document.documentElement.scrollLeft) ||
+    (document.body && document.body.scrollLeft);
 
 (function() {
   const trailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
