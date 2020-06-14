@@ -1,6 +1,7 @@
-export default (options) => {
-  chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-    const activeTab = tabs[0];
-    chrome.tabs.reload(activeTab.id);
-  });
+import {chromeTabs} from '../chrome-wrapper/chromeTabs';
+
+export default async () => {
+  const activeTab = await chromeTabs.getActiveTab();
+
+  chrome.tabs.reload(activeTab.id);
 };

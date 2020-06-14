@@ -1,13 +1,7 @@
-export default (options) => {
-  const chromeExtURL = 'chrome://extensions/';
+import {chromeTabs} from '../chrome-wrapper/chromeTabs';
 
-  chrome.tabs.query({currentWindow: true}, function(tabsInCurrentWindow) {
-    const extensionTab = tabsInCurrentWindow.find((tab) => tab.url === chromeExtURL);
+export default async () => {
+  const chromeExtensionsURL = 'chrome://extensions/';
 
-    if (typeof extensionTab !== 'undefined') {
-      chrome.tabs.update(extensionTab.id, {active: true});
-    } else {
-      chrome.tabs.create({url: chromeExtURL, selected: true});
-    }
-  });
+  chromeTabs.activateOrCreate(chromeExtensionsURL);
 };

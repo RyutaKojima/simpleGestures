@@ -13,6 +13,7 @@
 		"512": "img/icon_512.png"
 	},
 	"permissions": [
+		"tabs",
 		"sessions",
 		"storage"
 	],
