@@ -1,4 +1,6 @@
-export default (options) => {
+import {chromeTabs} from '../chrome-wrapper/chromeTabs';
+
+export default () => {
   // 現在のバージョンでは動かなくなった
-  chrome.tabs.create({url: 'chrome://restart', selected: true});
+  chromeTabs.createLast('chrome://restart');
 };

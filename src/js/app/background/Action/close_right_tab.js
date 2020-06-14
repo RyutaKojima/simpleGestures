@@ -1,14 +1,15 @@
-export default (options) => {
-  chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow) => {
-    const activeTab = tabsInCurrentWindow.find((tab) => tab.active);
-    if (typeof activeTab === 'undefined') {
-      return;
-    }
+import {chromeTabs} from '../chrome-wrapper/chromeTabs';
 
-    const removeTargetTabs = tabsInCurrentWindow.filter((tab) => tab.index > activeTab.index);
+export default async () => {
+  const tabsInCurrentWindow = await chromeTabs.getCurrentWindowTabs();
+  const activeTab = tabsInCurrentWindow.find((tab) => tab.active);
+  if (!activeTab) {
+    return;
+  }
 
-    removeTargetTabs.forEach((tab) => {
-      chrome.tabs.remove(tab.id);
-    });
-  });
+  const removeTabIds = tabsInCurrentWindow
+      .filter((tab) => tab.index > activeTab.index)
+      .map((tab) => tab.id);
+
+  chrome.tabs.remove(removeTabIds);
 };

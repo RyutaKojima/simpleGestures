@@ -8,7 +8,8 @@
     "eslint": "eslint \"src/js/app/**/*.js\"",
     "stylelint": "stylelint \"css/**/*.css\"",
     "lint": "yarn eslint & yarn stylelint",
-    "build": "rm -rf dist && webpack --config webpack.dev.js",
+    "build": "webpack --config webpack.dev.js",
+    "clean-build": "rm -rf dist && yarn build",
     "dev": "yarn build --watch"
   },
   "repository": {

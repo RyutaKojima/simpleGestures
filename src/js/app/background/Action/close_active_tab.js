@@ -1,8 +1,8 @@
-export default (options) => {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    if (tabs.length > 0) {
-      const activeTab = tabs[0];
-      chrome.tabs.remove(activeTab.id);
-    }
-  });
+import {chromeTabs} from '../chrome-wrapper/chromeTabs';
+
+export default async () => {
+  const activeTab = await chromeTabs.getActiveTab();
+  if (activeTab) {
+    chrome.tabs.remove(activeTab.id);
+  }
 };
