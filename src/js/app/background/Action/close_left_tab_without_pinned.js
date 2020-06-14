@@ -7,10 +7,9 @@ export default async () => {
     return;
   }
 
-  const removeTabIds = tabsInCurrentWindow
+  const removeTabs = tabsInCurrentWindow
       .filter((tab) => tab.index < activeTab.index)
-      .filter((tab) => !tab.pinned)
-      .map((tab) => tab.id);
+      .filter((tab) => !tab.pinned);
 
-  chrome.tabs.remove(removeTabIds);
+  chromeTabs.close(removeTabs);
 };

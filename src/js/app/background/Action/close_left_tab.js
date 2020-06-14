@@ -7,9 +7,8 @@ export default async () => {
     return;
   }
 
-  const removeTabIds = tabsInCurrentWindow
-      .filter((tab) => tab.index < activeTab.index)
-      .map((tab) => tab.id);
+  const removeTabs = tabsInCurrentWindow
+      .filter((tab) => tab.index < activeTab.index);
 
-  chrome.tabs.remove(removeTabIds);
+  chromeTabs.close(removeTabs);
 };

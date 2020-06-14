@@ -45,4 +45,15 @@ export const chromeTabs = {
   activate(tab) {
     chrome.tabs.update(tab.id, {active: true});
   },
+  close(tab) {
+    if (Array.isArray(tab)) {
+      const removeTabIds = tab.map((tab) => tab.id);
+      chrome.tabs.remove(removeTabIds);
+    } else {
+      chrome.tabs.remove(tab.id);
+    }
+  },
+  reload(tab) {
+    chrome.tabs.reload(tab.id);
+  },
 };
