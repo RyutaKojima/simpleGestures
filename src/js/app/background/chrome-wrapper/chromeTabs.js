@@ -45,4 +45,7 @@ export const chromeTabs = {
   activate(tab) {
     chrome.tabs.update(tab.id, {active: true});
   },
+  reload(tab) {
+    chrome.tabs.reload(tab.id);
+  },
 };
