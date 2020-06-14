@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint \"src/js/app/**/*.js\"",
-    "eslint-fix": "eslint --fix \"src/js/app/**/*.js\"",
     "stylelint": "stylelint \"css/**/*.css\"",
-    "build": "webpack --config webpack.dev.js",
-    "build-dev": "webpack --config webpack.dev.js --watch"
+    "lint": "yarn eslint & yarn stylelint",
+    "build": "rm -rf dist && webpack --config webpack.dev.js",
+    "dev": "yarn build --watch"
   },
   "repository": {
     "type": "git",
