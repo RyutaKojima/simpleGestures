@@ -9,8 +9,8 @@
     "stylelint": "stylelint \"css/**/*.css\"",
     "lint": "yarn eslint & yarn stylelint",
     "build": "webpack --config webpack.dev.js",
-    "clean-build": "rm -rf dist && yarn build",
-    "dev": "yarn build --watch"
+    "dev": "yarn build --watch",
+    "publish-build": "rm -rf dist && yarn build && zip -r ./simpleGesture.zip ./dist"
   },
   "repository": {
     "type": "git",
