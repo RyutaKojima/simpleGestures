@@ -4,7 +4,7 @@
 
 ====
 
-
+[![Lint pass](https://github.com/RyutaKojima/simpleGestures/workflows/Lint%20check%20CI/badge.svg)](https://github.com/RyutaKojima/simpleGestures/actions?query=workflow%3A%22Lint+check+CI%22)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3d52042de99c11e3f8b4/maintainability)](https://codeclimate.com/github/RyutaKojima/simpleGestures/maintainability)
 [![codebeat badge](https://codebeat.co/badges/56ecd007-3c77-4e5e-8494-71a98599c99d)](https://codebeat.co/projects/github-com-ryutakojima-simplegestures-master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4876517adbac48fcaa149e28614cbe07)](https://app.codacy.com/app/RyutaKojima/simpleGestures?utm_source=github.com&utm_medium=referral&utm_content=RyutaKojima/simpleGestures&utm_campaign=Badge_Grade_Settings)
