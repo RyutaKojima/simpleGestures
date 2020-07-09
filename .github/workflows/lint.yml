@@ -24,7 +24,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run eslint
-    - run: npm run stylelint
-    - run: npm test
+    - run: npm install -g yarn
+    - run: yarn install
+    - run: yarn eslint
+    - run: yarn stylelint
+    - run: yarn test
