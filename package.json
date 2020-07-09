@@ -4,7 +4,7 @@
   "description": "`simpleGesture` is Chrome extension to add mouse gestures.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Always OK\" && exit 0",
     "eslint": "eslint \"src/js/app/**/*.js\"",
     "stylelint": "stylelint \"css/**/*.css\"",
     "lint": "yarn eslint & yarn stylelint",
