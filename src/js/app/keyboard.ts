@@ -2,6 +2,9 @@
  * キーボードの状態を管理する
  */
 class Keyboard {
+  lockedCount: number;
+  keyBuffer: boolean[];
+
   /**
    * @constructor
    */
@@ -17,7 +20,7 @@ class Keyboard {
   /**
    * @return {string}
    */
-  static get KEY_CTRL() {
+  static get KEY_CTRL(): string {
     return 'Control';
   }
 
@@ -26,7 +29,7 @@ class Keyboard {
    *
    * @return {Keyboard}
    */
-  reset() {
+  reset(): Keyboard {
     console.log('reset keyboard');
     this.keyBuffer = [];
     return this;
@@ -37,7 +40,7 @@ class Keyboard {
    *
    * @return {Keyboard}
    */
-  lock() {
+  lock(): Keyboard {
     this.lockedCount++;
     return this;
   }
@@ -47,7 +50,7 @@ class Keyboard {
    *
    * @return {Keyboard}
    */
-  unlock() {
+  unlock(): Keyboard {
     if (this.lockedCount) {
       this.lockedCount--;
     }
@@ -60,7 +63,7 @@ class Keyboard {
    * @param {number} keyCode
    * @return {bool}
    */
-  isOn(keyCode) {
+  isOn(keyCode: number): boolean {
     return this.keyBuffer[keyCode];
   }
 
@@ -70,7 +73,7 @@ class Keyboard {
    * @param {number} keyCode
    * @return {Keyboard}
    */
-  setOn(keyCode) {
+  setOn(keyCode: number): Keyboard {
     if (this.lockedCount) {
       return this;
     }
@@ -88,7 +91,7 @@ class Keyboard {
    * @param {number} keyCode
    * @return {Keyboard}
    */
-  setOff(keyCode) {
+  setOff(keyCode: number): Keyboard {
     console.log('off keybord: ' + keyCode);
 
     this.keyBuffer[keyCode] = false;

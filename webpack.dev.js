@@ -6,26 +6,16 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'production',
+  devtool: 'inline-source-map',
+
   module: {
     rules: [
       {
-        include: [path.resolve(__dirname, 'src')],
-        loader: 'babel-loader',
-        options: {
-          test: /\.js$/,
-          plugins: ['syntax-dynamic-import'],
-          presets: [
-            [
-              '@babel/preset-env', {
-                'modules': false,
-                'targets': {
-                  'node': 'current',
-                },
-              },
-            ],
-          ],
-        },
-      }, {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
         test: /\.(scss|css)$/,
         use: [
           {
@@ -39,9 +29,13 @@ module.exports = {
   },
 
   entry: {
-    handler: './src/js/app/content/handler',
-    background: './src/js/app/background/background',
-    options_page: './src/js/app/options/options_page',
+    handler: './src/js/app/content/handler.js',
+    background: './src/js/app/background/background.js',
+    options_page: './src/js/app/options/options_page.js',
+  },
+
+  resolve: {
+    extensions: [ '.tsx', '.ts', '.js' ],
   },
 
   output: {

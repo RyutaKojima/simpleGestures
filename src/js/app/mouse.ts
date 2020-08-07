@@ -2,6 +2,8 @@
  * マウスの状態を管理する
  */
 class Mouse {
+  btnBuffer: boolean[];
+
   /**
    * @constructor
    */
@@ -15,14 +17,14 @@ class Mouse {
   /**
    * @return {number}
    */
-  static get LEFT_BUTTON() {
+  static get LEFT_BUTTON(): number {
     return 1;
   }
 
   /**
    * @return {number}
    */
-  static get RIGHT_BUTTON() {
+  static get RIGHT_BUTTON(): number {
     return 3;
   }
 
@@ -32,7 +34,7 @@ class Mouse {
    * @param {Object} mouseevent
    * @return {*}
    */
-  static getHref(mouseevent) {
+  static getHref(mouseevent): null|string {
     if (mouseevent.target.href) {
       return mouseevent.target.href;
     }
@@ -46,7 +48,7 @@ class Mouse {
   /**
    * 現在の入力状態をリセットする
    */
-  reset() {
+  reset(): void {
     this.btnBuffer = [];
   }
 
@@ -55,7 +57,7 @@ class Mouse {
    * @param {numeric} btnCode
    * @return {*}
    */
-  isOn(btnCode) {
+  isOn(btnCode: number): boolean {
     return this.btnBuffer[btnCode];
   }
 
@@ -63,7 +65,7 @@ class Mouse {
    *
    * @param {string|numeric} btnCode
    */
-  setOn(btnCode) {
+  setOn(btnCode: number): void {
     this.btnBuffer[btnCode] = true;
   }
 
@@ -71,35 +73,35 @@ class Mouse {
    *
    * @param {mixed} btnCode
    */
-  setOff(btnCode) {
+  setOff(btnCode: number): void {
     this.btnBuffer[btnCode] = false;
   }
 
   /**
    * @return {boolean}
    */
-  isLeft() {
+  isLeft(): boolean {
     return this.btnBuffer[Mouse.LEFT_BUTTON];
   }
 
   /**
    * @param {boolean} _flg
    */
-  setLeft(_flg) {
+  setLeft(_flg): void {
     this.btnBuffer[Mouse.LEFT_BUTTON] = _flg;
   }
 
   /**
    * @return {boolean}
    */
-  isRight() {
+  isRight(): boolean {
     return this.btnBuffer[Mouse.RIGHT_BUTTON];
   }
 
   /**
    * @param {boolean} _flg
    */
-  setRight(_flg) {
+  setRight(_flg): void {
     this.btnBuffer[Mouse.RIGHT_BUTTON] = _flg;
   }
 }
