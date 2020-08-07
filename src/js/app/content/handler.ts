@@ -1,28 +1,23 @@
 import DEBUG_ON from '../debug_flg';
-import Mouse from '../mouse';
+import Mouse, {HTMLChildElement, HTMLElementEvent} from '../mouse';
 import ContentScripts from './content_scripts';
 import TrailCanvas from '../content/trail_canvas';
+import {LineParameter, SendMessageParameter} from "../types/common";
 
-const scrollTop = () => (document.documentElement && document.documentElement.scrollTop) ||
+const scrollTop = (): number => (document.documentElement && document.documentElement.scrollTop) ||
     (document.body && document.body.scrollTop);
-const scrollLeft = () => (document.documentElement && document.documentElement.scrollLeft) ||
+const scrollLeft = (): number => (document.documentElement && document.documentElement.scrollLeft) ||
     (document.body && document.body.scrollLeft);
 
 (function() {
-  const trailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
-  const contentScripts = new ContentScripts(trailCanvas);
-
-  let nextMenuSkip = false;
+  const trailCanvas: TrailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
+  const contentScripts: ContentScripts = new ContentScripts(trailCanvas);
+  let nextMenuSkip: boolean = false;
 
   /**
    * content_scripts->backgroundへのデータ送信
-   * @param {Object} param
-   * @return {Promise}
    */
-  const sendMessageToBackground = (param) => {
-    /** @var chrome {Object} */
-    /** @var chrome.runtime {Object} */
-    /** @var chrome.runtime.sendMessage {function} */
+  const sendMessageToBackground = (param: SendMessageParameter): Promise<any> => {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(param, (response) => resolve(response));
     });
@@ -31,7 +26,7 @@ const scrollLeft = () => (document.documentElement && document.documentElement.s
   /**
    * 画面表示をすべてクリア
    */
-  const clearAllDisplay = function() {
+  const clearAllDisplay = (): void => {
     if (trailCanvas) {
       trailCanvas.clearCanvas();
 
@@ -68,17 +63,17 @@ const scrollLeft = () => (document.documentElement && document.documentElement.s
     trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
   });
 
-  document.addEventListener('keydown', async (event) => {
+  document.addEventListener('keydown', async (event: KeyboardEvent): Promise<any> => {
     if (!event.repeat) {
       await sendMessageToBackground({msg: 'keydown', keyCode: event.key});
     }
   });
 
-  document.addEventListener('keyup', async (event) => {
+  document.addEventListener('keyup', async (event: KeyboardEvent): Promise<any> => {
     await sendMessageToBackground({msg: 'keyup', keyCode: event.key});
   });
 
-  document.addEventListener('mousedown', async (event) => {
+  document.addEventListener('mousedown', async (event: HTMLElementEvent<HTMLChildElement>) => {
     const sendMouseDownParam = {
       msg: 'mousedown',
       which: event.which,
@@ -103,7 +98,7 @@ const scrollLeft = () => (document.documentElement && document.documentElement.s
     contentScripts.loadOption();
   });
 
-  document.addEventListener('mousemove', async (event) => {
+  document.addEventListener('mousemove', async (event: MouseEvent) => {
     // console.log('(' + event.pageX + ', ' + event.pageY + ')'
     // +event.which + ',frm=' + window.frames.length;
     // );
@@ -131,7 +126,7 @@ const scrollLeft = () => (document.documentElement && document.documentElement.s
         document.body.appendChild(contentScripts.infoDiv);
       }
 
-      const listParam = {
+      const listParam: LineParameter = {
         fromX: response.canvas.x,
         fromY: response.canvas.y,
         toX: response.canvas.toX,
@@ -146,7 +141,7 @@ const scrollLeft = () => (document.documentElement && document.documentElement.s
     }
   });
 
-  document.addEventListener('mouseup', async (event) => {
+  document.addEventListener('mouseup', async (event: MouseEvent) => {
     const sendMouseUpParam = {
       msg: 'mouseup',
       which: event.which,
@@ -154,7 +149,7 @@ const scrollLeft = () => (document.documentElement && document.documentElement.s
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
-    const response = await sendMessageToBackground(sendMouseUpParam);
+    const response: any = await sendMessageToBackground(sendMouseUpParam);
     if (response === null) {
       return;
     }
@@ -175,7 +170,7 @@ const scrollLeft = () => (document.documentElement && document.documentElement.s
    * コンテキストメニューの呼び出しをされたときに実行されるイベント。
    * falseを返すと、コンテキストメニューを無効にする。
    */
-  document.addEventListener('contextmenu', (event) => {
+  document.addEventListener('contextmenu', (event: MouseEvent) => {
     if (nextMenuSkip) {
       nextMenuSkip = false;
       event.preventDefault();

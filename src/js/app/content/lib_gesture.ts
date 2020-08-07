@@ -2,17 +2,19 @@
  * ジェスチャの管理
  */
 class LibGesture {
-  /**
-   * @return {number}
-   */
-  static get COMMAND_MAX_LENGTH() {
+  _lastX: number;
+  _lastY: number;
+  _nowX: number;
+  _nowY: number;
+  _linkUrl: null|string;
+  _strGestureCommand: string;
+  _lastDirection: null|'R'|'D'|'U'|'L';
+  
+  static get COMMAND_MAX_LENGTH(): number {
     return 14;
   }
 
-  /**
-   * @return {number}
-   */
-  static get GESTURE_START_DISTANCE() {
+  static get GESTURE_START_DISTANCE(): number {
     return 10;
   }
 
@@ -23,53 +25,34 @@ class LibGesture {
     this.clear();
   }
 
-  /**
-   * @return {number|type|*}
-   */
-  getLastX() {
+  getLastX(): number {
     return this._lastX;
   }
 
-  /**
-   * @return {number|type|*}
-   */
-  getLastY() {
+  getLastY(): number {
     return this._lastY;
   }
 
-  /**
-   * @return {number|type}
-   */
-  getX() {
+  getX(): number {
     return this._nowX;
   }
 
-  /**
-   * @return {number|type}
-   */
-  getY() {
+  getY(): number {
     return this._nowY;
   }
 
-  /**
-   * @return {null|type}
-   */
-  getURL() {
+  getURL(): null|string {
     return this._linkUrl;
   }
 
-  /**
-   * Getter
-   * @return {string|string}
-   */
-  getGestureString() {
+  getGestureString(): string {
     return this._strGestureCommand;
   }
 
   /**
    * 初期化
    */
-  clear() {
+  clear(): void {
     this._nowX = -1;
     this._nowY = -1;
     this._lastX = -1;
@@ -81,12 +64,8 @@ class LibGesture {
 
   /**
    * ジェスチャの開始時に呼ぶ
-   *
-   * @param {int} x
-   * @param {int} y
-   * @param {null | string} url
    */
-  startGesture(x, y, url) {
+  startGesture(x: number, y: number, url: null|string) {
     this.clear();
 
     this._nowX = x;
@@ -102,7 +81,7 @@ class LibGesture {
    * @param {number} y
    * @return {Boolean}
    */
-  registerPoint(x, y) {
+  registerPoint(x: number, y: number): boolean {
     if (this._lastX === -1 || this._lastY === -1) {
       return false;
     }
@@ -111,7 +90,7 @@ class LibGesture {
       return false;
     }
 
-    const charDirection = LibGesture.getDirection(x, y, this._lastX, this._lastY);
+    const charDirection: 'R'|'D'|'U'|'L' = LibGesture.getDirection(x, y, this._lastX, this._lastY);
 
     if (this._lastDirection !== charDirection) {
       this._lastDirection = charDirection;
@@ -134,22 +113,14 @@ class LibGesture {
 
   /**
    * ジェスチャの終了時に呼ぶ
-   *
-   * @return {undefined}
    */
-  endGesture() {
+  endGesture(): void {
   }
 
   /**
    * ２点の距離が閾値を超えているか？
-   *
-   * @param {number} x
-   * @param {number} y
-   * @param {number} lastX
-   * @param {number} lastY
-   * @return {number}
    */
-  static isDistanceThresholdExceeded(x, y, lastX, lastY) {
+  static isDistanceThresholdExceeded(x: number, y: number, lastX: number, lastY: number): boolean {
     const distance = LibGesture.calcDistance(x, y, lastX, lastY);
     // console.log('Distance: ' + distance);
     return distance > LibGesture.GESTURE_START_DISTANCE;
@@ -157,64 +128,43 @@ class LibGesture {
 
   /**
    * ２点の座標から距離を計算して返す
-   *
-   * @param {number} x
-   * @param {number} y
-   * @param {number} lastX
-   * @param {number} lastY
-   * @return {number}
    */
-  static calcDistance(x, y, lastX, lastY) {
+  static calcDistance(x: number, y: number, lastX: number, lastY: number): number {
     return Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
   }
 
   /**
    * ２点間の向きを返す
-   *
-   * @param {number} x
-   * @param {number} y
-   * @param {number} lastX
-   * @param {number} lastY
-   * @return {string}
    */
-  static getDirection(x, y, lastX, lastY) {
-    const rotation = LibGesture.calcRotation(x, y, lastX, lastY);
-    const charDirection = LibGesture.rotationToDirection(rotation);
-    // console.log('Rotation: ' + rotation + ' Direction: ' + charDirection);
-    return charDirection;
+  static getDirection(x: number, y: number, lastX: number, lastY: number): 'R'|'D'|'U'|'L' {
+    const rotation: number = LibGesture.calcRotation(x, y, lastX, lastY);
+    return LibGesture.rotationToDirection(rotation);
   }
 
   /**
    * ２点の座標から角度を計算して返す
-   *
-   * @param {number} x
-   * @param {number} y
-   * @param {number} lastX
-   * @param {number} lastY
-   * @return {float}
    */
-  static calcRotation(x, y, lastX, lastY) {
-    const radian = Math.atan2(y - lastY, x - lastX);
+  static calcRotation(x: number, y: number, lastX: number, lastY: number): number {
+    const radian: number = Math.atan2(y - lastY, x - lastX);
     // console.log("rotate: " + rotation);
     return radian * 180 / Math.PI;
   }
 
   /**
    * 角度から上下左右の向き情報に変換して返す
-   *
-   * @param {float} rotation
-   * @return {string}
    */
-  static rotationToDirection(rotation) {
+  static rotationToDirection(rotation: number): 'R'|'D'|'U'|'L' {
     if (rotation >= -45.0 && rotation < 45.0) {
       return 'R';
-    } else if (rotation >= 45.0 && rotation < 135.0) {
-      return 'D';
-    } else if (rotation >= -135.0 && rotation < -45.0) {
-      return 'U';
-    } else {
-      return 'L';
     }
+    if (rotation >= 45.0 && rotation < 135.0) {
+      return 'D';
+    }
+    if (rotation >= -135.0 && rotation < -45.0) {
+      return 'U';
+    }
+    
+    return 'L';
   }
 }
 

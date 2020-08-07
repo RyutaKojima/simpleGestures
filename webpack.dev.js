@@ -29,13 +29,13 @@ module.exports = {
   },
 
   entry: {
-    handler: './src/js/app/content/handler.js',
-    background: './src/js/app/background/background.js',
+    handler: './src/js/app/content/handler.ts',
+    background: './src/js/app/background/background.ts',
     options_page: './src/js/app/options/options_page.js',
   },
 
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.tsx', '.ts', '.js'],
   },
 
   output: {

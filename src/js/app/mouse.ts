@@ -1,3 +1,10 @@
+export interface HTMLChildElement extends HTMLLinkElement {
+  parentElement: HTMLLinkElement;
+}
+export interface HTMLElementEvent<T extends HTMLElement> extends MouseEvent {
+  target: T;
+}
+
 /**
  * マウスの状態を管理する
  */
@@ -34,12 +41,16 @@ class Mouse {
    * @param {Object} mouseevent
    * @return {*}
    */
-  static getHref(mouseevent): null|string {
-    if (mouseevent.target.href) {
-      return mouseevent.target.href;
+  static getHref(mouseevent: HTMLElementEvent<HTMLChildElement>): null|string {
+    const target: HTMLChildElement = mouseevent.target;
+    const parent: HTMLLinkElement = target.parentElement;
+
+    if (target.href) {
+      return target.href;
     }
-    if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
-      return mouseevent.target.parentElement.href;
+
+    if (parent && parent.href) {
+      return parent.href;
     }
     return null;
   }
@@ -71,7 +82,7 @@ class Mouse {
 
   /**
    *
-   * @param {mixed} btnCode
+   * @param {number} btnCode
    */
   setOff(btnCode: number): void {
     this.btnBuffer[btnCode] = false;
@@ -87,7 +98,7 @@ class Mouse {
   /**
    * @param {boolean} _flg
    */
-  setLeft(_flg): void {
+  setLeft(_flg: boolean): void {
     this.btnBuffer[Mouse.LEFT_BUTTON] = _flg;
   }
 
@@ -101,7 +112,7 @@ class Mouse {
   /**
    * @param {boolean} _flg
    */
-  setRight(_flg): void {
+  setRight(_flg: boolean): void {
     this.btnBuffer[Mouse.RIGHT_BUTTON] = _flg;
   }
 }

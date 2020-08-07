@@ -5,8 +5,16 @@
     "module": "es2020",
     "target": "es5",
     "jsx": "react",
+    "types": ["@types/chrome"],
+    "typeRoots": ["node_modules/@types"],
     "sourceMap": true,
-    "allowJs": true
+    "allowJs": true,
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.promise"
+    ]
   },
   "exclude": [
     "node_modules"

@@ -1,14 +1,21 @@
 import LibOption from '../lib_option';
+import TrailCanvas from "./trail_canvas";
+import {LineParameter} from "../types/common";
 
 /**
  * ジェスチャーを描画するキャンバス
  */
 class ContentScripts {
+  infoDiv: null | HTMLDivElement;
+  commandDiv: null | HTMLDivElement;
+  actionNameDiv: null | HTMLDivElement;
+  trailCanvas: TrailCanvas;
+  option: LibOption;
+  
   /**
-   * @param {Object} trailCanvas
    * @constructor
    */
-  constructor(trailCanvas) {
+  constructor(trailCanvas: TrailCanvas) {
     this.infoDiv = null;
     this.commandDiv = null;
     this.actionNameDiv = null;
@@ -19,7 +26,7 @@ class ContentScripts {
   /**
    * Load option values.
    */
-  loadOption() {
+  loadOption(): void {
     chrome.runtime.sendMessage({msg: 'load_options'}, (response) => {
       if (response) {
         this.option.setRawStorageData(response.options_json);
@@ -34,16 +41,16 @@ class ContentScripts {
   /**
    * キャンバスの描画スタイルを設定
    */
-  setCanvasStyle() {
+  setCanvasStyle(): void {
     this.trailCanvas.setLineStyle(this.option.getColorCode(),
         this.option.getLineWidth());
   }
 
 
   /**
-   * create infomation div & update style.
+   * create information div & update style.
    */
-  createInfoDiv() {
+  createInfoDiv(): void {
     this.createInfoDivElements();
     this.setStyleForInfoDiv();
   }
@@ -51,9 +58,9 @@ class ContentScripts {
   /**
    * アクション名表示用のDIV要素を作る
    */
-  createInfoDivElements() {
-    const createDivElement = (id) => {
-      const divElement = document.createElement('div');
+  createInfoDivElements(): void {
+    const createDivElement = (id: string): HTMLDivElement => {
+      const divElement: HTMLDivElement = document.createElement('div');
       divElement.id = id;
       return divElement;
     };
@@ -74,7 +81,7 @@ class ContentScripts {
   /**
    * アクション名表示用の要素にスタイルを設定する
    */
-  setStyleForInfoDiv() {
+  setStyleForInfoDiv(): void {
     // style setting.
     this.infoDiv.style.width = '300px';
     this.infoDiv.style.height = '80px';
@@ -98,43 +105,44 @@ class ContentScripts {
     this.infoDiv.style.fontWeight = 'bold';
   }
 
-  /**
-   * @param {Object} lineParam
-   * @param {string} commandName
-   * @param {string} actionName
-   */
-  draw(lineParam, commandName, actionName) {
+  draw(lineParam: LineParameter, commandName: string, actionName: string): void {
     this.drawTrail(lineParam);
     this.drawText(commandName, actionName);
   }
 
   /**
    * ラインを描画する
-   *
-   * @param {Object} lineParam
    */
-  drawTrail(lineParam) {
+  drawTrail(lineParam: LineParameter): void {
     if ( ! this.option.isTrailOn()) {
       return;
     }
 
-    // append されているか調べる。document.getElementById で取得出来たらOK
-    const canvasId = this.trailCanvas.getCanvasId();
-    if (document.getElementById(canvasId)) {
-      this.trailCanvas.drawLine(
-          lineParam.fromX, lineParam.fromY,
-          lineParam.toX, lineParam.toY
-      );
+    const canvasId: null|string  = this.trailCanvas.getCanvasId();
+
+    if (!this.elementExists(canvasId)) {
+      return;
     }
+
+    this.trailCanvas.drawLine(
+        lineParam.fromX, lineParam.fromY,
+        lineParam.toX, lineParam.toY
+    );
   }
 
+  elementExists(id: null|string): boolean {
+    if (id === null) {
+      return false;
+    }
+
+    // append されているか調べる。document.getElementById で取得出来たらOK
+    return document.getElementById(id) !== null;
+  }
+  
   /**
    * コマンド名、アクション名を描画する
-   *
-   * @param {string} commandName
-   * @param {string} actionName
    */
-  drawText(commandName, actionName) {
+  drawText(commandName: string, actionName: string): void {
     if ( ! document.getElementById(this.infoDiv.id)) {
       return;
     }
@@ -161,7 +169,7 @@ class ContentScripts {
    * @param {type} actionName
    * @return {undefined}
    */
-  exeAction(actionName) {
+  exeAction(actionName: string): void {
     switch (actionName) {
       case 'back':
         window.history.back();
@@ -192,10 +200,8 @@ class ContentScripts {
 
   /**
    * ジェスチャコマンドを矢印表記に変換して返す D=>↓、U=>↑...
-   * @param {string} actionName
-   * @return {string}
    */
-  static replaceCommandToArrow(actionName) {
+  static replaceCommandToArrow(actionName: string): string {
     if (actionName) {
       return actionName.replace(/U/g, '<i class="flaticon-up-arrow"></i>').
           replace(/L/g, '<i class="flaticon-left-arrow"></i>').

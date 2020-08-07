@@ -1,6 +1,6 @@
 import {chromeTabs} from '../chrome-wrapper/chromeTabs';
 
-export default () => {
+export default (): void => {
   // 現在のバージョンでは動かなくなった
   chromeTabs.createLast('chrome://restart');
 };

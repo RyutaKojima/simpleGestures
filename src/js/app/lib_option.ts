@@ -4,6 +4,17 @@ import MyStorage from './storage';
  * オプション情報管理
  */
 class LibOption {
+  LOCAL_STRAGE_KEY: string;
+  OPTION_ID_LIST: string[];
+  GESTURE_ID_LIST: string[];
+  storage: MyStorage;
+  localStorage: MyStorage;
+  storageData: any;
+  optionsInstance: any;
+  gestureHash: {
+    [key: string]: string
+  };
+
   /**
    * @constructor
    */
@@ -63,7 +74,7 @@ class LibOption {
    *
    * @return {undefined}
    */
-  reset() {
+  reset(): void {
     this.localStorage.clear();
     this.storage.clear();
 
@@ -73,7 +84,7 @@ class LibOption {
   /**
    * 永続化データを読み込み
    */
-  async load() {
+  async load(): Promise<void> {
     this.storageData = await this.storage.load(this.LOCAL_STRAGE_KEY).catch((e) => {
       this.storageData = null;
       console.error(e);
@@ -92,7 +103,7 @@ class LibOption {
    * 永続化したデータのままを取得
    * @return {null|Object}
    */
-  getRawStorageData() {
+  getRawStorageData(): null|Object {
     return this.storageData;
   }
 
@@ -100,7 +111,7 @@ class LibOption {
    * 永続化データを設定
    * @param {Object} rawStorageData
    */
-  setRawStorageData(rawStorageData) {
+  setRawStorageData(rawStorageData: Object) {
     this.storageData = rawStorageData;
 
     if (this.storageData === null) {
@@ -112,8 +123,8 @@ class LibOption {
     this.gestureHash = {};
     this.GESTURE_ID_LIST.forEach((key) => {
       if (this.paramExists(key)) {
-        const command = this.getParam(key, null);
-        const action = key.replace('gesture_', '');
+        const command: string = this.getParam(key, '');
+        const action: string = key.replace('gesture_', '');
         if (command) {
           // cut "gesture_" prefix
           this.gestureHash[command] = action;
@@ -128,7 +139,7 @@ class LibOption {
    * @param {string} paramName
    * @return {string[]|boolean}
    */
-  enableGestureParam(paramName) {
+  enableGestureParam(paramName: string): boolean {
     return (this.GESTURE_ID_LIST && this.GESTURE_ID_LIST.indexOf(paramName) !== -1);
   };
 
@@ -138,7 +149,7 @@ class LibOption {
    * @param {string} paramName
    * @return {null|boolean}
    */
-  paramExists(paramName) {
+  paramExists(paramName: string): boolean {
     return (this.optionsInstance && this.optionsInstance.hasOwnProperty(paramName));
   }
 
@@ -149,7 +160,7 @@ class LibOption {
    * @param {*} defaultValue
    * @return {*}
    */
-  getParam(paramName, defaultValue) {
+  getParam(paramName: string, defaultValue: any): any {
     return this.paramExists(paramName) ? this.optionsInstance[paramName] : defaultValue;
   }
 
@@ -159,7 +170,7 @@ class LibOption {
    * @param {string} paramName
    * @param {*} value
    */
-  setParam(paramName, value) {
+  setParam(paramName: string, value: any): void {
     if (this.paramExists(paramName) || this.enableGestureParam(paramName)) {
       this.optionsInstance[paramName] = value;
     }
@@ -171,7 +182,7 @@ class LibOption {
    * @param {string} command
    * @return {*}
    */
-  getGestureActionName(command) {
+  getGestureActionName(command: string): null|string {
     if (this.gestureHash && this.gestureHash.hasOwnProperty(command)) {
       return this.gestureHash[command];
     }
@@ -183,7 +194,7 @@ class LibOption {
    * 言語設定が「日本語」か？
    * @return {boolean}
    */
-  isJapanese() {
+  isJapanese(): boolean {
     return (this.getLanguage() === 'Japanese');
   }
 
@@ -192,15 +203,14 @@ class LibOption {
    *
    * @return {boolean}
    */
-  isEnglish() {
+  isEnglish(): boolean {
     return (this.getLanguage() === 'English');
   };
 
   /**
    * 言語設定を返す
-   * @return {string}
    */
-  getLanguage() {
+  getLanguage(): 'Japanese'|'English' {
     return this.getParam('language', 'English');
   }
 
@@ -209,7 +219,7 @@ class LibOption {
    *
    * @return {string}
    */
-  getColorCode() {
+  getColorCode(): string {
     return this.getParam('color_code', '#FF0000');
   }
 
@@ -217,7 +227,7 @@ class LibOption {
    * ジェスチャ軌跡の太さを返す
    * @return {number}
    */
-  getLineWidth() {
+  getLineWidth(): number {
     return this.getParam('line_width', 1);
   }
 
@@ -226,7 +236,7 @@ class LibOption {
    *
    * @return {boolean}
    */
-  isCommandTextOn() {
+  isCommandTextOn(): boolean {
     return this.getParam('command_text_on', true);
   }
 
@@ -235,7 +245,7 @@ class LibOption {
    *
    * @return {boolean}
    */
-  isActionTextOn() {
+  isActionTextOn(): boolean {
     return this.getParam('action_text_on', true);
   }
 
@@ -244,7 +254,7 @@ class LibOption {
    *
    * @return {boolean}
    */
-  isTrailOn() {
+  isTrailOn(): boolean {
     return this.getParam('trail_on', true);
   }
 
@@ -254,9 +264,10 @@ class LibOption {
    * @param {string} gesture
    * @return {boolean|string}
    */
-  isGestureAlreadyExist(gesture) {
-    let actionName = false;
-    this.GESTURE_ID_LIST.forEach((key) => {
+  isGestureAlreadyExist(gesture: string): string|boolean {
+    let actionName: string|boolean = false;
+
+    this.GESTURE_ID_LIST.forEach((key: string) => {
       const setText = this.getParam(key, '');
 
       if (gesture === setText) {
@@ -272,7 +283,7 @@ class LibOption {
    *
    * @return {Object}
    */
-  static createDefaultOptions() {
+  static createDefaultOptions(): {[key: string]: string|number|boolean} {
     return {
       'language': 'Japanese',
       'color_code': '#FF0000',
@@ -293,8 +304,8 @@ class LibOption {
   /**
    * 永続化する
    */
-  save() {
-    const saveRawData = JSON.stringify(this.optionsInstance);
+  save(): void {
+    const saveRawData: string = JSON.stringify(this.optionsInstance);
     this.storage.save(this.LOCAL_STRAGE_KEY, saveRawData);
     // this.localStorage.save(this.LOCAL_STRAGE_KEY, saveRawData);
   }
