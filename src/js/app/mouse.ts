@@ -1,7 +1,16 @@
+export interface HTMLChildElement extends HTMLLinkElement {
+  parentElement: HTMLLinkElement;
+}
+export interface HTMLElementEvent<T extends HTMLElement> extends MouseEvent {
+  target: T;
+}
+
 /**
  * マウスの状態を管理する
  */
 class Mouse {
+  btnBuffer: boolean[];
+
   /**
    * @constructor
    */
@@ -15,14 +24,14 @@ class Mouse {
   /**
    * @return {number}
    */
-  static get LEFT_BUTTON() {
+  static get LEFT_BUTTON(): number {
     return 1;
   }
 
   /**
    * @return {number}
    */
-  static get RIGHT_BUTTON() {
+  static get RIGHT_BUTTON(): number {
     return 3;
   }
 
@@ -32,12 +41,16 @@ class Mouse {
    * @param {Object} mouseevent
    * @return {*}
    */
-  static getHref(mouseevent) {
-    if (mouseevent.target.href) {
-      return mouseevent.target.href;
+  static getHref(mouseevent: HTMLElementEvent<HTMLChildElement>): null|string {
+    const target: HTMLChildElement = mouseevent.target;
+    const parent: HTMLLinkElement = target.parentElement;
+
+    if (target.href) {
+      return target.href;
     }
-    if (mouseevent.target.parentElement && mouseevent.target.parentElement.href) {
-      return mouseevent.target.parentElement.href;
+
+    if (parent && parent.href) {
+      return parent.href;
     }
     return null;
   }
@@ -46,7 +59,7 @@ class Mouse {
   /**
    * 現在の入力状態をリセットする
    */
-  reset() {
+  reset(): void {
     this.btnBuffer = [];
   }
 
@@ -55,7 +68,7 @@ class Mouse {
    * @param {numeric} btnCode
    * @return {*}
    */
-  isOn(btnCode) {
+  isOn(btnCode: number): boolean {
     return this.btnBuffer[btnCode];
   }
 
@@ -63,43 +76,43 @@ class Mouse {
    *
    * @param {string|numeric} btnCode
    */
-  setOn(btnCode) {
+  setOn(btnCode: number): void {
     this.btnBuffer[btnCode] = true;
   }
 
   /**
    *
-   * @param {mixed} btnCode
+   * @param {number} btnCode
    */
-  setOff(btnCode) {
+  setOff(btnCode: number): void {
     this.btnBuffer[btnCode] = false;
   }
 
   /**
    * @return {boolean}
    */
-  isLeft() {
+  isLeft(): boolean {
     return this.btnBuffer[Mouse.LEFT_BUTTON];
   }
 
   /**
    * @param {boolean} _flg
    */
-  setLeft(_flg) {
+  setLeft(_flg: boolean): void {
     this.btnBuffer[Mouse.LEFT_BUTTON] = _flg;
   }
 
   /**
    * @return {boolean}
    */
-  isRight() {
+  isRight(): boolean {
     return this.btnBuffer[Mouse.RIGHT_BUTTON];
   }
 
   /**
    * @param {boolean} _flg
    */
-  setRight(_flg) {
+  setRight(_flg: boolean): void {
     this.btnBuffer[Mouse.RIGHT_BUTTON] = _flg;
   }
 }

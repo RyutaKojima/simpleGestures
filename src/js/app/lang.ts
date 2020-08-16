@@ -1,4 +1,18 @@
-export default {
+interface Language {
+    Japanese: string;
+    English: string;
+}
+
+interface Languages {
+  [key: string]: Language
+}
+
+interface LanguageConfig {
+  'confirmOptionReset': Language
+  'gesture': Languages
+}
+
+const lang: LanguageConfig = {
   'confirmOptionReset': {
     'Japanese': '全ての設定を初期状態に戻します。実行しますか？',
     'English': 'Reset all settings. Is it OK?',
@@ -94,3 +108,6 @@ export default {
     },
   },
 };
+
+
+export default lang;

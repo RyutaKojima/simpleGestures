@@ -22,24 +22,24 @@ import actionOpenOptionPage from './Action/open_option_page';
 import actionOpenExtensionPage from './Action/open_extension_page';
 import actionBrowserRestart from './Action/browser_restart';
 import actionRestoreLastTab from './Action/restore_last_tab';
+import {mouseEventResponse, SendMessageParameter} from '../types/common'
+import MessageSender = chrome.runtime.MessageSender;
 
-const inputMouse = new Mouse();
-const inputKeyboard = new Keyboard();
-const mainGestureMan = new LibGesture();
-const option = new LibOption();
+const inputMouse: Mouse = new Mouse();
+const inputKeyboard: Keyboard = new Keyboard();
+const mainGestureMan: LibGesture = new LibGesture();
+const option: LibOption = new LibOption();
 option.load();
 
-let lockerOn = false;
-let nextMenuSkip = true;
+let lockerOn: boolean = false;
+let nextMenuSkip: boolean = true;
 
 /**
  * 現在のジェスチャ軌跡に対応するアクション名を返す
- *
- * @return {null|string}
  */
-const getNowGestureActionName = function() {
-  const gestureString = mainGestureMan.getGestureString();
-  if ( ! gestureString) {
+const getNowGestureActionName = (): null | string => {
+  const gestureString: string = mainGestureMan.getGestureString();
+  if (!gestureString) {
     return null;
   }
 
@@ -47,14 +47,36 @@ const getNowGestureActionName = function() {
 };
 
 /**
- * Backgroundで処理できるアクションなら実行する
- *
- * @param {string} doAction
- * @return {boolean}
+ * 各マウスジェスチャの処理
+ * @type type
  */
-const executeGestureFunctionOnBackground = function(doAction) {
-  if (typeof gestureFunction[doAction] === 'function') {
-    const optionParams = {
+const gestureFunction: { [key: string]: any } = {
+    'new_tab': actionOpenNewTab,
+    'new_tab_background': actionOpenNewTabBackGround,
+    'pin_tab': actionTogglePinTab,
+    'close_tab': actionCloseActiveTab,
+    'reload': actionReload,
+    'reload_all': actionReloadAll,
+    'next_tab': actionNextTab,
+    'prev_tab': actionPrevTab,
+    'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
+    'close_right_tab': actionCloseRightTab,
+    'close_left_tab_without_pinned': actionCloseLeftTabWithoutPinned,
+    'close_left_tab': actionCloseLeftTab,
+    'close_all_background': actionCloseAllBackgroundTab,
+    'close_all': actionCloseAllTab,
+    'open_option': actionOpenOptionPage,
+    'open_extension': actionOpenExtensionPage,
+    'restart': actionBrowserRestart,
+    'last_tab': actionRestoreLastTab,
+};
+
+/**
+ * Backgroundで処理できるアクションなら実行する
+ */
+const executeGestureFunctionOnBackground = (doAction: string): boolean => {
+  if (gestureFunction.hasOwnProperty(doAction) && typeof gestureFunction[doAction] === 'function') {
+    const optionParams: { href: any; } = {
       href: mainGestureMan.getURL(),
     };
     gestureFunction[doAction](optionParams);
@@ -67,10 +89,8 @@ const executeGestureFunctionOnBackground = function(doAction) {
 
 /**
  * マウスイベントのレスポンスのテンプレート
- *
- * @return {Object}
  */
-const mouseEventResponseTemplate = () => {
+const mouseEventResponseTemplate = (): mouseEventResponse => {
   return {
     message: 'yes',
     action: null,
@@ -93,7 +113,7 @@ const mouseEventResponseTemplate = () => {
  *
  * @type {{load_options: requestFunction.load_options}}
  */
-const requestFunction = {
+const requestFunction: { [key: string]: any } = {
   'reset_input': () => {
     inputKeyboard.lock();
     inputKeyboard.reset();
@@ -103,24 +123,24 @@ const requestFunction = {
       inputKeyboard.unlock();
     }, 100);
   },
-  'reload_option': function() {
+  'reload_option': () => {
     option.load();
   },
-  'load_options': function() {
+  'load_options': () => {
     return {'message': 'yes', 'options_json': option.getRawStorageData()};
   },
-  'keydown': (request) => {
+  'keydown': (request: SendMessageParameter) => {
     inputKeyboard.setOn(request.keyCode);
 
     return {message: 'yes'};
   },
-  'keyup': (request) => {
+  'keyup': (request: SendMessageParameter) => {
     inputKeyboard.setOff(request.keyCode);
 
     return {message: 'yes'};
   },
-  'mousedown': function(request) {
-    const response = mouseEventResponseTemplate();
+  'mousedown': (request: SendMessageParameter) => {
+    const response: mouseEventResponse = mouseEventResponseTemplate();
     response.href = request.href;
     response.canvas.x = request.x;
     response.canvas.y = request.y;
@@ -154,8 +174,8 @@ const requestFunction = {
 
       mainGestureMan.clear();
 
-      if ( ! lockerOn) {
-        console.log('select request.href: ' + request.href );
+      if (!lockerOn) {
+        console.log('select request.href: ' + request.href);
 
         response.canvas.draw = true;
         mainGestureMan.startGesture(request.x, request.y, request.href);
@@ -164,14 +184,14 @@ const requestFunction = {
 
     return response;
   },
-  'mousemove': function(request) {
-    const doAction = getNowGestureActionName();
-    const displayActionName = doAction
-        ? lang.gesture['gesture_' + doAction][option.getLanguage()]
-        : '';
+  'mousemove': function(request: SendMessageParameter) {
+    const doAction: null | string = getNowGestureActionName();
+    const displayActionName: string = doAction
+      ? lang.gesture['gesture_' + doAction][option.getLanguage()]
+      : '';
 
     // mousemove の event.whichには、最初に押されたボタンが入る。
-    const response = mouseEventResponseTemplate();
+    const response: mouseEventResponse = mouseEventResponseTemplate();
     response.href = request.href;
     response.gestureString = mainGestureMan.getGestureString();
     response.gestureAction = displayActionName;
@@ -188,7 +208,7 @@ const requestFunction = {
     }
 
     if (inputMouse.isRight() && request.which === Mouse.RIGHT_BUTTON) {
-      if ( ! lockerOn) {
+      if (!lockerOn) {
         if (mainGestureMan.registerPoint(request.x, request.y)) {
           response.canvas.draw = true;
           response.canvas.x = mainGestureMan.getLastX();
@@ -201,13 +221,13 @@ const requestFunction = {
 
     return response;
   },
-  'mouseup': function(request) {
-    const doAction = getNowGestureActionName();
-    const displayActionName = doAction
-        ? lang.gesture['gesture_' + doAction][option.getLanguage()]
-        : '';
+  'mouseup': function(request: SendMessageParameter) {
+    const doAction: null | string = getNowGestureActionName();
+    const displayActionName: string = doAction
+      ? lang.gesture['gesture_' + doAction][option.getLanguage()]
+      : '';
 
-    const response = mouseEventResponseTemplate();
+    const response: mouseEventResponse = mouseEventResponseTemplate();
     response.href = mainGestureMan.getURL();
     response.gestureString = mainGestureMan.getGestureString();
     response.gestureAction = displayActionName;
@@ -224,7 +244,7 @@ const requestFunction = {
       } else if (doAction) {
         nextMenuSkip = true;
 
-        if ( ! executeGestureFunctionOnBackground(doAction)) {
+        if (!executeGestureFunctionOnBackground(doAction)) {
           // バックグラウンドで処理できないものはフロントに任せる
           response.action = doAction;
         }
@@ -239,36 +259,11 @@ const requestFunction = {
 };
 
 /**
- * 各マウスジェスチャの処理
- * @type type
- */
-const gestureFunction = {
-  'new_tab': actionOpenNewTab,
-  'new_tab_background': actionOpenNewTabBackGround,
-  'pin_tab': actionTogglePinTab,
-  'close_tab': actionCloseActiveTab,
-  'reload': actionReload,
-  'reload_all': actionReloadAll,
-  'next_tab': actionNextTab,
-  'prev_tab': actionPrevTab,
-  'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
-  'close_right_tab': actionCloseRightTab,
-  'close_left_tab_without_pinned': actionCloseLeftTabWithoutPinned,
-  'close_left_tab': actionCloseLeftTab,
-  'close_all_background': actionCloseAllBackgroundTab,
-  'close_all': actionCloseAllTab,
-  'open_option': actionOpenOptionPage,
-  'open_extension': actionOpenExtensionPage,
-  'restart': actionBrowserRestart,
-  'last_tab': actionRestoreLastTab,
-};
-
-/**
  * フロントサイドからのメッセージ受信した時に発生するイベント
  *
  * @param {type} param
  */
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request: SendMessageParameter, sender: MessageSender, sendResponse) {
   const reqFunc = requestFunction[request.msg];
   if (typeof reqFunc === 'function') {
     sendResponse(reqFunc(request, sender));
@@ -282,6 +277,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
  */
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
-    actionOpenOptionPage({});
+    actionOpenOptionPage();
   }
 });
