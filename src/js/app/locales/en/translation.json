@@ -1,0 +1,18 @@
+{
+  "app-option-title": "simpleGestures Option",
+  "app-option-notification": "Settings are saved automatically",
+  "tab-basic-settings": "General Settings",
+  "tab-gesture-settings": "Gesture Settings",
+  "language-settings": "Use Language",
+  "general-line-color": "Trail line color",
+  "general-line-width": "Trail line width",
+  "general-view-gesture-text": "View gesture text",
+  "general-view-gesture-action": "View gesture action",
+  "general-view-gesture-trail": "View gesture trail",
+
+  "gesture-action-name": "action name",
+  "gesture-command": "gesture command",
+
+  "danger-reset-all-options": "reset all options",
+  "display-when-checked": "Display when checked"
+}

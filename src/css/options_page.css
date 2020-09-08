@@ -31,11 +31,11 @@
   border: solid 3px orange;
 }
 
-.content_gesture .input {
+.input.input_gesture {
   width: 200px;
 }
 
-.content_gesture .views_gesture {
+.views_gesture {
   width: 250px;
   display: inline-block;
   word-wrap: break-word;

@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
     "outDir": "./dist/js/",
+//    "strictNullChecks": true,
+//    "noUnusedLocals": true,
     "noImplicitAny": false,
-    "module": "es2020",
+    "alwaysStrict": true,
+    "allowSyntheticDefaultImports": true,
+    //
+    "module": "es2015",
     "target": "es5",
     "jsx": "react",
     "types": ["@types/chrome"],
@@ -14,7 +19,8 @@
       "dom",
       "es2015",
       "scripthost",
-      "es2015.promise"
+      "es2015.promise",
+      "es2017"
     ],
     "moduleResolution": "node",
     "resolveJsonModule": true,

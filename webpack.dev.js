@@ -32,6 +32,7 @@ module.exports = {
     handler: './src/js/app/content/handler.ts',
     background: './src/js/app/background/background.ts',
     options_page: './src/js/app/options/options_page.js',
+    options_page_ts: './src/js/app/options/options_page.tsx',
   },
 
   resolve: {
@@ -59,7 +60,7 @@ module.exports = {
       name: false,
     },
   },
-
+  performance: {hints: false},
   plugins: [
     new CopyWebpackPlugin({
       patterns: [

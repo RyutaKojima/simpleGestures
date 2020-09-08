@@ -17,8 +17,6 @@ const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
    * entry point (jQuery.ready)
    */
   $(() => {
-    initializeAndRegisterEventForTab();
-
     // 言語設定の変更
     reflectSelectedLanguageToScreen();
     reflectOptionSettingsOnScreen();
@@ -59,14 +57,6 @@ const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
     setupColorWheel();
   });
 })();
-
-/**
- * コンテキストメニューの呼び出しをされたときに実行されるイベント。
- * falseを返すと、コンテキストメニューを無効にする。
- */
-document.addEventListener('contextmenu', (event) => {
-  event.preventDefault();
-});
 
 /**
  * create canvas & update style
@@ -133,64 +123,10 @@ const reflectOptionSettingsOnScreen = () => {
 };
 
 /**
- * タブに関する初期化と設定を行う
- */
-const initializeAndRegisterEventForTab = () => {
-  $('.changeTab').on('click', (event) => {
-    const $clickedTab = $(event.currentTarget);
-    reflectActiveTabToScreen($clickedTab);
-  });
-
-  const $defaultActiveTab = $('#tab_btn2.changeTab');
-  reflectActiveTabToScreen($defaultActiveTab);
-};
-
-/**
- * アクティブなタブを画面に反映する
- */
-let currentlySetColorClass = '';
-const reflectActiveTabToScreen = ($target) => {
-  const showBodyId = $target.data('show-body');
-  const setColorClass = $target.data('set-color');
-
-  $('.tabBody').hide();
-  $('#' + showBodyId).show();
-
-  const activeTabClass = 'is-active';
-  $('.tabs li').removeClass(activeTabClass);
-  $target.closest('li').addClass(activeTabClass);
-
-  const $switchDom = $('.js-switch-color');
-  const $allChangeableTab = $('.changeTab');
-  if (currentlySetColorClass) {
-    $switchDom.removeClass(currentlySetColorClass);
-    $allChangeableTab.removeClass(currentlySetColorClass);
-  }
-  $switchDom.addClass(setColorClass);
-  $target.addClass(setColorClass);
-  currentlySetColorClass = setColorClass;
-};
-
-/**
  * 使用言語の設定を画面に反映する
  */
 const reflectSelectedLanguageToScreen = () => {
-  const $langEn = $('.class_English');
-  const $langJa = $('.class_Japanese');
   const currentLanguage = option.getLanguage();
-
-  switch (currentLanguage) {
-    default:
-      // no break;
-    case 'English':
-      $langEn.show();
-      $langJa.hide();
-      break;
-    case 'Japanese':
-      $langEn.hide();
-      $langJa.show();
-      break;
-  }
 
   $('input.input_gesture').each((index, target) => {
     const id = target.id;

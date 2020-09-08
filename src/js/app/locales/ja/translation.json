@@ -1,0 +1,19 @@
+{
+  "app-option-title": "simpleGestures設定",
+  "app-option-notification": "設定は自動で保存されます。",
+  "tab-basic-settings": "基本設定",
+  "tab-gesture-settings": "ジェスチャの設定",
+  "language-settings": "言語設定",
+  "general-line-color": "ラインの色",
+  "general-line-width": "ラインの幅",
+  "general-view-gesture-text": "ジェスチャテキストを表示する",
+  "general-view-gesture-action": "実行するアクション名を表示する",
+  "general-view-gesture-trail": "ジェスチャの軌跡を表示する",
+
+  "gesture-action-name": "ジェスチャ名",
+  "gesture-command": "コマンド",
+
+  
+  "danger-reset-all-options": "すべての設定を初期化",
+  "display-when-checked": "表示する"
+}
