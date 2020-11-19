@@ -8,10 +8,10 @@
     "eslint": "eslint \"src/js/app/**/*.js\"",
     "stylelint": "stylelint \"css/**/*.css\"",
     "lint": "yarn eslint & yarn stylelint",
-    "build": "webpack --config webpack.dev.js",
     "dev": "yarn build --watch",
-    "clean-build": "rm -rf dist && yarn build",
-    "publish-build": "rm -rf dist && yarn build && zip -r ./simpleGesture.zip ./dist"
+    "build": "webpack --config webpack.dev.js",
+    "build:clean": "rm -rf dist && yarn build",
+    "build:publish": "rm -rf dist && yarn build && zip -r ./simpleGesture.zip ./dist"
   },
   "repository": {
     "type": "git",
