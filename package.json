@@ -34,7 +34,7 @@
     "eslint": "7.14.0",
     "eslint-config-google": "0.14.0",
     "node-sass": "5.0.0",
-    "sass-loader": "7.3.1",
+    "sass-loader": "10.1.0",
     "style-loader": "0.23.1",
     "stylelint": "9.10.1",
     "ts-loader": "8.0.11",
