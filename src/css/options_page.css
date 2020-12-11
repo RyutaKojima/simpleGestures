@@ -1,43 +1,44 @@
 /* gesture table style */
 .gesture_table {
-	width: 100%;
-	border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
+
 .gesture_table th {
-	width: 25%;
-	padding: 6px;
-	text-align: left;
-	vertical-align: top;
-	color: #333;
-	background-color: #eee;
-	border: 1px solid #b9b9b9;
+  width: 25%;
+  padding: 6px;
+  text-align: left;
+  vertical-align: top;
+  color: #333;
+  background-color: #eee;
+  border: 1px solid #b9b9b9;
 }
 
 .gesture_table td {
-	padding: 6px;
-	background-color: #fff;
-	border: 1px solid #b9b9b9;
+  padding: 6px;
+  background-color: #fff;
+  border: 1px solid #b9b9b9;
 }
 
 /* -- Renewal --  */
 .tabs.is-boxed li.is-active a.color-lightblue,
 .color-lightblue {
-	border: solid 3px cornflowerblue;
+  border: solid 3px cornflowerblue;
 }
 
 .tabs.is-boxed li.is-active a.color-yellow,
 .color-yellow {
-	border: solid 3px orange;
+  border: solid 3px orange;
 }
 
 .content_gesture .input {
-	width: 200px;
+  width: 200px;
 }
 
 .content_gesture .views_gesture {
-	width: 250px;
-	display: inline-block;
-	word-wrap: break-word;
-	cursor: pointer;
-	background-color: beige;
+  width: 250px;
+  display: inline-block;
+  word-wrap: break-word;
+  cursor: pointer;
+  background-color: beige;
 }
