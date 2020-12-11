@@ -55,7 +55,7 @@ export const chromeTabs = {
       chrome.tabs.remove(tab.id);
     }
   },
-  reload(tab: Tab): void {
-    chrome.tabs.reload(tab.id);
+  reload(tab: Tab, discardCache: boolean = false): void {
+    chrome.tabs.reload(tab.id, {bypassCache: discardCache});
   },
 };
