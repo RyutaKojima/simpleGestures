@@ -48,68 +48,62 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         vendors: {
-          priority: -10,
           test: /[\\/]node_modules[\\/]/,
+          chunks: 'all',
         },
       },
 
       chunks: 'async',
       minChunks: 1,
       minSize: 30000,
-      name: true,
+      name: false,
     },
   },
 
   plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, 'src', 'manifest.json'),
-        to: path.join(__dirname, 'dist'),
-      },
-    ]),
-    new CopyWebpackPlugin(
-        [
-          {
-            from: '',
-            to: path.join(__dirname, 'dist/img/'),
-          },
-        ],
+    new CopyWebpackPlugin({
+      patterns: [
         {
+          from: path.join(__dirname, 'src', 'manifest.json'),
+          to: path.join(__dirname, 'dist'),
+        },
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: '**/*.png',
+          to: path.join(__dirname, 'dist/img/'),
           context: 'src/img',
         },
-    ),
-    new CopyWebpackPlugin(
-        [
-          {
-            from: '',
-            to: path.join(__dirname, 'dist/html/'),
-          },
-        ],
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
         {
+          from: '**/*.html',
+          to: path.join(__dirname, 'dist/html/'),
           context: 'src/html',
         },
-    ),
-    new CopyWebpackPlugin(
-        [
-          {
-            from: '',
-            to: path.join(__dirname, 'dist/css/'),
-          },
-        ],
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
         {
+          from: '**/*.*',
+          to: path.join(__dirname, 'dist/css/'),
           context: 'src/css',
         },
-    ),
-    new CopyWebpackPlugin(
-        [
-          {
-            from: '',
-            to: path.join(__dirname, 'dist/js/vendor'),
-          },
-        ],
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
         {
+          from: '**/*.js',
+          to: path.join(__dirname, 'dist/js/vendor'),
           context: 'src/js/vendor',
         },
-    ),
+      ],
+    }),
   ],
 };
