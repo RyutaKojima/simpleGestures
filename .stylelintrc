@@ -1,0 +1,6 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+    },
+    "ignoreFiles": ["src/css/font/**/*.css"]
+}
