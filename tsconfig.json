@@ -9,6 +9,7 @@
     "typeRoots": ["node_modules/@types"],
     "sourceMap": true,
     "allowJs": true,
+    "esModuleInterop": true,
     "lib": [
       "dom",
       "es5",
