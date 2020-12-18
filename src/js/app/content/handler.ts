@@ -3,6 +3,7 @@ import Mouse, {HTMLChildElement, HTMLElementEvent} from '../mouse';
 import ContentScripts from './content_scripts';
 import TrailCanvas from '../content/trail_canvas';
 import {LineParameter, SendMessageParameter} from "../types/common";
+import Bowser from "bowser";
 
 const scrollTop = (): number => (document.documentElement && document.documentElement.scrollTop) ||
     (document.body && document.body.scrollTop);
@@ -53,7 +54,7 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
   // Event Handler
   // ------------------------------------------------------------------------
   /**
-   * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup'が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
+   * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup' が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
    */
   window.addEventListener('focus', async () => {
     await sendMessageToBackground({msg: 'reset_input', event: 'focus'});
@@ -166,11 +167,28 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
     clearAllDisplay();
   });
 
+  let timerId = null
   /**
    * コンテキストメニューの呼び出しをされたときに実行されるイベント。
    * falseを返すと、コンテキストメニューを無効にする。
    */
   document.addEventListener('contextmenu', (event: MouseEvent) => {
+    const bowser = Bowser.getParser(window.navigator.userAgent)
+    if (bowser.isOS('macOS')) {
+      if (timerId) {
+        clearTimeout(timerId)
+        timerId = null
+        return true
+      }
+
+      timerId = setTimeout(() => {
+        timerId = null
+      }, 500)
+
+      event.preventDefault();
+    }
+
+
     if (nextMenuSkip) {
       nextMenuSkip = false;
       event.preventDefault();
