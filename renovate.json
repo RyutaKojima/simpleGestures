@@ -2,7 +2,7 @@
   "extends": ["config:base"],
   "timezone": "Asia/Tokyo",
   "labels": ["renovate"],
-  "schedule": ["before 08am on the first day of the week"],
+  "schedule": ["before 08am"],
   "patch": { "automerge": true },
   "packageRules": [
     {
