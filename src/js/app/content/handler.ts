@@ -174,7 +174,7 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
    */
   document.addEventListener('contextmenu', (event: MouseEvent) => {
     const bowser = Bowser.getParser(window.navigator.userAgent)
-    if (bowser.isOS('macOS')) {
+    if (bowser.isOS('macOS') || bowser.isOS('Linux')) {
       if (timerId) {
         clearTimeout(timerId)
         timerId = null
