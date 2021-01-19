@@ -1471,14 +1471,19 @@
     "@webassemblyjs/ast" "1.11.0"
     "@xtuc/long" "4.2.2"
 
-"@webpack-cli/generators@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@webpack-cli/generators/-/generators-1.2.1.tgz#487b142d37f7a4b8fa3db162449f8ba622b75859"
-  integrity sha512-u4HtXhWSPRtl7M8Ng8sdPunR37Z9JyM/rdtMeB9NvCkJxGLq6ucbR9xhBkSV7VhI5UP+J3Ei6imdSLX+q78ADw==
+"@webpack-cli/generators@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@webpack-cli/generators/-/generators-1.3.0.tgz#084a66c87d9be918200594a8f4e03ed0bae23591"
+  integrity sha512-TrFDUWI9KGyvwO77YHAChzqMQ7Vme2pRUgq00DFO/s4GmgCBBzgKok9tLvQ+W+/g6iWmCzCfF/VamwKYJWKvxA==
   dependencies:
-    "@webpack-cli/utils" "^1.2.1"
     colorette "^1.2.1"
+    execa "^5.0.0"
+    findup-sync "^4.0.0"
+    global-modules "^2.0.0"
+    got "^11.8.0"
+    jscodeshift "^0.11.0"
     log-symbols "^4.0.0"
+    p-each-series "^2.1.0"
     yeoman-environment "^2.10.3"
     yeoman-generator "^4.12.0"
 
@@ -1489,33 +1494,17 @@
   dependencies:
     envinfo "^7.7.3"
 
-"@webpack-cli/init@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@webpack-cli/init/-/init-1.1.1.tgz#4dd14bc4f6e267913d98beb43504ae35734c31d1"
-  integrity sha512-wLswDbOMQE2cdn6g4vWP2rt1jVQxY3g6Dv9h/xruz738Z1GB0R8wYsDfb8cnlQJ/hAObrmNXwZ8oZ9Bae+kb6w==
+"@webpack-cli/init@1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@webpack-cli/init/-/init-1.1.2.tgz#b638ef60b013bffca658c6662ab58e4e6940371b"
+  integrity sha512-l/kQDB4fuVJnXtOfg6sYaQq/CRJYPC/jsWAta3YHXmTP+QqiOpbva49w4o3Vxsh1z7VT/dgpyHyGOTEbwmeHjg==
   dependencies:
-    "@webpack-cli/generators" "^1.2.1"
-    "@webpack-cli/utils" "^1.2.1"
+    "@webpack-cli/generators" "^1.3.0"
 
 "@webpack-cli/serve@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.2.1.tgz#7513d7a769e3f97958de799b5b49874425ae3396"
   integrity sha512-Zj1z6AyS+vqV6Hfi7ngCjFGdHV5EwZNIHo6QfFTNe9PyW+zBU1zJ9BiOW1pmUEq950RC4+Dym6flyA/61/vhyw==
-
-"@webpack-cli/utils@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@webpack-cli/utils/-/utils-1.2.1.tgz#b3a847fc803e0ff661833b147b02f9f886a54d87"
-  integrity sha512-Q28u+uBYqmRGRhRNhBfi5jnlUBIEtvSsIhSIS81BCvc/nADNdNlYrqKn3FLJ2KgE7ZmEhKf0cvarcwLvy1BCOQ==
-  dependencies:
-    colorette "^1.2.1"
-    execa "^5.0.0"
-    findup-sync "^4.0.0"
-    global-modules "^2.0.0"
-    got "^11.8.0"
-    jscodeshift "^0.11.0"
-    p-each-series "^2.1.0"
-    yeoman-environment "^2.10.3"
-    yeoman-generator "^4.12.0"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
