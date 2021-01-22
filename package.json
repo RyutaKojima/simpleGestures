@@ -28,7 +28,7 @@
     "@babel/preset-env": "7.12.11",
     "@types/react": "17.0.0",
     "@types/react-dom": "17.0.0",
-    "@types/react-redux": "7.1.15",
+    "@types/react-redux": "7.1.16",
     "@webpack-cli/init": "1.1.2",
     "babel-loader": "8.2.2",
     "babel-plugin-syntax-dynamic-import": "6.18.0",
