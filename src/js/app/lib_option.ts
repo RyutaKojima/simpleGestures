@@ -4,7 +4,7 @@ import MyStorage from './storage';
  * オプション情報管理
  */
 class LibOption {
-  LOCAL_STRAGE_KEY: string;
+  LOCAL_STORAGE_KEY: string;
   OPTION_ID_LIST: string[];
   GESTURE_ID_LIST: string[];
   storage: MyStorage;
@@ -23,7 +23,7 @@ class LibOption {
      * ローカル領域に保存するときのキー
      * @const
      */
-    this.LOCAL_STRAGE_KEY = 'options';
+    this.LOCAL_STORAGE_KEY = 'options';
 
     this.storage = new MyStorage(MyStorage.CHROME_STORAGE_LOCAL);
     this.localStorage = new MyStorage(MyStorage.LOCAL_STORAGE);
@@ -85,13 +85,13 @@ class LibOption {
    * 永続化データを読み込み
    */
   async load(): Promise<void> {
-    this.storageData = await this.storage.load(this.LOCAL_STRAGE_KEY).catch((e) => {
+    this.storageData = await this.storage.load(this.LOCAL_STORAGE_KEY).catch((e) => {
       this.storageData = null;
       console.error(e);
     });
 
     if ( ! this.storageData) {
-      this.storageData = await this.localStorage.load(this.LOCAL_STRAGE_KEY);
+      this.storageData = await this.localStorage.load(this.LOCAL_STORAGE_KEY);
       this.setRawStorageData(this.storageData);
       this.save();
     }
@@ -306,8 +306,8 @@ class LibOption {
    */
   save(): void {
     const saveRawData: string = JSON.stringify(this.optionsInstance);
-    this.storage.save(this.LOCAL_STRAGE_KEY, saveRawData);
-    // this.localStorage.save(this.LOCAL_STRAGE_KEY, saveRawData);
+    this.storage.save(this.LOCAL_STORAGE_KEY, saveRawData);
+    // this.localStorage.save(this.LOCAL_STORAGE_KEY, saveRawData);
   }
 }
 
