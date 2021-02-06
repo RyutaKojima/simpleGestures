@@ -1,6 +1,6 @@
 import MyStorage from './storage';
-// import Option from "./domains/ValueObjects/option";
-// import camelcase from "camelcase";
+import Option from "./domains/ValueObjects/option";
+import camelcase from "camelcase";
 
 /**
  * オプション情報管理
@@ -12,7 +12,7 @@ class LibOption {
   storage: MyStorage;
   localStorage: MyStorage;
   storageData: any;
-  optionsInstance: any;
+  optionsInstance: Option|null;
   gestureHash: {
     [key: string]: string
   };
@@ -117,9 +117,9 @@ class LibOption {
     this.storageData = rawStorageData;
 
     if (this.storageData === null) {
-      this.optionsInstance = LibOption.createDefaultOptions();
+      this.optionsInstance = new Option({});
     } else {
-      this.optionsInstance = JSON.parse(this.storageData);
+      this.optionsInstance = new Option(JSON.parse(this.storageData));
     }
 
     this.gestureHash = {};
@@ -152,7 +152,8 @@ class LibOption {
    * @return {null|boolean}
    */
   paramExists(paramName: string): boolean {
-    return (this.optionsInstance && this.optionsInstance.hasOwnProperty(paramName));
+    const camelParamName = camelcase(paramName)
+    return (this.optionsInstance && this.optionsInstance.hasOwnProperty(camelParamName));
   }
 
   /**
@@ -163,7 +164,8 @@ class LibOption {
    * @return {*}
    */
   getParam(paramName: string, defaultValue: any): any {
-    return this.paramExists(paramName) ? this.optionsInstance[paramName] : defaultValue;
+    const camelParamName = camelcase(paramName)
+    return this.paramExists(camelParamName) ? this.optionsInstance[camelParamName] : defaultValue;
   }
 
   /**
@@ -174,7 +176,7 @@ class LibOption {
    */
   setParam(paramName: string, value: any): void {
     if (this.paramExists(paramName) || this.enableGestureParam(paramName)) {
-      this.optionsInstance[paramName] = value;
+      this.optionsInstance = new Option({...this.optionsInstance.serialize(), [paramName]: value})
     }
   }
 
@@ -281,33 +283,10 @@ class LibOption {
   }
 
   /**
-   * デフォルト設定
-   *
-   * @return {Object}
-   */
-  static createDefaultOptions(): {[key: string]: string|number|boolean} {
-    return {
-      'language': 'Japanese',
-      'color_code': '#FF0000',
-      'line_width': '3',
-      'command_text_on': true,
-      'action_text_on': true,
-      'trail_on': true,
-      // Default gesture
-      'gesture_close_tab': 'DR', // ↓→
-      'gesture_forward': 'R', // →
-      'gesture_back': 'L', // ←
-      'gesture_new_tab': 'D', // ↓
-      'gesture_reload': 'DU', // ↓↑
-      'gesture_open_option': 'RDLU', // →↓←↑
-    };
-  }
-
-  /**
    * 永続化する
    */
   save(): void {
-    const saveRawData: string = JSON.stringify(this.optionsInstance);
+    const saveRawData: string = this.optionsInstance.toJson();
     this.storage.save(this.LOCAL_STORAGE_KEY, saveRawData);
     // this.localStorage.save(this.LOCAL_STORAGE_KEY, saveRawData);
   }
