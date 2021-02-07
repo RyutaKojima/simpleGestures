@@ -1,4 +1,5 @@
 class Option {
+    public readonly enabled: boolean;
     public readonly language: string;
     public readonly colorCode: string;
     public readonly lineWidth: number;
@@ -30,6 +31,7 @@ class Option {
     // public readonly gestureRestart: string;
 
     constructor(value) {
+        this.enabled = value.enabled ?? true;
         this.language = value.language ?? 'Japanese';
         this.colorCode = value.color_code ?? '#FF0000';
         this.lineWidth = value.line_width ?? 3;
@@ -62,6 +64,7 @@ class Option {
 
     public serialize(): Object {
         return {
+            enabled: this.enabled,
             language: this.language,
             color_code: this.colorCode,
             line_width: this.lineWidth,

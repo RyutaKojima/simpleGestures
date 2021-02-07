@@ -35,7 +35,7 @@ const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
     });
 
     // type: チェックボックス
-    const checkIds = ['command_text_on', 'action_text_on', 'trail_on'];
+    const checkIds = ['enabled', 'command_text_on', 'action_text_on', 'trail_on'];
     checkIds.forEach((idName) => {
       $('#' + idName).on('change', (event) => {
         option.setParam(idName, $(event.target).prop('checked'));
@@ -87,6 +87,7 @@ const setCanvasStyle = (canvas) => {
  */
 const reflectOptionSettingsOnScreen = () => {
   const checkValues = {
+    'enabled': option.getEnabled(),
     'command_text_on': option.isCommandTextOn(),
     'action_text_on': option.isActionTextOn(),
     'trail_on': option.isTrailOn(),

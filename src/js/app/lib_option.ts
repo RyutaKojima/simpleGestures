@@ -111,9 +111,9 @@ class LibOption {
 
   /**
    * 永続化データを設定
-   * @param {Object} rawStorageData
+   * @param {Object | null} rawStorageData
    */
-  setRawStorageData(rawStorageData: Object) {
+  setRawStorageData(rawStorageData: Object|null) {
     this.storageData = rawStorageData;
 
     if (this.storageData === null) {
@@ -192,6 +192,13 @@ class LibOption {
     }
 
     return null;
+  }
+
+  /**
+   * 現在の端末でこのプラグインを利用するか？
+   */
+  getEnabled(): boolean {
+    return this.optionsInstance?.enabled ?? false;
   }
 
   /**
