@@ -75,6 +75,10 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
   });
 
   document.addEventListener('mousedown', async (event: HTMLElementEvent<HTMLChildElement>) => {
+    if ( ! contentScripts.option.getEnabled()) {
+      return;
+    }
+
     const sendMouseDownParam = {
       msg: 'mousedown',
       which: event.which,
@@ -100,6 +104,10 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
   });
 
   document.addEventListener('mousemove', async (event: MouseEvent) => {
+    if ( ! contentScripts.option.getEnabled()) {
+      return;
+    }
+
     // console.log('(' + event.pageX + ', ' + event.pageY + ')'
     // +event.which + ',frm=' + window.frames.length;
     // );
@@ -143,6 +151,10 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
   });
 
   document.addEventListener('mouseup', async (event: MouseEvent) => {
+    if ( ! contentScripts.option.getEnabled()) {
+      return;
+    }
+
     const sendMouseUpParam = {
       msg: 'mouseup',
       which: event.which,
@@ -173,6 +185,10 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
    * falseを返すと、コンテキストメニューを無効にする。
    */
   document.addEventListener('contextmenu', (event: MouseEvent) => {
+    if ( ! contentScripts.option.getEnabled()) {
+      return;
+    }
+
     const bowser = Bowser.getParser(window.navigator.userAgent)
     if (!bowser.is('Windows')) {
       if (timerId) {
