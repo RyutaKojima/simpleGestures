@@ -36,7 +36,7 @@ class Option {
         this.colorCode = value.color_code ?? '#FF0000';
         this.lineWidth = value.line_width ?? 3;
         this.commandTextOn = value.command_text_on ?? true;
-        this.commandTextOn = value.actionTextOn ?? true;
+        this.actionTextOn = value.action_text_on ?? true;
         this.trailOn = value.trail_on ?? true;
 
         this.gestureCloseTab = value.gesture_close_tab ?? 'DR';
