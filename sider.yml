@@ -1,0 +1,37 @@
+# This is a YAML file. See <https://yaml.org>.
+linter:
+  eslint:
+    target: "src/js/app/"
+    config: ".eslintrc.yml"
+    ext: "js,jsx"
+
+  stylelint:
+    glob: "src/css/**/*.{css,scss}"
+
+  misspell:
+    exclude:
+      - vendor
+      - "**/*.min.js"
+    target:
+      - src/js
+      - src/css
+      - README.md
+    locale: US
+    ignore:
+      - center
+      - behavior
+
+  remark_lint:
+    target:
+      README.md
+      MEMO.md
+    ext: md,markdown
+    rc-path: config/.remarkrc.yml
+    use:
+      - remark-lint-file-extension
+      - remark-lint-no-heading-punctuation
+
+  goodcheck:
+    config: config/goodcheck.yml
+    target:
+      - src
