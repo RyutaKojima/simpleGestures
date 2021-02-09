@@ -11,7 +11,7 @@ class LibOption {
   GESTURE_ID_LIST: string[];
   storage: MyStorage;
   localStorage: MyStorage;
-  storageData: any;
+  storageData: string|null;
   optionsInstance: Option|null;
   gestureHash: {
     [key: string]: string
@@ -87,10 +87,12 @@ class LibOption {
    * 永続化データを読み込み
    */
   async load(): Promise<void> {
-    this.storageData = await this.storage.load(this.LOCAL_STORAGE_KEY).catch((e) => {
-      this.storageData = null;
-      console.error(e);
-    });
+    try {
+      this.storageData = await this.storage.load(this.LOCAL_STORAGE_KEY);
+    } catch (e) {
+        this.storageData = null;
+        console.error(e);
+    }
 
     if ( ! this.storageData) {
       this.storageData = await this.localStorage.load(this.LOCAL_STORAGE_KEY);
@@ -103,17 +105,17 @@ class LibOption {
 
   /**
    * 永続化したデータのままを取得
-   * @return {null|Object}
+   * @return {null|string}
    */
-  getRawStorageData(): null|Object {
+  getRawStorageData(): null | string {
     return this.storageData;
   }
 
   /**
    * 永続化データを設定
-   * @param {Object | null} rawStorageData
+   * @param {string | null} rawStorageData
    */
-  setRawStorageData(rawStorageData: Object|null) {
+  setRawStorageData(rawStorageData: string|null) {
     this.storageData = rawStorageData;
 
     if (this.storageData === null) {
