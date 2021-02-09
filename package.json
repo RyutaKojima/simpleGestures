@@ -11,7 +11,8 @@
     "dev": "yarn build --watch",
     "build": "webpack --config webpack.dev.js",
     "build:clean": "rm -rf dist && yarn build",
-    "build:publish": "rm -rf dist && yarn build && zip -r ./simpleGesture.zip ./dist"
+    "build:publish": "rm -rf dist && yarn build && yarn zip",
+    "zip": "VER=`grep -o '\"version\": \"\\([0-9.]\\+\\)\"' ./dist/manifest.json | grep -o '[0-9.]\\+'` && mkdir -p ./publish && zip -r \"./publish/simpleGesture-${VER}.zip\" ./dist"
   },
   "repository": {
     "type": "git",
