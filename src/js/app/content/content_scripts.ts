@@ -189,7 +189,10 @@ class ContentScripts {
 
       case 'scroll_bottom':
         const bodyHeight = parseInt(window.getComputedStyle(document.body).height, 10);
-        window.scrollTo(0, bodyHeight);
+        const bodyScrollHeight = document.body.scrollHeight;
+
+        const height = Math.max(bodyHeight, bodyScrollHeight);
+        window.scrollTo(0, height);
         break;
 
       default:
