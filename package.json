@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.2",
-    "@types/chrome": "^0.0.134",
+    "@types/chrome": "^0.0.135",
     "bowser": "^2.11.0",
     "camelcase": "^6.2.0",
     "material-ui-color-picker": "^3.5.1",
