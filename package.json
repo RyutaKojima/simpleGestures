@@ -39,7 +39,7 @@
     "eslint-plugin-react-hooks": "4.2.0",
     "i18next": "20.3.1",
     "node-sass": "6.0.0",
-    "react-i18next": "11.10.0",
+    "react-i18next": "11.11.0",
     "redux-devtools": "3.7.0",
     "sass-loader": "12.1.0",
     "style-loader": "2.0.0",
