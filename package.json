@@ -37,7 +37,7 @@
     "eslint": "7.28.0",
     "eslint-config-google": "0.14.0",
     "eslint-plugin-react-hooks": "4.2.0",
-    "i18next": "20.3.1",
+    "i18next": "20.3.2",
     "node-sass": "6.0.0",
     "react-i18next": "11.11.0",
     "redux-devtools": "3.7.0",
