@@ -34,7 +34,7 @@
     "babel-plugin-syntax-dynamic-import": "6.18.0",
     "copy-webpack-plugin": "9.0.1",
     "css-loader": "6.1.0",
-    "eslint": "7.30.0",
+    "eslint": "7.31.0",
     "eslint-config-google": "0.14.0",
     "eslint-plugin-react-hooks": "4.2.0",
     "i18next": "20.3.3",
