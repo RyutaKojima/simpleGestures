@@ -42,7 +42,7 @@
     "react-i18next": "11.11.3",
     "redux-devtools": "3.7.0",
     "sass-loader": "12.1.0",
-    "style-loader": "3.1.0",
+    "style-loader": "3.2.1",
     "stylelint": "13.13.1",
     "stylelint-config-standard": "22.0.0",
     "ts-loader": "9.2.3",
