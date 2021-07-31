@@ -318,7 +318,8 @@ const registerEventForAllReset = () => {
     const confirmOk = window.confirm(lang.confirmOptionReset[option.getLanguage()]);
     if (confirmOk) {
       option.reset();
-      chrome.extension.sendMessage({msg: 'reload_option'}, () => {
+
+      chrome.runtime.sendMessage({msg: 'reload_option'}, () => {
       });
       reflectOptionSettingsOnScreen();
       reflectSelectedLanguageToScreen();
@@ -337,6 +338,7 @@ const setupColorWheel = () => {
 
 const saveOptions = () => {
   option.save();
-  chrome.extension.sendMessage({msg: 'reload_option'}, () => {
+
+  chrome.runtime.sendMessage({msg: 'reload_option'}, () => {
   });
 };
