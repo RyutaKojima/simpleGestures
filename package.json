@@ -27,39 +27,26 @@
   "devDependencies": {
     "@babel/core": "7.14.8",
     "@babel/preset-env": "7.14.8",
-    "@types/react": "17.0.15",
-    "@types/react-dom": "17.0.9",
-    "@types/react-redux": "7.1.18",
+    "@types/chrome": "^0.0.149",
     "babel-loader": "8.2.2",
     "babel-plugin-syntax-dynamic-import": "6.18.0",
     "copy-webpack-plugin": "9.0.1",
     "css-loader": "6.2.0",
     "eslint": "7.31.0",
     "eslint-config-google": "0.14.0",
-    "eslint-plugin-react-hooks": "4.2.0",
     "i18next": "20.3.5",
     "node-sass": "6.0.1",
-    "react-i18next": "11.11.4",
-    "redux-devtools": "3.7.0",
     "sass-loader": "12.1.0",
     "style-loader": "3.2.1",
     "stylelint": "13.13.1",
     "stylelint-config-standard": "22.0.0",
     "ts-loader": "9.2.4",
     "typescript": "4.3.5",
-    "uglifyjs-webpack-plugin": "2.2.0",
     "webpack": "5.47.1",
     "webpack-cli": "4.7.2"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.2",
-    "@types/chrome": "^0.0.149",
     "bowser": "^2.11.0",
-    "camelcase": "^6.2.0",
-    "material-ui-color-picker": "^3.5.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-redux": "^7.2.2",
-    "redux": "^4.0.5"
+    "camelcase": "^6.2.0"
   }
 }

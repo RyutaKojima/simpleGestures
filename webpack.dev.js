@@ -1,8 +1,6 @@
-// const webpack = require('webpack');
 const path = require('path');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-// const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   mode: 'production',
