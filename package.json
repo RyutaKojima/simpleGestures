@@ -27,6 +27,7 @@
   "devDependencies": {
     "@babel/core": "7.14.8",
     "@babel/preset-env": "7.14.8",
+    "@types/chrome": "^0.0.149",
     "babel-loader": "8.2.2",
     "babel-plugin-syntax-dynamic-import": "6.18.0",
     "copy-webpack-plugin": "9.0.1",
@@ -45,7 +46,6 @@
     "webpack-cli": "4.7.2"
   },
   "dependencies": {
-    "@types/chrome": "^0.0.149",
     "bowser": "^2.11.0",
     "camelcase": "^6.2.0"
   }
