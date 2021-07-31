@@ -1,7 +1,7 @@
 {
 	"name": "simpleGestures",
-	"version": "1.4.5",
-	"manifest_version": 2,
+	"version": "1.5.0",
+	"manifest_version": 3,
 	"description": "設定画面・使い勝手のシンプルさにこだわったマウスジェスチャの拡張機能です。",
 	"icons": {
 		"16": "img/icon_16.png",
@@ -18,9 +18,7 @@
 		"storage"
 	],
 	"background": {
-		"scripts": [
-			"js/background.js"
-		]
+		"service_worker": "background.js"
 	},
 	"content_scripts": [
 		{
@@ -31,14 +29,18 @@
 				"css/font/flaticon.css"
 			],
 			"js": [
-				"js/handler.js"
+				"handler.js"
 			],
 			"all_frames": true,
 			"run_at": "document_start"
 		}
 	],
 	"web_accessible_resources": [
-		"css/font/*"
+		{
+          "resources": ["css/font/*"],
+          "matches": ["<all_urls>"],
+          "extension_ids": []
+		}
 	],
 	"options_page": "html/options_page.html"
 }
