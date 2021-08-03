@@ -1,6 +1,6 @@
 {
 	"name": "simpleGestures",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"manifest_version": 3,
 	"description": "設定画面・使い勝手のシンプルさにこだわったマウスジェスチャの拡張機能です。",
 	"icons": {
