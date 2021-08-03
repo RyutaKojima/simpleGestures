@@ -10,7 +10,6 @@ class LibOption {
   OPTION_ID_LIST: string[];
   GESTURE_ID_LIST: string[];
   storage: MyStorage;
-  localStorage: MyStorage;
   storageData: string|null;
   optionsInstance: Option|null;
   gestureHash: {
@@ -28,7 +27,6 @@ class LibOption {
     this.LOCAL_STORAGE_KEY = 'options';
 
     this.storage = new MyStorage(MyStorage.CHROME_STORAGE_LOCAL);
-    this.localStorage = new MyStorage(MyStorage.LOCAL_STORAGE);
 
     /**
      * @const
@@ -77,7 +75,6 @@ class LibOption {
    * @return {undefined}
    */
   reset(): void {
-    this.localStorage.clear();
     this.storage.clear();
 
     this.load();
@@ -92,12 +89,6 @@ class LibOption {
     } catch (e) {
         this.storageData = null;
         console.error(e);
-    }
-
-    if ( ! this.storageData) {
-      this.storageData = await this.localStorage.load(this.LOCAL_STORAGE_KEY);
-      this.setRawStorageData(this.storageData);
-      this.save();
     }
 
     this.setRawStorageData(this.storageData);
@@ -297,7 +288,6 @@ class LibOption {
   save(): void {
     const saveRawData: string = this.optionsInstance.toJson();
     this.storage.save(this.LOCAL_STORAGE_KEY, saveRawData);
-    // this.localStorage.save(this.LOCAL_STORAGE_KEY, saveRawData);
   }
 }
 
