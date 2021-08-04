@@ -19,7 +19,7 @@ export const chromeTabs = {
     const tabsInCurrentWindow: Tab[] = await chromeTabs.getCurrentWindowTabs();
     return tabsInCurrentWindow.find((tab) => tab.url === url);
   },
-  async createActiveRight(url: null|string = null, active: boolean = true) {
+  async createActiveRight(url: null|string = null, active = true) {
     const activeTab: Tab = await chromeTabs.getActiveTab();
     const indexOfAppendingTab: number = activeTab.index + 1;
 
@@ -29,7 +29,7 @@ export const chromeTabs = {
       active: active,
     });
   },
-  createLast(url: null|string = null, active: boolean = true) {
+  createLast(url: null|string = null, active = true) {
     chrome.tabs.create({
       url: url,
       active: active,
@@ -55,7 +55,7 @@ export const chromeTabs = {
       chrome.tabs.remove(tab.id);
     }
   },
-  reload(tab: Tab, discardCache: boolean = false): void {
+  reload(tab: Tab, discardCache = false): void {
     chrome.tabs.reload(tab.id, {bypassCache: discardCache});
   },
 };

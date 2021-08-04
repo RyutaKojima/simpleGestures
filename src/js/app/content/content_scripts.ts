@@ -1,6 +1,6 @@
 import LibOption from '../lib_option';
-import TrailCanvas from "./trail_canvas";
-import {LineParameter} from "../types/common";
+import TrailCanvas from './trail_canvas';
+import {LineParameter} from '../types/common';
 
 /**
  * ジェスチャーを描画するキャンバス
@@ -11,7 +11,7 @@ class ContentScripts {
   actionNameDiv: null | HTMLDivElement;
   trailCanvas: TrailCanvas;
   option: LibOption;
-  
+
   /**
    * @constructor
    */
@@ -118,7 +118,7 @@ class ContentScripts {
       return;
     }
 
-    const canvasId: null|string  = this.trailCanvas.getCanvasId();
+    const canvasId: null|string = this.trailCanvas.getCanvasId();
 
     if (!this.elementExists(canvasId)) {
       return;
@@ -126,7 +126,7 @@ class ContentScripts {
 
     this.trailCanvas.drawLine(
         lineParam.fromX, lineParam.fromY,
-        lineParam.toX, lineParam.toY
+        lineParam.toX, lineParam.toY,
     );
   }
 
@@ -138,7 +138,7 @@ class ContentScripts {
     // append されているか調べる。document.getElementById で取得出来たらOK
     return document.getElementById(id) !== null;
   }
-  
+
   /**
    * コマンド名、アクション名を描画する
    */

@@ -2,8 +2,8 @@ import DEBUG_ON from '../debug_flg';
 import Mouse, {HTMLChildElement, HTMLElementEvent} from '../mouse';
 import ContentScripts from './content_scripts';
 import TrailCanvas from '../content/trail_canvas';
-import {LineParameter, SendMessageParameter} from "../types/common";
-import Bowser from "bowser";
+import {LineParameter, SendMessageParameter} from '../types/common';
+import Bowser from 'bowser';
 
 const scrollTop = (): number => (document.documentElement && document.documentElement.scrollTop) ||
     (document.body && document.body.scrollTop);
@@ -13,7 +13,7 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
 (function() {
   const trailCanvas: TrailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
   const contentScripts: ContentScripts = new ContentScripts(trailCanvas);
-  let nextMenuSkip: boolean = false;
+  let nextMenuSkip = false;
 
   /**
    * content_scripts->backgroundへのデータ送信
@@ -179,7 +179,7 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
     clearAllDisplay();
   });
 
-  let timerId = null
+  let timerId = null;
   /**
    * コンテキストメニューの呼び出しをされたときに実行されるイベント。
    * falseを返すと、コンテキストメニューを無効にする。
@@ -189,17 +189,17 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
       return;
     }
 
-    const bowser = Bowser.getParser(window.navigator.userAgent)
+    const bowser = Bowser.getParser(window.navigator.userAgent);
     if (!bowser.is('Windows')) {
       if (timerId) {
-        clearTimeout(timerId)
-        timerId = null
-        return true
+        clearTimeout(timerId);
+        timerId = null;
+        return true;
       }
 
       timerId = setTimeout(() => {
-        timerId = null
-      }, 500)
+        timerId = null;
+      }, 500);
 
       event.preventDefault();
     }

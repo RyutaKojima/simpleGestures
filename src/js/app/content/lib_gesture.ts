@@ -9,7 +9,7 @@ class LibGesture {
   _linkUrl: null|string;
   _strGestureCommand: string;
   _lastDirection: null|'R'|'D'|'U'|'L';
-  
+
   static get COMMAND_MAX_LENGTH(): number {
     return 14;
   }
@@ -163,7 +163,7 @@ class LibGesture {
     if (rotation >= -135.0 && rotation < -45.0) {
       return 'U';
     }
-    
+
     return 'L';
   }
 }

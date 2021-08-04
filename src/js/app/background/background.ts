@@ -22,7 +22,7 @@ import actionOpenOptionPage from './Action/open_option_page';
 import actionOpenExtensionPage from './Action/open_extension_page';
 import actionBrowserRestart from './Action/browser_restart';
 import actionRestoreLastTab from './Action/restore_last_tab';
-import {mouseEventResponse, SendMessageParameter} from '../types/common'
+import {mouseEventResponse, SendMessageParameter} from '../types/common';
 import MessageSender = chrome.runtime.MessageSender;
 
 const inputMouse: Mouse = new Mouse();
@@ -31,8 +31,8 @@ const mainGestureMan: LibGesture = new LibGesture();
 const option: LibOption = new LibOption();
 option.load();
 
-let lockerOn: boolean = false;
-let nextMenuSkip: boolean = true;
+let lockerOn = false;
+let nextMenuSkip = true;
 
 /**
  * 現在のジェスチャ軌跡に対応するアクション名を返す
@@ -51,24 +51,24 @@ const getNowGestureActionName = (): null | string => {
  * @type type
  */
 const gestureFunction: { [key: string]: any } = {
-    'new_tab': actionOpenNewTab,
-    'new_tab_background': actionOpenNewTabBackGround,
-    'pin_tab': actionTogglePinTab,
-    'close_tab': actionCloseActiveTab,
-    'reload': actionReload,
-    'reload_all': actionReloadAll,
-    'next_tab': actionNextTab,
-    'prev_tab': actionPrevTab,
-    'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
-    'close_right_tab': actionCloseRightTab,
-    'close_left_tab_without_pinned': actionCloseLeftTabWithoutPinned,
-    'close_left_tab': actionCloseLeftTab,
-    'close_all_background': actionCloseAllBackgroundTab,
-    'close_all': actionCloseAllTab,
-    'open_option': actionOpenOptionPage,
-    'open_extension': actionOpenExtensionPage,
-    'restart': actionBrowserRestart,
-    'last_tab': actionRestoreLastTab,
+  'new_tab': actionOpenNewTab,
+  'new_tab_background': actionOpenNewTabBackGround,
+  'pin_tab': actionTogglePinTab,
+  'close_tab': actionCloseActiveTab,
+  'reload': actionReload,
+  'reload_all': actionReloadAll,
+  'next_tab': actionNextTab,
+  'prev_tab': actionPrevTab,
+  'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
+  'close_right_tab': actionCloseRightTab,
+  'close_left_tab_without_pinned': actionCloseLeftTabWithoutPinned,
+  'close_left_tab': actionCloseLeftTab,
+  'close_all_background': actionCloseAllBackgroundTab,
+  'close_all': actionCloseAllTab,
+  'open_option': actionOpenOptionPage,
+  'open_extension': actionOpenExtensionPage,
+  'restart': actionBrowserRestart,
+  'last_tab': actionRestoreLastTab,
 };
 
 /**
@@ -186,9 +186,9 @@ const requestFunction: { [key: string]: any } = {
   },
   'mousemove': function(request: SendMessageParameter) {
     const doAction: null | string = getNowGestureActionName();
-    const displayActionName: string = doAction
-      ? lang.gesture['gesture_' + doAction][option.getLanguage()]
-      : '';
+    const displayActionName: string = doAction ?
+      lang.gesture['gesture_' + doAction][option.getLanguage()] :
+      '';
 
     // mousemove の event.whichには、最初に押されたボタンが入る。
     const response: mouseEventResponse = mouseEventResponseTemplate();
@@ -223,9 +223,9 @@ const requestFunction: { [key: string]: any } = {
   },
   'mouseup': function(request: SendMessageParameter) {
     const doAction: null | string = getNowGestureActionName();
-    const displayActionName: string = doAction
-      ? lang.gesture['gesture_' + doAction][option.getLanguage()]
-      : '';
+    const displayActionName: string = doAction ?
+      lang.gesture['gesture_' + doAction][option.getLanguage()] :
+      '';
 
     const response: mouseEventResponse = mouseEventResponseTemplate();
     response.href = mainGestureMan.getURL();

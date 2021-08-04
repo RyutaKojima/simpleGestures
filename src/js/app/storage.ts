@@ -67,7 +67,7 @@ export default class MyStorage {
         console.error('error');
         break;
     }
-  };
+  }
 
   load(key: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -94,11 +94,11 @@ export default class MyStorage {
           break;
       }
     });
-  };
-  
+  }
+
   save(key: string, saveData: string): void {
     const saveParam: { [key:string]: string } = {
-      [key]: saveData
+      [key]: saveData,
     };
     switch (this.storageType) {
       case MyStorage.CHROME_STORAGE_LOCAL:
@@ -117,5 +117,5 @@ export default class MyStorage {
         console.error('error');
         break;
     }
-  };
+  }
 }

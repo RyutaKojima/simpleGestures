@@ -32,9 +32,9 @@ class TrailCanvas {
     return (this.myCanvas) ? this.myCanvas.id : null;
   }
 
-  getContext2d(): null|CanvasRenderingContext2D  {
+  getContext2d(): null|CanvasRenderingContext2D {
     return (this.myCanvas) ? this.myCanvas.getContext('2d') : null;
-  };
+  }
 
   /**
    * キャンバスのサイズを変更
@@ -46,7 +46,7 @@ class TrailCanvas {
       this.myCanvas.width = width;
       this.myCanvas.height = height;
     }
-  };
+  }
 
   /**
    * 描画するラインのスタイルを設定する
@@ -59,25 +59,25 @@ class TrailCanvas {
 
     ctx.strokeStyle = color;
     ctx.lineWidth = width;
-  };
+  }
 
   /**
    * キャンバスをクリア
    */
   clearCanvas(): void {
-    const ctx: null|CanvasRenderingContext2D  = this.getContext2d();
+    const ctx: null|CanvasRenderingContext2D = this.getContext2d();
     if (!ctx) {
       return;
     }
 
     ctx.clearRect(0, 0, this.myCanvas.width, this.myCanvas.height);
-  };
+  }
 
   /**
    * テキストを描画
    */
   drawText(text: string, drawX: number, drawY: number, textColor: string): void {
-    const ctx: null|CanvasRenderingContext2D  = this.getContext2d();
+    const ctx: null|CanvasRenderingContext2D = this.getContext2d();
     if (!ctx) {
       return;
     }
@@ -93,13 +93,13 @@ class TrailCanvas {
     if (textColor) {
       ctx.fillStyle = prevFillStyle;
     }
-  };
+  }
 
   /**
    * 直線を描く
    */
   drawLine(fromX: number, fromY: number, toX: number, toY: number): void {
-    const ctx: null|CanvasRenderingContext2D  = this.getContext2d();
+    const ctx: null|CanvasRenderingContext2D = this.getContext2d();
     if (!ctx) {
       return;
     }
@@ -108,7 +108,7 @@ class TrailCanvas {
     ctx.moveTo(fromX, fromY);
     ctx.lineTo(toX, toY);
     ctx.stroke();
-  };
+  }
 }
 
 export default TrailCanvas;
