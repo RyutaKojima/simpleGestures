@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/RyutaKojima/simpleGestures#readme",
   "devDependencies": {
-    "@babel/core": "7.14.8",
-    "@babel/preset-env": "7.14.9",
+    "@babel/core": "7.15.0",
+    "@babel/preset-env": "7.15.0",
     "@types/chrome": "0.0.154",
     "@typescript-eslint/eslint-plugin": "4.29.0",
     "@typescript-eslint/parser": "4.29.0",
