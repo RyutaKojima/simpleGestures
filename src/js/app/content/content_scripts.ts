@@ -1,6 +1,6 @@
 import LibOption from '../lib_option';
-import TrailCanvas from "./trail_canvas";
-import {LineParameter} from "../types/common";
+import TrailCanvas from './trail_canvas';
+import {LineParameter} from '../types/common';
 
 /**
  * ジェスチャーを描画するキャンバス
@@ -11,9 +11,10 @@ class ContentScripts {
   actionNameDiv: null | HTMLDivElement;
   trailCanvas: TrailCanvas;
   option: LibOption;
-  
+
   /**
    * @constructor
+   * @param {TrailCanvas} trailCanvas
    */
   constructor(trailCanvas: TrailCanvas) {
     this.infoDiv = null;
@@ -105,6 +106,12 @@ class ContentScripts {
     this.infoDiv.style.fontWeight = 'bold';
   }
 
+  /**
+   *
+   * @param {LineParameter} lineParam
+   * @param {string} commandName
+   * @param {string} actionName
+   */
   draw(lineParam: LineParameter, commandName: string, actionName: string): void {
     this.drawTrail(lineParam);
     this.drawText(commandName, actionName);
@@ -112,13 +119,15 @@ class ContentScripts {
 
   /**
    * ラインを描画する
+   *
+   * @param {LineParameter} lineParam
    */
   drawTrail(lineParam: LineParameter): void {
     if ( ! this.option.isTrailOn()) {
       return;
     }
 
-    const canvasId: null|string  = this.trailCanvas.getCanvasId();
+    const canvasId: null|string = this.trailCanvas.getCanvasId();
 
     if (!this.elementExists(canvasId)) {
       return;
@@ -126,10 +135,14 @@ class ContentScripts {
 
     this.trailCanvas.drawLine(
         lineParam.fromX, lineParam.fromY,
-        lineParam.toX, lineParam.toY
+        lineParam.toX, lineParam.toY,
     );
   }
 
+  /**
+   * @param {null|string} id
+   * @return {boolean}
+   */
   elementExists(id: null|string): boolean {
     if (id === null) {
       return false;
@@ -138,9 +151,12 @@ class ContentScripts {
     // append されているか調べる。document.getElementById で取得出来たらOK
     return document.getElementById(id) !== null;
   }
-  
+
   /**
    * コマンド名、アクション名を描画する
+   *
+   * @param {string} commandName
+   * @param {string} actionName
    */
   drawText(commandName: string, actionName: string): void {
     if ( ! document.getElementById(this.infoDiv.id)) {
@@ -203,6 +219,8 @@ class ContentScripts {
 
   /**
    * ジェスチャコマンドを矢印表記に変換して返す D=>↓、U=>↑...
+   * @param {string} actionName
+   * @return {string}
    */
   static replaceCommandToArrow(actionName: string): string {
     if (actionName) {

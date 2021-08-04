@@ -99,12 +99,12 @@ const lang: LanguageConfig = {
       'English': 'open simpleGesture option page',
     },
     'gesture_open_extension': {
-      'Japanese': 'Google Choromeの「拡張機能」ページを開く',
+      'Japanese': 'Google Chromeの「拡張機能」ページを開く',
       'English': 'open chrome extension page',
     },
     'gesture_restart': {
       'Japanese': 'Google Chromeを再起動する',
-      'English': 'restart google chorome',
+      'English': 'restart google chrome',
     },
   },
 };

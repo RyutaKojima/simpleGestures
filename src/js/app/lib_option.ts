@@ -1,6 +1,6 @@
 import MyStorage from './storage';
-import Option from "./domains/ValueObjects/option";
-import camelcase from "camelcase";
+import Option from './domains/ValueObjects/option';
+import camelcase from 'camelcase';
 
 /**
  * オプション情報管理
@@ -78,7 +78,7 @@ class LibOption {
     this.storage.clear();
 
     this.load();
-  };
+  }
 
   /**
    * 永続化データを読み込み
@@ -87,12 +87,12 @@ class LibOption {
     try {
       this.storageData = await this.storage.load(this.LOCAL_STORAGE_KEY);
     } catch (e) {
-        this.storageData = null;
-        console.error(e);
+      this.storageData = null;
+      console.error(e);
     }
 
     this.setRawStorageData(this.storageData);
-  };
+  }
 
   /**
    * 永続化したデータのままを取得
@@ -136,7 +136,7 @@ class LibOption {
    */
   enableGestureParam(paramName: string): boolean {
     return (this.GESTURE_ID_LIST && this.GESTURE_ID_LIST.indexOf(paramName) !== -1);
-  };
+  }
 
   /**
    * オプション設定値が存在するか確認
@@ -145,7 +145,7 @@ class LibOption {
    * @return {null|boolean}
    */
   paramExists(paramName: string): boolean {
-    const camelParamName = camelcase(paramName)
+    const camelParamName = camelcase(paramName);
     return (this.optionsInstance && this.optionsInstance.hasOwnProperty(camelParamName));
   }
 
@@ -157,7 +157,7 @@ class LibOption {
    * @return {*}
    */
   getParam(paramName: string, defaultValue: any): any {
-    const camelParamName = camelcase(paramName)
+    const camelParamName = camelcase(paramName);
     return this.paramExists(camelParamName) ? this.optionsInstance[camelParamName] : defaultValue;
   }
 
@@ -169,7 +169,7 @@ class LibOption {
    */
   setParam(paramName: string, value: any): void {
     if (this.paramExists(paramName) || this.enableGestureParam(paramName)) {
-      this.optionsInstance = new Option({...this.optionsInstance.serialize(), [paramName]: value})
+      this.optionsInstance = new Option({...this.optionsInstance.serialize(), [paramName]: value});
     }
   }
 
@@ -189,6 +189,7 @@ class LibOption {
 
   /**
    * 現在の端末でこのプラグインを利用するか？
+   * @return {boolean}
    */
   getEnabled(): boolean {
     return this.optionsInstance?.enabled ?? false;
@@ -209,10 +210,11 @@ class LibOption {
    */
   isEnglish(): boolean {
     return (this.getLanguage() === 'English');
-  };
+  }
 
   /**
    * 言語設定を返す
+   * @return {'Japanese'|'English'}
    */
   getLanguage(): 'Japanese'|'English' {
     return this.getParam('language', 'English');

@@ -17,12 +17,16 @@ class Keyboard {
     this.keyBuffer = {};
   }
 
+  /**
+   * @return {string}
+   */
   static get KEY_CTRL(): string {
     return 'Control';
   }
 
   /**
    * 現在の入力状態をリセットする
+   * @return {Keyboard}
    */
   reset(): Keyboard {
     console.log('reset keyboard');
@@ -32,6 +36,7 @@ class Keyboard {
 
   /**
    * キーボードの押されたイベントをロックする
+   * @return {Keyboard}
    */
   lock(): Keyboard {
     this.lockedCount++;
@@ -40,6 +45,7 @@ class Keyboard {
 
   /**
    * キーボードの押されたイベントをロック解除する
+   * @return {Keyboard}
    */
   unlock(): Keyboard {
     if (this.lockedCount) {
@@ -50,6 +56,8 @@ class Keyboard {
 
   /**
    * 指定したキーが押されているか判定する。 押されていたら true
+   * @param {string} keyCode
+   * @return {boolean}
    */
   isOn(keyCode: string): boolean {
     return this.keyBuffer[keyCode];
@@ -57,13 +65,15 @@ class Keyboard {
 
   /**
    * キーを押された状態に設定する
+   * @param {string} keyCode
+   * @return {Keyboard}
    */
   setOn(keyCode: string): Keyboard {
     if (this.lockedCount) {
       return this;
     }
 
-    console.log('on keybord: ' + keyCode);
+    console.log('on keyboard: ' + keyCode);
 
     this.keyBuffer[keyCode] = true;
 
@@ -72,9 +82,11 @@ class Keyboard {
 
   /**
    * キーを離した状態に設定する
+   * @param {string} keyCode
+   * @return {Keyboard}
    */
   setOff(keyCode: string): Keyboard {
-    console.log('off keybord: ' + keyCode);
+    console.log('off keyboard: ' + keyCode);
 
     this.keyBuffer[keyCode] = false;
     return this;
