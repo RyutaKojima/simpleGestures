@@ -36,6 +36,7 @@ let nextMenuSkip = true;
 
 /**
  * 現在のジェスチャ軌跡に対応するアクション名を返す
+ * @return {null | string}
  */
 const getNowGestureActionName = (): null | string => {
   const gestureString: string = mainGestureMan.getGestureString();
@@ -73,6 +74,8 @@ const gestureFunction: { [key: string]: any } = {
 
 /**
  * Backgroundで処理できるアクションなら実行する
+ * @param {string} doAction
+ * @return {boolean}
  */
 const executeGestureFunctionOnBackground = (doAction: string): boolean => {
   if (gestureFunction.hasOwnProperty(doAction) && typeof gestureFunction[doAction] === 'function') {
@@ -89,6 +92,7 @@ const executeGestureFunctionOnBackground = (doAction: string): boolean => {
 
 /**
  * マウスイベントのレスポンスのテンプレート
+ * @return {mouseEventResponse}
  */
 const mouseEventResponseTemplate = (): mouseEventResponse => {
   return {
@@ -263,14 +267,15 @@ const requestFunction: { [key: string]: any } = {
  *
  * @param {type} param
  */
-chrome.runtime.onMessage.addListener(function(request: SendMessageParameter, sender: MessageSender, sendResponse) {
-  const reqFunc = requestFunction[request.msg];
-  if (typeof reqFunc === 'function') {
-    sendResponse(reqFunc(request, sender));
-  } else {
-    sendResponse({message: 'unknown command'});
-  }
-});
+chrome.runtime.onMessage.addListener(
+    function(request: SendMessageParameter, sender: MessageSender, sendResponse) {
+      const reqFunc = requestFunction[request.msg];
+      if (typeof reqFunc === 'function') {
+        sendResponse(reqFunc(request, sender));
+      } else {
+        sendResponse({message: 'unknown command'});
+      }
+    });
 
 /**
  * 拡張機能がインストール/アップデートされたときに発生するイベント

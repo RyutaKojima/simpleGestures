@@ -1,22 +1,33 @@
-
+/**
+ *
+ */
 export default class MyStorage {
   storageType: string;
 
   /**
-   * @param storageType
+   * @param {string} storageType
    */
   constructor(storageType: string) {
     this.storageType = storageType;
   }
 
+  /**
+   * @return {string}
+   */
   static get LOCAL_STORAGE(): string {
     return 'localStorage';
   }
 
+  /**
+   * @return {string}
+   */
   static get CHROME_STORAGE_LOCAL(): string {
     return 'chrome.storage.local';
   }
 
+  /**
+   * @return {string}
+   */
   static get CHROME_STORAGE_SYNC(): string {
     return 'chrome.storage.sync';
   }
@@ -69,6 +80,10 @@ export default class MyStorage {
     }
   }
 
+  /**
+   * @param {string} key
+   * @return {Promise<string>}
+   */
   load(key: string): Promise<string> {
     return new Promise((resolve, reject) => {
       switch (this.storageType) {
@@ -96,17 +111,21 @@ export default class MyStorage {
     });
   }
 
+  /**
+   * @param {string} key
+   * @param {string} saveData
+   */
   save(key: string, saveData: string): void {
     const saveParam: { [key:string]: string } = {
       [key]: saveData,
     };
     switch (this.storageType) {
       case MyStorage.CHROME_STORAGE_LOCAL:
-        chrome.storage.local.set(saveParam, () => {});
+        chrome.storage.local.set(saveParam);
         break;
 
       case MyStorage.CHROME_STORAGE_SYNC:
-        chrome.storage.sync.set(saveParam, () => {});
+        chrome.storage.sync.set(saveParam);
         break;
 
       case MyStorage.LOCAL_STORAGE:

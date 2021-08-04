@@ -189,6 +189,7 @@ class LibOption {
 
   /**
    * 現在の端末でこのプラグインを利用するか？
+   * @return {boolean}
    */
   getEnabled(): boolean {
     return this.optionsInstance?.enabled ?? false;
@@ -213,6 +214,7 @@ class LibOption {
 
   /**
    * 言語設定を返す
+   * @return {'Japanese'|'English'}
    */
   getLanguage(): 'Japanese'|'English' {
     return this.getParam('language', 'English');

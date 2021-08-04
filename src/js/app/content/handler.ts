@@ -5,9 +5,11 @@ import TrailCanvas from '../content/trail_canvas';
 import {LineParameter, SendMessageParameter} from '../types/common';
 import Bowser from 'bowser';
 
-const scrollTop = (): number => (document.documentElement && document.documentElement.scrollTop) ||
+const scrollTop = (): number =>
+  (document.documentElement && document.documentElement.scrollTop) ||
     (document.body && document.body.scrollTop);
-const scrollLeft = (): number => (document.documentElement && document.documentElement.scrollLeft) ||
+const scrollLeft = (): number =>
+  (document.documentElement && document.documentElement.scrollLeft) ||
     (document.body && document.body.scrollLeft);
 
 (function() {
@@ -17,6 +19,8 @@ const scrollLeft = (): number => (document.documentElement && document.documentE
 
   /**
    * content_scripts->backgroundへのデータ送信
+   * @param {SendMessageParameter} param
+   * @return {Promise}
    */
   const sendMessageToBackground = (param: SendMessageParameter): Promise<any> => {
     return new Promise((resolve) => {

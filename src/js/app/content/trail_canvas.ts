@@ -4,6 +4,11 @@
 class TrailCanvas {
   myCanvas: HTMLCanvasElement;
 
+  /**
+   *
+   * @param {string} id
+   * @param {string} zIndex
+   */
   constructor(id: string, zIndex: string) {
     this.myCanvas = document.createElement('canvas');
     this.myCanvas.id = id;
@@ -24,20 +29,32 @@ class TrailCanvas {
     this.myCanvas.style.overflow = 'visible';
   }
 
+  /**
+   * @return {HTMLCanvasElement}
+   */
   getCanvas(): HTMLCanvasElement {
     return this.myCanvas;
   }
 
+  /**
+   * @return {null|string}
+   */
   getCanvasId(): null|string {
     return (this.myCanvas) ? this.myCanvas.id : null;
   }
 
+  /**
+   * @return {null|CanvasRenderingContext2D}
+   */
   getContext2d(): null|CanvasRenderingContext2D {
     return (this.myCanvas) ? this.myCanvas.getContext('2d') : null;
   }
 
   /**
    * キャンバスのサイズを変更
+   *
+   * @param {number} width
+   * @param {number} height
    */
   setCanvasSize(width: number, height: number): void {
     if (this.myCanvas) {
@@ -50,6 +67,9 @@ class TrailCanvas {
 
   /**
    * 描画するラインのスタイルを設定する
+   *
+   * @param {string} color
+   * @param {number} width
    */
   setLineStyle(color: string, width: number): void {
     const ctx: null|CanvasRenderingContext2D = this.getContext2d();
@@ -75,6 +95,11 @@ class TrailCanvas {
 
   /**
    * テキストを描画
+   *
+   * @param {string} text
+   * @param {number} drawX
+   * @param {number} drawY
+   * @param {string} textColor
    */
   drawText(text: string, drawX: number, drawY: number, textColor: string): void {
     const ctx: null|CanvasRenderingContext2D = this.getContext2d();
@@ -97,6 +122,11 @@ class TrailCanvas {
 
   /**
    * 直線を描く
+   *
+   * @param {number} fromX
+   * @param {number} fromY
+   * @param {number} toX
+   * @param {number} toY
    */
   drawLine(fromX: number, fromY: number, toX: number, toY: number): void {
     const ctx: null|CanvasRenderingContext2D = this.getContext2d();

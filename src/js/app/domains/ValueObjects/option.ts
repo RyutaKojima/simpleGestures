@@ -1,3 +1,6 @@
+/**
+ *
+ */
 class Option {
     public readonly enabled: boolean;
     public readonly language: string;
@@ -30,6 +33,10 @@ class Option {
     public readonly gestureOpenExtension: string;
     // public readonly gestureRestart: string;
 
+    /**
+     *
+     * @param {any} value
+     */
     constructor(value) {
       this.enabled = value.enabled ?? true;
       this.language = value.language ?? 'Japanese';
@@ -62,7 +69,10 @@ class Option {
       this.gestureOpenExtension = value.gesture_open_extension ?? 'RDL';
     }
 
-    public serialize(): Object {
+    /**
+     * @return {Object}
+     */
+    public serialize(): any {
       return {
         enabled: this.enabled,
         language: this.language,
@@ -97,6 +107,9 @@ class Option {
       };
     }
 
+    /**
+     * @return {string}
+     */
     public toJson(): string {
       return JSON.stringify(this.serialize());
     }

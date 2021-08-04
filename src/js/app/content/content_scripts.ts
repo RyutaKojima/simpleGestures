@@ -14,6 +14,7 @@ class ContentScripts {
 
   /**
    * @constructor
+   * @param {TrailCanvas} trailCanvas
    */
   constructor(trailCanvas: TrailCanvas) {
     this.infoDiv = null;
@@ -105,6 +106,12 @@ class ContentScripts {
     this.infoDiv.style.fontWeight = 'bold';
   }
 
+  /**
+   *
+   * @param {LineParameter} lineParam
+   * @param {string} commandName
+   * @param {string} actionName
+   */
   draw(lineParam: LineParameter, commandName: string, actionName: string): void {
     this.drawTrail(lineParam);
     this.drawText(commandName, actionName);
@@ -112,6 +119,8 @@ class ContentScripts {
 
   /**
    * ラインを描画する
+   *
+   * @param {LineParameter} lineParam
    */
   drawTrail(lineParam: LineParameter): void {
     if ( ! this.option.isTrailOn()) {
@@ -130,6 +139,10 @@ class ContentScripts {
     );
   }
 
+  /**
+   * @param {null|string} id
+   * @return {boolean}
+   */
   elementExists(id: null|string): boolean {
     if (id === null) {
       return false;
@@ -141,6 +154,9 @@ class ContentScripts {
 
   /**
    * コマンド名、アクション名を描画する
+   *
+   * @param {string} commandName
+   * @param {string} actionName
    */
   drawText(commandName: string, actionName: string): void {
     if ( ! document.getElementById(this.infoDiv.id)) {
@@ -203,6 +219,8 @@ class ContentScripts {
 
   /**
    * ジェスチャコマンドを矢印表記に変換して返す D=>↓、U=>↑...
+   * @param {string} actionName
+   * @return {string}
    */
   static replaceCommandToArrow(actionName: string): string {
     if (actionName) {
