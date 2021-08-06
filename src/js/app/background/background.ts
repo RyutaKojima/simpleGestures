@@ -1,28 +1,27 @@
-import lang from '../lang';
-import Mouse from '../mouse';
-import Keyboard from '../keyboard';
 import LibGesture from '../content/lib_gesture';
+import Keyboard from '../keyboard';
+import lang from '../lang';
 import LibOption from '../lib_option';
-
-import actionOpenNewTab from './Action/open_new_tab';
-import actionOpenNewTabBackGround from './Action/open_new_tab_background';
-import actionTogglePinTab from './Action/toggle_pin_tab';
+import Mouse from '../mouse';
+import {mouseEventResponse, SendMessageParameter} from '../types/common';
+import actionBrowserRestart from './Action/browser_restart';
 import actionCloseActiveTab from './Action/close_active_tab';
-import actionReload from './Action/reload';
-import actionReloadAll from './Action/reload_all';
-import actionNextTab from './Action/next_tab';
-import actionPrevTab from './Action/prev_tab';
-import actionCloseRightTabWithoutPinned from './Action/close_right_tab_without_pinned';
-import actionCloseRightTab from './Action/close_right_tab';
-import actionCloseLeftTabWithoutPinned from './Action/close_left_tab_without_pinned';
-import actionCloseLeftTab from './Action/close_left_tab';
 import actionCloseAllBackgroundTab from './Action/close_all_background_tab';
 import actionCloseAllTab from './Action/close_all_tab';
-import actionOpenOptionPage from './Action/open_option_page';
+import actionCloseLeftTab from './Action/close_left_tab';
+import actionCloseLeftTabWithoutPinned from './Action/close_left_tab_without_pinned';
+import actionCloseRightTab from './Action/close_right_tab';
+import actionCloseRightTabWithoutPinned from './Action/close_right_tab_without_pinned';
+import actionNextTab from './Action/next_tab';
 import actionOpenExtensionPage from './Action/open_extension_page';
-import actionBrowserRestart from './Action/browser_restart';
+import actionOpenNewTab from './Action/open_new_tab';
+import actionOpenNewTabBackGround from './Action/open_new_tab_background';
+import actionOpenOptionPage from './Action/open_option_page';
+import actionPrevTab from './Action/prev_tab';
+import actionReload from './Action/reload';
+import actionReloadAll from './Action/reload_all';
 import actionRestoreLastTab from './Action/restore_last_tab';
-import {mouseEventResponse, SendMessageParameter} from '../types/common';
+import actionTogglePinTab from './Action/toggle_pin_tab';
 import MessageSender = chrome.runtime.MessageSender;
 
 const inputMouse: Mouse = new Mouse();
@@ -52,24 +51,24 @@ const getNowGestureActionName = (): null | string => {
  * @type type
  */
 const gestureFunction: { [key: string]: any } = {
+  'close_all': actionCloseAllTab,
+  'close_all_background': actionCloseAllBackgroundTab,
+  'close_left_tab': actionCloseLeftTab,
+  'close_left_tab_without_pinned': actionCloseLeftTabWithoutPinned,
+  'close_right_tab': actionCloseRightTab,
+  'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
+  'close_tab': actionCloseActiveTab,
+  'last_tab': actionRestoreLastTab,
   'new_tab': actionOpenNewTab,
   'new_tab_background': actionOpenNewTabBackGround,
+  'next_tab': actionNextTab,
+  'open_extension': actionOpenExtensionPage,
+  'open_option': actionOpenOptionPage,
   'pin_tab': actionTogglePinTab,
-  'close_tab': actionCloseActiveTab,
+  'prev_tab': actionPrevTab,
   'reload': actionReload,
   'reload_all': actionReloadAll,
-  'next_tab': actionNextTab,
-  'prev_tab': actionPrevTab,
-  'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
-  'close_right_tab': actionCloseRightTab,
-  'close_left_tab_without_pinned': actionCloseLeftTabWithoutPinned,
-  'close_left_tab': actionCloseLeftTab,
-  'close_all_background': actionCloseAllBackgroundTab,
-  'close_all': actionCloseAllTab,
-  'open_option': actionOpenOptionPage,
-  'open_extension': actionOpenExtensionPage,
   'restart': actionBrowserRestart,
-  'last_tab': actionRestoreLastTab,
 };
 
 /**
@@ -96,19 +95,19 @@ const executeGestureFunctionOnBackground = (doAction: string): boolean => {
  */
 const mouseEventResponseTemplate = (): mouseEventResponse => {
   return {
-    message: 'yes',
     action: null,
-    href: '',
-    gestureString: '',
-    gestureAction: '',
     canvas: {
       clear: false,
       draw: false,
-      x: 0,
-      y: 0,
       toX: 0,
       toY: 0,
+      x: 0,
+      y: 0,
     },
+    gestureAction: '',
+    gestureString: '',
+    href: '',
+    message: 'yes',
   };
 };
 
@@ -118,21 +117,6 @@ const mouseEventResponseTemplate = (): mouseEventResponse => {
  * @type {{load_options: requestFunction.load_options}}
  */
 const requestFunction: { [key: string]: any } = {
-  'reset_input': () => {
-    inputKeyboard.lock();
-    inputKeyboard.reset();
-    inputMouse.reset();
-
-    setTimeout(() => {
-      inputKeyboard.unlock();
-    }, 100);
-  },
-  'reload_option': () => {
-    option.load();
-  },
-  'load_options': () => {
-    return {'message': 'yes', 'options_json': option.getRawStorageData()};
-  },
   'keydown': (request: SendMessageParameter) => {
     inputKeyboard.setOn(request.keyCode);
 
@@ -142,6 +126,9 @@ const requestFunction: { [key: string]: any } = {
     inputKeyboard.setOff(request.keyCode);
 
     return {message: 'yes'};
+  },
+  'load_options': () => {
+    return {'message': 'yes', 'options_json': option.getRawStorageData()};
   },
   'mousedown': (request: SendMessageParameter) => {
     const response: mouseEventResponse = mouseEventResponseTemplate();
@@ -259,6 +246,18 @@ const requestFunction: { [key: string]: any } = {
     }
 
     return response;
+  },
+  'reload_option': () => {
+    option.load();
+  },
+  'reset_input': () => {
+    inputKeyboard.lock();
+    inputKeyboard.reset();
+    inputMouse.reset();
+
+    setTimeout(() => {
+      inputKeyboard.unlock();
+    }, 100);
   },
 };
 

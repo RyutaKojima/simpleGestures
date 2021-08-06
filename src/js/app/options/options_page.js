@@ -1,8 +1,8 @@
+import ContentScripts from '../content/content_scripts';
+import LibGesture from '../content/lib_gesture';
+import TrailCanvas from '../content/trail_canvas';
 import DEBUG_ON from '../debug_flg';
 import lang from '../lang';
-import ContentScripts from '../content/content_scripts';
-import TrailCanvas from '../content/trail_canvas';
-import LibGesture from '../content/lib_gesture';
 import LibOption from '../lib_option';
 
 const gestureForOption = new LibGesture();
@@ -87,9 +87,9 @@ const setCanvasStyle = (canvas) => {
  */
 const reflectOptionSettingsOnScreen = () => {
   const checkValues = {
-    'enabled': option.getEnabled(),
-    'command_text_on': option.isCommandTextOn(),
     'action_text_on': option.isActionTextOn(),
+    'command_text_on': option.isCommandTextOn(),
+    'enabled': option.getEnabled(),
     'trail_on': option.isTrailOn(),
   };
   const radioValues = {

@@ -1,6 +1,7 @@
-import MyStorage from './storage';
-import Option from './domains/ValueObjects/option';
 import camelcase from 'camelcase';
+
+import Option from './domains/ValueObjects/option';
+import MyStorage from './storage';
 
 /**
  * オプション情報管理

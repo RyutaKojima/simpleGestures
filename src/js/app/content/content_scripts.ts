@@ -1,6 +1,6 @@
 import LibOption from '../lib_option';
-import TrailCanvas from './trail_canvas';
 import {LineParameter} from '../types/common';
+import TrailCanvas from './trail_canvas';
 
 /**
  * ジェスチャーを描画するキャンバス
