@@ -3,29 +3,29 @@ export interface GestureOptions {
 }
 
 export interface mouseEventResponse {
-    message: string;
     action: null|string;
-    href: string;
-    gestureString: string;
-    gestureAction: string;
     canvas: {
         clear: boolean;
         draw: boolean;
-        x: number;
-        y: number;
         toX: number;
         toY: number;
+        x: number;
+        y: number;
     };
+    gestureAction: string;
+    gestureString: string;
+    href: string;
+    message: string;
 }
 
 export interface SendMessageParameter {
-    msg: string;
     event?: string;
-    keyCode?: string;
     href?: string;
+    keyCode?: string;
+    msg: string;
+    which?: number;
     x?: number;
     y?: number;
-    which?: number;
 }
 
 export interface LineParameter {

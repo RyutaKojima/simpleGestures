@@ -1,9 +1,10 @@
+import Bowser from 'bowser';
+
+import TrailCanvas from '../content/trail_canvas';
 import DEBUG_ON from '../debug_flg';
 import Mouse, {HTMLChildElement, HTMLElementEvent} from '../mouse';
-import ContentScripts from './content_scripts';
-import TrailCanvas from '../content/trail_canvas';
 import {LineParameter, SendMessageParameter} from '../types/common';
-import Bowser from 'bowser';
+import ContentScripts from './content_scripts';
 
 const scrollTop = (): number =>
   (document.documentElement && document.documentElement.scrollTop) ||
@@ -61,7 +62,7 @@ const scrollLeft = (): number =>
    * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup' が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
    */
   window.addEventListener('focus', async () => {
-    await sendMessageToBackground({msg: 'reset_input', event: 'focus'});
+    await sendMessageToBackground({event: 'focus', msg: 'reset_input'});
   });
 
   window.addEventListener('resize', () => {
@@ -70,12 +71,12 @@ const scrollLeft = (): number =>
 
   document.addEventListener('keydown', async (event: KeyboardEvent): Promise<any> => {
     if (!event.repeat) {
-      await sendMessageToBackground({msg: 'keydown', keyCode: event.key});
+      await sendMessageToBackground({keyCode: event.key, msg: 'keydown'});
     }
   });
 
   document.addEventListener('keyup', async (event: KeyboardEvent): Promise<any> => {
-    await sendMessageToBackground({msg: 'keyup', keyCode: event.key});
+    await sendMessageToBackground({keyCode: event.key, msg: 'keyup'});
   });
 
   document.addEventListener('mousedown', async (event: HTMLElementEvent<HTMLChildElement>) => {
@@ -84,9 +85,9 @@ const scrollLeft = (): number =>
     }
 
     const sendMouseDownParam = {
+      href: Mouse.getHref(event),
       msg: 'mousedown',
       which: event.which,
-      href: Mouse.getHref(event),
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
@@ -117,9 +118,9 @@ const scrollLeft = (): number =>
     // );
 
     const sendMouseMoveParam = {
+      href: '',
       msg: 'mousemove',
       which: event.which,
-      href: '',
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };
@@ -160,9 +161,9 @@ const scrollLeft = (): number =>
     }
 
     const sendMouseUpParam = {
+      href: '',
       msg: 'mouseup',
       which: event.which,
-      href: '',
       x: event.pageX - scrollLeft(),
       y: event.pageY - scrollTop(),
     };

@@ -1,39 +1,8 @@
 import Tab = chrome.tabs.Tab;
 
 export const chromeTabs = {
-  getActiveTab(): Promise<Tab> {
-    return new Promise((resolve) => {
-      chrome.tabs.query({currentWindow: true, active: true}, function(tabs: Tab[]) {
-        resolve(tabs[0]);
-      });
-    });
-  },
-  getCurrentWindowTabs(): Promise<Tab[]> {
-    return new Promise((resolve) => {
-      chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow: Tab[]) => {
-        resolve(tabsInCurrentWindow);
-      });
-    });
-  },
-  async findSameUrlInCurrentWindow(url: string): Promise<Tab|undefined> {
-    const tabsInCurrentWindow: Tab[] = await chromeTabs.getCurrentWindowTabs();
-    return tabsInCurrentWindow.find((tab) => tab.url === url);
-  },
-  async createActiveRight(url: null|string = null, active = true) {
-    const activeTab: Tab = await chromeTabs.getActiveTab();
-    const indexOfAppendingTab: number = activeTab.index + 1;
-
-    chrome.tabs.create({
-      url: url,
-      index: indexOfAppendingTab,
-      active: active,
-    });
-  },
-  createLast(url: null|string = null, active = true) {
-    chrome.tabs.create({
-      url: url,
-      active: active,
-    });
+  activate(tab: Tab): void {
+    chrome.tabs.update(tab.id, {active: true});
   },
   async activateOrCreate(url: null|string = null) {
     const extensionTab: null|Tab = await chromeTabs.findSameUrlInCurrentWindow(url);
@@ -44,9 +13,6 @@ export const chromeTabs = {
       chromeTabs.createLast(url);
     }
   },
-  activate(tab: Tab): void {
-    chrome.tabs.update(tab.id, {active: true});
-  },
   close(tab: Tab|Tab[]): void {
     if (Array.isArray(tab)) {
       const removeTabIds: number[] = tab.map((tab) => tab.id);
@@ -54,6 +20,40 @@ export const chromeTabs = {
     } else {
       chrome.tabs.remove(tab.id);
     }
+  },
+  async createActiveRight(url: null|string = null, active = true) {
+    const activeTab: Tab = await chromeTabs.getActiveTab();
+    const indexOfAppendingTab: number = activeTab.index + 1;
+
+    chrome.tabs.create({
+      active: active,
+      index: indexOfAppendingTab,
+      url: url,
+    });
+  },
+  createLast(url: null|string = null, active = true) {
+    chrome.tabs.create({
+      active: active,
+      url: url,
+    });
+  },
+  async findSameUrlInCurrentWindow(url: string): Promise<Tab|undefined> {
+    const tabsInCurrentWindow: Tab[] = await chromeTabs.getCurrentWindowTabs();
+    return tabsInCurrentWindow.find((tab) => tab.url === url);
+  },
+  getActiveTab(): Promise<Tab> {
+    return new Promise((resolve) => {
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs: Tab[]) {
+        resolve(tabs[0]);
+      });
+    });
+  },
+  getCurrentWindowTabs(): Promise<Tab[]> {
+    return new Promise((resolve) => {
+      chrome.tabs.query({currentWindow: true}, (tabsInCurrentWindow: Tab[]) => {
+        resolve(tabsInCurrentWindow);
+      });
+    });
   },
   reload(tab: Tab, discardCache = false): void {
     chrome.tabs.reload(tab.id, {bypassCache: discardCache});

@@ -1,5 +1,9 @@
 plugins:
   - '@typescript-eslint'
+  - "simple-import-sort"
+  - "typescript-sort-keys"
+  - "sort-keys-fix"
+  - "sort-destructure-keys"
 extends:
   - google
   - 'plugin:@typescript-eslint/recommended'
@@ -19,3 +23,9 @@ rules:
   max-lines-per-function:
     - error
     - max: 50
+  sort-keys-fix/sort-keys-fix: error
+  sort-destructure-keys/sort-destructure-keys: error
+  simple-import-sort/imports: error
+  simple-import-sort/exports: error
+  typescript-sort-keys/interface: error
+  typescript-sort-keys/string-enum: error
