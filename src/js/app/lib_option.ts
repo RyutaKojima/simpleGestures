@@ -269,9 +269,12 @@ class LibOption {
    * すでに同じジェスチャが何かのアクションに設定されている
    *
    * @param {string} gesture
-   * @return {boolean|string}
+   * @return {false|string}
    */
-  isGestureAlreadyExist(gesture: string): string|boolean {
+  isGestureAlreadyExist(gesture: string|null|undefined): false|string {
+    if (!gesture) {
+      return false;
+    }
     let actionName: string|boolean = false;
 
     this.GESTURE_ID_LIST.forEach((key: string) => {
