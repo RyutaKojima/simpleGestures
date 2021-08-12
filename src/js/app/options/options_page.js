@@ -1,11 +1,12 @@
-import ContentScripts from '../content/content_scripts';
-import LibGesture from '../content/lib_gesture';
 import TrailCanvas from '../content/trail_canvas';
 import DEBUG_ON from '../debug_flg';
+import Command from '../domains/Entities/Gestures/Command';
+import InputGesture from '../domains/Entities/InputGesture';
+import MousePoint from '../domains/ValueObjects/MousePoint';
 import lang from '../lang';
 import LibOption from '../lib_option';
 
-const gestureForOption = new LibGesture();
+const inputGesture = new InputGesture();
 const option = new LibOption();
 const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
 
@@ -204,6 +205,7 @@ const reflectSelectedLanguageToScreen = () => {
 /**
  * @param {jQuery} $input
  */
+// eslint-disable-next-line
 const createGestureInputComponent = ($input) => {
   const drawCanvas = canvasForOption.getCanvas();
   const ctx = canvasForOption.getContext2d();
@@ -213,7 +215,7 @@ const createGestureInputComponent = ($input) => {
 
   document.body.appendChild(drawCanvas);
   $input.data('prevValue', $input.val());
-  gestureForOption.clear();
+  inputGesture.clear();
   canvasForOption.clearCanvas();
   ctx.globalAlpha = 0.5;
   ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
@@ -228,40 +230,54 @@ const createGestureInputComponent = ($input) => {
 
   const $canvas = $('#' + canvasForOption.getCanvasId());
   $canvas.off();
-  $canvas.on('mousedown', (event) => {
-    const tmpX = event.pageX - $canvas.offset().left;
-    const tmpY = event.pageY - $canvas.offset().top;
-    gestureForOption.startGesture(tmpX, tmpY, null);
-    return false;
-  }).on('mousemove', (event) => {
-    const tmpX = event.pageX - $canvas.offset().left;
-    const tmpY = event.pageY - $canvas.offset().top;
-    if (gestureForOption.registerPoint(tmpX, tmpY)) {
-      canvasForOption.drawLine(
-          gestureForOption.getLastX(), gestureForOption.getLastY(),
-          gestureForOption.getX(), gestureForOption.getY(),
-      );
-    }
-    return false;
-  }).on('mouseup', () => {
-    const removeCanvas = document.getElementById(drawCanvas.id);
-    if (removeCanvas) {
-      document.body.removeChild(removeCanvas);
-    }
+  $canvas
+      .on('mousedown', (event) => {
+        const tmpX = event.pageX - $canvas.offset().left;
+        const tmpY = event.pageY - $canvas.offset().top;
+        inputGesture.addPoint(new MousePoint(tmpX, tmpY));
+        return false;
+      })
+      .on('mousemove', (event) => {
+        if (event.which === 0) {
+          return;
+        }
 
-    setGestureInputComponent($input, gestureForOption.getGestureString());
-    $input.triggerHandler('change');
-    return false;
-  });
+        const tmpX = event.pageX - $canvas.offset().left;
+        const tmpY = event.pageY - $canvas.offset().top;
+        inputGesture.addPoint(new MousePoint(tmpX, tmpY));
+        if (inputGesture.isUpdateLine) {
+          inputGesture.updateAction(option);
+
+          canvasForOption.drawLine(
+              inputGesture.newLineFrom.x,
+              inputGesture.newLineFrom.y,
+              inputGesture.newLineTo.x,
+              inputGesture.newLineTo.y,
+
+          );
+        }
+        return false;
+      })
+      .on('mouseup', () => {
+        const removeCanvas = document.getElementById(drawCanvas.id);
+        if (removeCanvas) {
+          document.body.removeChild(removeCanvas);
+        }
+
+        setGestureInputComponent($input, inputGesture.gestureCommands.rawString);
+        $input.triggerHandler('change');
+        return false;
+      });
 };
 
 const setGestureInputComponent = ($input, gestureText) => {
-  const setGestureText = gestureText ? ContentScripts.replaceCommandToArrow(gestureText) : '&nbsp;';
+  const setGestureText = gestureText ? Command.replaceCommandToDisplay(gestureText) : '&nbsp;';
 
   $input.val(gestureText);
   $input.siblings('.views_gesture').html(setGestureText);
 };
 
+// eslint-disable-next-line
 const registerEventForGesture = () => {
   $('.reset_gesture').on('click', (event) => {
     const name = $(event.currentTarget).data('target');
@@ -272,45 +288,48 @@ const registerEventForGesture = () => {
     $(event.currentTarget).siblings('.input_gesture').show().focus().trigger('click');
   });
 
-  $('.input_gesture').on('blur', (event) => {
-    const $input = $(event.currentTarget);
-    const drawCanvasId = canvasForOption.getCanvasId();
-    const removeCanvas = document.getElementById(drawCanvasId);
-    if (removeCanvas) {
-      document.body.removeChild(removeCanvas);
-      $('#' + drawCanvasId).off();
-    }
-    $input.hide();
-  }).on('change', (event) => {
-    const $input = $(event.target);
-    const inputGesture = $input.val();
-    const targetActionName = $input.attr('id');
+  $('.input_gesture')
+      .on('blur', (event) => {
+        const $input = $(event.currentTarget);
+        const drawCanvasId = canvasForOption.getCanvasId();
+        const removeCanvas = document.getElementById(drawCanvasId);
+        if (removeCanvas) {
+          document.body.removeChild(removeCanvas);
+          $('#' + drawCanvasId).off();
+        }
+        $input.hide();
+      })
+      .on('change', (event) => {
+        const $input = $(event.target);
+        const inputGestureForm = $input.val();
+        const targetActionName = $input.attr('id');
 
-    if (!inputGesture.match(/^[DLUR]*$/)) {
-      setGestureInputComponent($input, $input.data('prevValue'));
-      return;
-    }
+        if (!inputGestureForm.match(/^[DLUR]*$/)) {
+          setGestureInputComponent($input, $input.data('prevValue'));
+          return;
+        }
 
-    const registeredAction = inputGesture ? option.isGestureAlreadyExist(inputGesture) : false;
-    if (registeredAction !== false && registeredAction !== targetActionName) {
-      const gestureLabel = lang.gesture[registeredAction][option.getLanguage()];
-      if ( ! window.confirm('すでに「' + gestureLabel + '」に設定されています。入れ替えますか？')) {
-        setGestureInputComponent($input, $input.data('prevValue'));
-        return;
-      }
+        const registeredAction = option.isGestureAlreadyExist(inputGestureForm);
+        if (registeredAction !== false && registeredAction !== targetActionName) {
+          const gestureLabel = lang.gesture[registeredAction][option.getLanguage()];
+          if ( ! window.confirm('すでに「' + gestureLabel + '」に設定されています。入れ替えますか？')) {
+            setGestureInputComponent($input, $input.data('prevValue'));
+            return;
+          }
 
-      setGestureInputComponent($('#' + registeredAction), '');
-      option.setParam(registeredAction, '');
-    }
+          setGestureInputComponent($('#' + registeredAction), '');
+          option.setParam(registeredAction, '');
+        }
 
-    setGestureInputComponent($input, inputGesture);
-    $input.hide();
+        setGestureInputComponent($input, inputGestureForm);
+        $input.hide();
 
-    option.setParam(targetActionName, inputGesture);
-    saveOptions();
-  }).on('click', (event) => {
-    createGestureInputComponent($(event.target));
-  });
+        option.setParam(targetActionName, inputGestureForm);
+        saveOptions();
+      })
+      .on('click', (event) => {
+        createGestureInputComponent($(event.target));
+      });
 };
 
 const registerEventForAllReset = () => {
@@ -319,7 +338,6 @@ const registerEventForAllReset = () => {
     if (confirmOk) {
       option.reset();
 
-      chrome.runtime.sendMessage({msg: 'reload_option'});
       reflectOptionSettingsOnScreen();
       reflectSelectedLanguageToScreen();
     }
@@ -337,6 +355,4 @@ const setupColorWheel = () => {
 
 const saveOptions = () => {
   option.save();
-
-  chrome.runtime.sendMessage({msg: 'reload_option'});
 };

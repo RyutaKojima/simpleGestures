@@ -11,6 +11,7 @@ class ContentScripts {
   actionNameDiv: null | HTMLDivElement;
   trailCanvas: TrailCanvas;
   option: LibOption;
+  latestOptionLoadedAt: number;
 
   /**
    * @constructor
@@ -22,21 +23,27 @@ class ContentScripts {
     this.actionNameDiv = null;
     this.trailCanvas = trailCanvas;
     this.option = new LibOption();
+    this.latestOptionLoadedAt = 0;
   }
 
   /**
    * Load option values.
    */
-  loadOption(): void {
-    chrome.runtime.sendMessage({msg: 'load_options'}, (response) => {
-      if (response) {
-        this.option.setRawStorageData(response.options_json);
+  async loadOption(): Promise<void> {
+    const Threshold = (5 * 1000);
+    const elapseMilliSec = Date.now() - this.latestOptionLoadedAt;
 
-        // reload setting for canvas.
-        this.setCanvasStyle();
-        this.createInfoDiv();
-      }
-    });
+    this.latestOptionLoadedAt = Date.now();
+
+    if (elapseMilliSec < Threshold) {
+      return;
+    }
+
+    await this.option.load();
+
+    // reload setting for canvas.
+    this.setCanvasStyle();
+    this.createInfoDiv();
   }
 
   /**
@@ -172,7 +179,6 @@ class ContentScripts {
 
     const divCommand = document.getElementById(this.commandDiv.id);
     if (this.option.isCommandTextOn()) {
-      commandName = ContentScripts.replaceCommandToArrow(commandName);
       divCommand.innerHTML = commandName;
     } else {
       divCommand.innerHTML = '';
@@ -185,23 +191,23 @@ class ContentScripts {
    * @param {type} actionName
    * @return {undefined}
    */
-  exeAction(actionName: string): void {
+  exeAction(actionName: string): boolean {
     switch (actionName) {
       case 'back':
         window.history.back();
-        break;
+        return true;
 
       case 'forward':
         window.history.forward();
-        break;
+        return true;
 
       case 'stop':
         window.stop();
-        break;
+        return true;
 
       case 'scroll_top':
         window.scrollTo(0, 0);
-        break;
+        return true;
 
       case 'scroll_bottom':
         const bodyHeight = parseInt(window.getComputedStyle(document.body).height, 10);
@@ -209,28 +215,12 @@ class ContentScripts {
 
         const height = Math.max(bodyHeight, bodyScrollHeight);
         window.scrollTo(0, height);
-        break;
+        return true;
 
       default:
         // なにもしない
-        break;
+        return false;
     }
-  }
-
-  /**
-   * ジェスチャコマンドを矢印表記に変換して返す D=>↓、U=>↑...
-   * @param {string} actionName
-   * @return {string}
-   */
-  static replaceCommandToArrow(actionName: string): string {
-    if (actionName) {
-      return actionName.replace(/U/g, '<i class="flaticon-up-arrow"></i>').
-          replace(/L/g, '<i class="flaticon-left-arrow"></i>').
-          replace(/R/g, '<i class="flaticon-right-arrow"></i>').
-          replace(/D/g, '<i class="flaticon-down-arrow"></i>');
-    }
-
-    return actionName;
   }
 }
 

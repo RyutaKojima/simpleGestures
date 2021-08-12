@@ -2,6 +2,9 @@ import Bowser from 'bowser';
 
 import TrailCanvas from '../content/trail_canvas';
 import DEBUG_ON from '../debug_flg';
+import InputGesture from '../domains/Entities/InputGesture';
+import MousePoint from '../domains/ValueObjects/MousePoint';
+import Keyboard from '../keyboard';
 import Mouse, {HTMLChildElement, HTMLElementEvent} from '../mouse';
 import {LineParameter, SendMessageParameter} from '../types/common';
 import ContentScripts from './content_scripts';
@@ -9,14 +12,19 @@ import ContentScripts from './content_scripts';
 const scrollTop = (): number =>
   (document.documentElement && document.documentElement.scrollTop) ||
     (document.body && document.body.scrollTop);
+
 const scrollLeft = (): number =>
   (document.documentElement && document.documentElement.scrollLeft) ||
     (document.body && document.body.scrollLeft);
 
 (function() {
+  const inputMouse: Mouse = new Mouse();
+  const inputKeyboard: Keyboard = new Keyboard();
+  const inputGesture: InputGesture = new InputGesture();
   const trailCanvas: TrailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
   const contentScripts: ContentScripts = new ContentScripts(trailCanvas);
   let nextMenuSkip = false;
+  let lockerOn = false;
 
   /**
    * content_scripts->backgroundへのデータ送信
@@ -52,8 +60,13 @@ const scrollLeft = (): number =>
 
   trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
   contentScripts.loadOption();
-  contentScripts.setCanvasStyle();
-  contentScripts.createInfoDiv();
+
+  (async () => {
+    const initialNextMenuSkip = await sendMessageToBackground({msg: 'nextMenuSkipGet'});
+    if (initialNextMenuSkip.nextMenuSkip) {
+      nextMenuSkip = true;
+    }
+  })();
 
   // ------------------------------------------------------------------------
   // Event Handler
@@ -62,7 +75,10 @@ const scrollLeft = (): number =>
    * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup' が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
    */
   window.addEventListener('focus', async () => {
-    await sendMessageToBackground({event: 'focus', msg: 'reset_input'});
+    inputKeyboard.reset();
+    inputGesture.clear();
+
+    contentScripts.loadOption();
   });
 
   window.addEventListener('resize', () => {
@@ -71,12 +87,12 @@ const scrollLeft = (): number =>
 
   document.addEventListener('keydown', async (event: KeyboardEvent): Promise<any> => {
     if (!event.repeat) {
-      await sendMessageToBackground({keyCode: event.key, msg: 'keydown'});
+      inputKeyboard.setOn(event.key);
     }
   });
 
   document.addEventListener('keyup', async (event: KeyboardEvent): Promise<any> => {
-    await sendMessageToBackground({keyCode: event.key, msg: 'keyup'});
+    inputKeyboard.setOff(event.key);
   });
 
   document.addEventListener('mousedown', async (event: HTMLElementEvent<HTMLChildElement>) => {
@@ -84,28 +100,42 @@ const scrollLeft = (): number =>
       return;
     }
 
-    const sendMouseDownParam = {
-      href: Mouse.getHref(event),
-      msg: 'mousedown',
-      which: event.which,
-      x: event.pageX - scrollLeft(),
-      y: event.pageY - scrollTop(),
-    };
-    const response = await sendMessageToBackground(sendMouseDownParam);
-    if (response === null) {
+    // Ctrlが押された状態だと、マウスジェスチャ無効な仕様
+    if (inputKeyboard.isOn(Keyboard.KEY_CTRL)) {
       return;
     }
 
-    if (response.action) {
+    inputMouse.setOn(event.which);
+
+    if (inputMouse.isLeft() && inputMouse.isRight()) {
+      lockerOn = true;
+
       nextMenuSkip = true;
-      contentScripts.exeAction(response.action);
+      sendMessageToBackground({msg: 'nextMenuSkipOn'});
+
+      if (event.which === Mouse.LEFT_BUTTON) {
+        contentScripts.exeAction('back');
+      } else if (event.which === Mouse.RIGHT_BUTTON) {
+        contentScripts.exeAction('forward');
+      }
+
+      inputGesture.clear();
+      return;
     }
 
-    if (response.canvas.clear) {
-      trailCanvas.clearCanvas();
+    if (event.which !== Mouse.RIGHT_BUTTON) {
+      return;
     }
 
-    contentScripts.loadOption();
+    inputGesture
+        .setLinkUrl(Mouse.getHref(event))
+        .addPoint(new MousePoint(event.pageX - scrollLeft(), event.pageY - scrollTop()));
+
+    if (inputGesture.isUpdateLine) {
+      inputGesture.updateAction(contentScripts.option);
+    }
+
+    trailCanvas.clearCanvas();
   });
 
   document.addEventListener('mousemove', async (event: MouseEvent) => {
@@ -113,24 +143,36 @@ const scrollLeft = (): number =>
       return;
     }
 
-    // console.log('(' + event.pageX + ', ' + event.pageY + ')'
-    // +event.which + ',frm=' + window.frames.length;
-    // );
-
-    const sendMouseMoveParam = {
-      href: '',
-      msg: 'mousemove',
-      which: event.which,
-      x: event.pageX - scrollLeft(),
-      y: event.pageY - scrollTop(),
-    };
-    const response = await sendMessageToBackground(sendMouseMoveParam);
-    if (response === null) {
+    if (lockerOn) {
       return;
     }
 
-    if (response.canvas.draw) {
-      nextMenuSkip = (response.gestureString !== '');
+    // Ctrlが押された状態だと、マウスジェスチャ無効な仕様
+    if (inputKeyboard.isOn(Keyboard.KEY_CTRL)) {
+      return;
+    }
+
+    if (event.which !== Mouse.RIGHT_BUTTON) {
+      return;
+    }
+
+    inputGesture
+        .addPoint(new MousePoint(event.pageX - scrollLeft(), event.pageY - scrollTop()));
+
+    if (inputGesture.isUpdateLine) {
+      inputGesture.updateAction(contentScripts.option);
+
+      const listParam: LineParameter = {
+        fromX: inputGesture.newLineFrom.x,
+        fromY: inputGesture.newLineFrom.y,
+        toX: inputGesture.newLineTo.x,
+        toY: inputGesture.newLineTo.y,
+      };
+      contentScripts.draw(
+          listParam,
+          inputGesture.gestureCommands.displayString,
+          inputGesture.gestureActionName(contentScripts.option),
+      );
 
       if (trailCanvas.getCanvas()) {
         document.body.appendChild(trailCanvas.getCanvas());
@@ -139,48 +181,33 @@ const scrollLeft = (): number =>
       if (contentScripts.infoDiv) {
         document.body.appendChild(contentScripts.infoDiv);
       }
-
-      const listParam: LineParameter = {
-        fromX: response.canvas.x,
-        fromY: response.canvas.y,
-        toX: response.canvas.toX,
-        toY: response.canvas.toY,
-      };
-      contentScripts.draw(listParam, response.gestureString,
-          response.gestureAction);
-    }
-
-    if (response.canvas.clear) {
-      clearAllDisplay();
     }
   });
 
-  document.addEventListener('mouseup', async (event: MouseEvent) => {
+  document.addEventListener('mouseup', (event: MouseEvent) => {
+    inputMouse.setOff(event.which);
+
     if ( ! contentScripts.option.getEnabled()) {
       return;
     }
 
-    const sendMouseUpParam = {
-      href: '',
-      msg: 'mouseup',
-      which: event.which,
-      x: event.pageX - scrollLeft(),
-      y: event.pageY - scrollTop(),
-    };
-    const response: any = await sendMessageToBackground(sendMouseUpParam);
-    if (response === null) {
-      return;
-    }
-
-    // console.log(response);
-
-    nextMenuSkip = (response.gestureString !== '');
-
-    if (response.action) {
+    if (inputGesture.gestureCommands.rawString) {
       nextMenuSkip = true;
-      contentScripts.exeAction(response.action);
+      sendMessageToBackground({msg: 'nextMenuSkipOn'});
+
+      if (inputGesture.gestureActionCode) {
+        if (!contentScripts.exeAction(inputGesture.gestureActionCode)) {
+          sendMessageToBackground({
+            event: inputGesture.gestureActionCode,
+            href: inputGesture.linkUrl,
+            msg: 'executeAction',
+          });
+        }
+      }
     }
 
+    lockerOn = false;
+    inputGesture.clear();
     clearAllDisplay();
   });
 
@@ -194,6 +221,8 @@ const scrollLeft = (): number =>
       return;
     }
 
+    // NOTE: Windows以外のOSだとイベントがマウスダウンで発生してしまいジェスチャ操作と衝突するので
+    //       ダブルクリック時にメニューイベントとして扱う
     const bowser = Bowser.getParser(window.navigator.userAgent);
     if (!bowser.is('Windows')) {
       if (timerId) {
@@ -209,10 +238,11 @@ const scrollLeft = (): number =>
       event.preventDefault();
     }
 
-
     if (nextMenuSkip) {
-      nextMenuSkip = false;
       event.preventDefault();
     }
+
+    nextMenuSkip = false;
+    sendMessageToBackground({msg: 'nextMenuSkipOff'});
   });
 })();
