@@ -9,9 +9,9 @@
     "stylelint": "stylelint \"src/css/**/*.css\"",
     "lint": "yarn eslint & yarn stylelint",
     "dev": "yarn build --watch",
-    "build": "webpack --config webpack.dev.js",
+    "build": "webpack",
     "build:clean": "rm -rf dist && yarn build",
-    "build:publish": "rm -rf dist && yarn build && yarn zip",
+    "build:publish": "rm -rf dist && yarn build --mode production && yarn zip",
     "zip": "VER=`grep -o '\"version\": \"\\([0-9.]\\+\\)\"' ./dist/manifest.json | grep -o '[0-9.]\\+'` && mkdir -p ./publish && zip -r \"./publish/simpleGesture-${VER}.zip\" ./dist"
   },
   "repository": {
@@ -25,13 +25,9 @@
   },
   "homepage": "https://github.com/RyutaKojima/simpleGestures#readme",
   "devDependencies": {
-    "@babel/core": "7.15.0",
-    "@babel/preset-env": "7.15.0",
     "@types/chrome": "0.0.154",
     "@typescript-eslint/eslint-plugin": "4.29.1",
     "@typescript-eslint/parser": "4.29.1",
-    "babel-loader": "8.2.2",
-    "babel-plugin-syntax-dynamic-import": "6.18.0",
     "copy-webpack-plugin": "9.0.1",
     "css-loader": "6.2.0",
     "eslint": "7.32.0",
@@ -46,6 +42,7 @@
     "style-loader": "3.2.1",
     "stylelint": "13.13.1",
     "stylelint-config-standard": "22.0.0",
+    "terser-webpack-plugin": "^5.1.4",
     "ts-loader": "9.2.5",
     "typescript": "4.3.5",
     "webpack": "5.50.0",

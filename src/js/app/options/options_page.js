@@ -1,5 +1,4 @@
 import TrailCanvas from '../content/trail_canvas';
-import DEBUG_ON from '../debug_flg';
 import Command from '../domains/Entities/Gestures/Command';
 import InputGesture from '../domains/Entities/InputGesture';
 import MousePoint from '../domains/ValueObjects/MousePoint';
