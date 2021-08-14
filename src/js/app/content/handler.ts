@@ -1,7 +1,6 @@
 import Bowser from 'bowser';
 
 import TrailCanvas from '../content/trail_canvas';
-import DEBUG_ON from '../debug_flg';
 import InputGesture from '../domains/Entities/InputGesture';
 import MousePoint from '../domains/ValueObjects/MousePoint';
 import Keyboard from '../keyboard';
