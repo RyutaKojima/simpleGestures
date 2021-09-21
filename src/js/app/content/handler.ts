@@ -23,7 +23,6 @@ const scrollLeft = (): number =>
   const trailCanvas: TrailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
   const contentScripts: ContentScripts = new ContentScripts(trailCanvas);
   let nextMenuSkip = false;
-  let lockerOn = false;
 
   /**
    * content_scripts->backgroundへのデータ送信
@@ -106,22 +105,6 @@ const scrollLeft = (): number =>
 
     inputMouse.setOn(event.which);
 
-    if (inputMouse.isLeft() && inputMouse.isRight()) {
-      lockerOn = true;
-
-      nextMenuSkip = true;
-      sendMessageToBackground({msg: 'nextMenuSkipOn'});
-
-      if (event.which === Mouse.LEFT_BUTTON) {
-        contentScripts.exeAction('back');
-      } else if (event.which === Mouse.RIGHT_BUTTON) {
-        contentScripts.exeAction('forward');
-      }
-
-      inputGesture.clear();
-      return;
-    }
-
     if (event.which !== Mouse.RIGHT_BUTTON) {
       return;
     }
@@ -139,10 +122,6 @@ const scrollLeft = (): number =>
 
   document.addEventListener('mousemove', async (event: MouseEvent) => {
     if ( ! contentScripts.option.getEnabled()) {
-      return;
-    }
-
-    if (lockerOn) {
       return;
     }
 
@@ -205,7 +184,6 @@ const scrollLeft = (): number =>
       }
     }
 
-    lockerOn = false;
     inputGesture.clear();
     clearAllDisplay();
   });
