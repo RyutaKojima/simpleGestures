@@ -38,7 +38,7 @@
     "eslint-plugin-typescript-sort-keys": "1.8.0",
     "i18next": "21.3.0",
     "node-sass": "6.0.1",
-    "sass-loader": "12.1.0",
+    "sass-loader": "12.2.0",
     "style-loader": "3.3.0",
     "stylelint": "13.13.1",
     "stylelint-config-standard": "22.0.0",
