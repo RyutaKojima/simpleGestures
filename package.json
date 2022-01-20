@@ -28,7 +28,7 @@
     "@types/chrome": "0.0.176",
     "@typescript-eslint/eslint-plugin": "5.10.0",
     "@typescript-eslint/parser": "5.10.0",
-    "copy-webpack-plugin": "10.2.0",
+    "copy-webpack-plugin": "10.2.1",
     "css-loader": "6.5.1",
     "eslint": "7.32.0",
     "eslint-config-google": "0.14.0",
