@@ -29,7 +29,7 @@
     "@typescript-eslint/eslint-plugin": "5.14.0",
     "@typescript-eslint/parser": "5.14.0",
     "copy-webpack-plugin": "10.2.4",
-    "css-loader": "6.7.0",
+    "css-loader": "6.7.1",
     "eslint": "7.32.0",
     "eslint-config-google": "0.14.0",
     "eslint-plugin-simple-import-sort": "7.0.0",
