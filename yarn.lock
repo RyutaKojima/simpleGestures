@@ -2047,10 +2047,10 @@ humanize-ms@^1.2.1:
   dependencies:
     ms "^2.0.0"
 
-i18next@21.8.14:
-  version "21.8.14"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.8.14.tgz#03a3a669ef4520aadd9d152c80596f600e287c6a"
-  integrity sha512-4Yi+DtexvMm/Yw3Q9fllzY12SgLk+Mcmar+rCAccsOPul/2UmnBzoHbTGn/L48IPkFcmrNaH7xTLboBWIbH6pw==
+i18next@21.8.16:
+  version "21.8.16"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.8.16.tgz#31fe4682e4e2077dbf229a88e5a58b7020e4ddc8"
+  integrity sha512-acJLCk38YMfEPjBR/1vS13SFY7rBQLs9E5m1tSRnWc9UW3f+SZszgH+NP1fZRA1+O+CdG2eLGGmuUMJW52EwzQ==
   dependencies:
     "@babel/runtime" "^7.17.2"
 
