@@ -1,25 +1,3 @@
-/* gesture table style */
-.gesture_table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.gesture_table th {
-  width: 25%;
-  padding: 6px;
-  text-align: left;
-  vertical-align: top;
-  color: #333;
-  background-color: #eee;
-  border: 1px solid #b9b9b9;
-}
-
-.gesture_table td {
-  padding: 6px;
-  background-color: #fff;
-  border: 1px solid #b9b9b9;
-}
-
 /* -- Renewal --  */
 .tabs.is-boxed li.is-active a.color-lightblue,
 .color-lightblue {
@@ -31,11 +9,11 @@
   border: solid 3px orange;
 }
 
-.content_gesture .input {
+.content-gesture .input {
   width: 200px;
 }
 
-.content_gesture .views_gesture {
+.content-gesture .views-gesture {
   width: 250px;
   display: inline-block;
   word-wrap: break-word;
