@@ -273,7 +273,7 @@ const setGestureInputComponent = ($input, gestureText) => {
   const setGestureText = gestureText ? Command.replaceCommandToDisplay(gestureText) : '&nbsp;';
 
   $input.val(gestureText);
-  $input.siblings('.views_gesture').html(setGestureText);
+  $input.siblings('.views-gesture').html(setGestureText);
 };
 
 // eslint-disable-next-line
@@ -283,7 +283,7 @@ const registerEventForGesture = () => {
     $('#' + name).val('').triggerHandler('change');
   });
 
-  $('.views_gesture').on('click', (event) => {
+  $('.views-gesture').on('click', (event) => {
     $(event.currentTarget).siblings('.input_gesture').show().focus().trigger('click');
   });
 
