@@ -32,7 +32,7 @@
     "css-loader": "6.7.3",
     "eslint": "8.32.0",
     "eslint-config-google": "0.14.0",
-    "eslint-plugin-simple-import-sort": "8.0.0",
+    "eslint-plugin-simple-import-sort": "9.0.0",
     "eslint-plugin-sort-destructure-keys": "1.4.0",
     "eslint-plugin-sort-keys-fix": "1.1.2",
     "eslint-plugin-typescript-sort-keys": "2.1.0",
