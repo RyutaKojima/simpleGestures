@@ -29,7 +29,7 @@ class Keyboard {
    * @return {Keyboard}
    */
   reset(): Keyboard {
-    console.log('reset keyboard');
+    // console.log('reset keyboard');
     this.keyBuffer = {};
     return this;
   }
@@ -73,7 +73,7 @@ class Keyboard {
       return this;
     }
 
-    console.log('on keyboard: ' + keyCode);
+    // console.log('on keyboard: ' + keyCode);
 
     this.keyBuffer[keyCode] = true;
 
@@ -86,7 +86,7 @@ class Keyboard {
    * @return {Keyboard}
    */
   setOff(keyCode: string): Keyboard {
-    console.log('off keyboard: ' + keyCode);
+    // console.log('off keyboard: ' + keyCode);
 
     this.keyBuffer[keyCode] = false;
     return this;
