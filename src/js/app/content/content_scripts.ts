@@ -50,10 +50,11 @@ class ContentScripts {
    * キャンバスの描画スタイルを設定
    */
   setCanvasStyle(): void {
-    this.trailCanvas.setLineStyle(this.option.getColorCode(),
-        this.option.getLineWidth());
+    this.trailCanvas.setLineStyle(
+        this.option.getColorCode(),
+        this.option.getLineWidth(),
+    );
   }
-
 
   /**
    * create information div & update style.
@@ -73,13 +74,13 @@ class ContentScripts {
       return divElement;
     };
 
-    if ( ! this.commandDiv) {
+    if (!this.commandDiv) {
       this.commandDiv = createDivElement('gestureCommandDiv');
     }
-    if ( ! this.actionNameDiv) {
+    if (!this.actionNameDiv) {
       this.actionNameDiv = createDivElement('gestureActionNameDiv');
     }
-    if ( ! this.infoDiv) {
+    if (!this.infoDiv) {
       this.infoDiv = createDivElement('infoDiv');
       this.infoDiv.appendChild(this.commandDiv);
       this.infoDiv.appendChild(this.actionNameDiv);
@@ -106,7 +107,7 @@ class ContentScripts {
     // this.infoDiv.style.overflow = 'block';
     this.infoDiv.style.textAlign = 'center';
     this.infoDiv.style.background = 'transparent';
-    this.infoDiv.style.zIndex ='10001';
+    this.infoDiv.style.zIndex = '10001';
     this.infoDiv.style.fontFamily = 'Arial';
     this.infoDiv.style.fontSize = '30px';
     this.infoDiv.style.color = this.option.getColorCode();
@@ -130,11 +131,11 @@ class ContentScripts {
    * @param {LineParameter} lineParam
    */
   drawTrail(lineParam: LineParameter): void {
-    if ( ! this.option.isTrailOn()) {
+    if (!this.option.isTrailOn()) {
       return;
     }
 
-    const canvasId: null|string = this.trailCanvas.getCanvasId();
+    const canvasId: null | string = this.trailCanvas.getCanvasId();
 
     if (!this.elementExists(canvasId)) {
       return;
@@ -150,7 +151,7 @@ class ContentScripts {
    * @param {null|string} id
    * @return {boolean}
    */
-  elementExists(id: null|string): boolean {
+  elementExists(id: null | string): boolean {
     if (id === null) {
       return false;
     }
@@ -166,7 +167,7 @@ class ContentScripts {
    * @param {string} actionName
    */
   drawText(commandName: string, actionName: string): void {
-    if ( ! document.getElementById(this.infoDiv.id)) {
+    if (!document.getElementById(this.infoDiv.id)) {
       return;
     }
 
@@ -188,10 +189,11 @@ class ContentScripts {
   /**
    * Run the selected action.
    *
-   * @param {type} actionName
+   * @param {string} actionName
+   * @param {Element} startTarget
    * @return {undefined}
    */
-  exeAction(actionName: string): boolean {
+  exeAction(actionName: string, startTarget: Element | null): boolean {
     switch (actionName) {
       case 'back':
         window.history.back();
@@ -206,21 +208,51 @@ class ContentScripts {
         return true;
 
       case 'scroll_top':
-        window.scrollTo(0, 0);
+        this.scrollToTop(startTarget);
         return true;
 
       case 'scroll_bottom':
-        const bodyHeight = parseInt(window.getComputedStyle(document.body).height, 10);
-        const bodyScrollHeight = document.body.scrollHeight;
-
-        const height = Math.max(bodyHeight, bodyScrollHeight);
-        window.scrollTo(0, height);
+        this.scrollToBottom(startTarget);
         return true;
 
       default:
         // なにもしない
         return false;
     }
+  }
+
+  /**
+   * @param {Element|null} startTarget
+   */
+  scrollToTop(startTarget: Element | null): void {
+    const recursiveScrollToTop = (element: Element | null) => {
+      if (!element) return;
+
+      element.scrollTo(0, 0);
+      recursiveScrollToTop(element.parentElement);
+    };
+
+    window.scrollTo(0, 0);
+    recursiveScrollToTop(startTarget);
+  }
+
+  /**
+   * @param {Element | null} startTarget
+   */
+  scrollToBottom(startTarget: Element | null): void {
+    const recursiveScrollToBottom = (element: Element | null) => {
+      if (!element) return;
+
+      const toHeight = element.scrollHeight;
+      element.scrollTo(0, toHeight);
+      recursiveScrollToBottom(element.parentElement);
+    };
+
+    const bodyHeight = parseInt(window.getComputedStyle(document.body).height, 10);
+    const bodyScrollHeight = document.body.scrollHeight;
+    const height = Math.max(bodyHeight, bodyScrollHeight);
+    window.scrollTo(0, height);
+    recursiveScrollToBottom(startTarget);
   }
 }
 
