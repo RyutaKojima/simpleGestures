@@ -26,7 +26,7 @@
         "<all_urls>"
       ],
       "css": [
-        "css/font/flaticon.css"
+        "font/flaticon.css"
       ],
       "js": [
         "handler.js"
@@ -38,12 +38,12 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "css/font/*"
+        "font/*"
       ],
       "matches": [
         "<all_urls>"
       ]
     }
   ],
-  "options_page": "html/options_page.html"
+  "options_page": "options_page/options_page.html"
 }

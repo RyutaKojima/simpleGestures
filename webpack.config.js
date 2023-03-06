@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -5,9 +7,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const baseWebpackConfig = {
   devtool: 'inline-source-map',
   entry: {
-    background: './src/js/app/background/background.ts',
-    handler: './src/js/app/content/handler.ts',
-    options_page: './src/js/app/options/options_page.js',
+    'background': './src/js/app/background/background.ts',
+    'handler': './src/js/app/content/handler.ts',
+    'options_page/index': './src/options_page/options_page.js',
   },
 
   mode: 'development',
@@ -34,6 +36,14 @@ const baseWebpackConfig = {
 
   optimization: {
     minimize: false,
+    minimizer: [new TerserPlugin({
+      extractComments: 'all',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+        },
+      },
+    })],
     splitChunks: {
       cacheGroups: {
         vendors: {
@@ -61,41 +71,23 @@ const baseWebpackConfig = {
           from: path.join(__dirname, 'src', 'manifest.json'),
           to: path.join(__dirname, 'dist'),
         },
-      ],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
         {
           context: 'src/img',
           from: '**/*.png',
-          to: path.join(__dirname, 'dist/img/'),
+          to: path.join(__dirname, 'dist', 'img'),
         },
-      ],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
         {
-          context: 'src/html',
-          from: '**/*.html',
-          to: path.join(__dirname, 'dist/html/'),
-        },
-      ],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          context: 'src/css',
+          context: 'src/font',
           from: '**/*.*',
-          to: path.join(__dirname, 'dist/css/'),
+          to: path.join(__dirname, 'dist', 'font'),
         },
-      ],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
         {
-          context: 'src/js/vendor',
-          from: '**/*.js',
-          to: path.join(__dirname, 'dist/js/vendor'),
+          context: 'src/options_page',
+          from: path.join('**', '*.*'),
+          globOptions: {
+            ignore: ['**/options_page.js'],
+          },
+          to: path.join(__dirname, 'dist', 'options_page'),
         },
       ],
     }),
@@ -110,7 +102,7 @@ module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
 
   // for development
-  if ( !isProduction ) {
+  if (!isProduction) {
     return baseWebpackConfig;
   }
 
@@ -121,14 +113,6 @@ module.exports = (env, argv) => {
   };
 
   newWebpackConfig.optimization.minimize = true;
-  newWebpackConfig.optimization.minimizer = [new TerserPlugin({
-    extractComments: 'all',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-      },
-    },
-  })];
 
   return newWebpackConfig;
 };

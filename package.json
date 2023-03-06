@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Always OK\" && exit 0",
     "eslint": "eslint \"src/js/app/**\" --ext .js,.jsx,.ts,.tsx",
-    "stylelint": "stylelint \"src/css/**/*.css\"",
+    "stylelint": "stylelint \"src/**/*.css\"",
     "lint": "yarn eslint & yarn stylelint",
     "dev": "yarn build --watch",
     "build": "webpack",

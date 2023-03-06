@@ -1,9 +1,9 @@
-import TrailCanvas from '../content/trail_canvas';
-import Command from '../domains/Entities/Gestures/Command';
-import InputGesture from '../domains/Entities/InputGesture';
-import MousePoint from '../domains/ValueObjects/MousePoint';
-import lang from '../lang';
-import LibOption from '../lib_option';
+import TrailCanvas from '../js/app/content/trail_canvas';
+import Command from '../js/app/domains/Entities/Gestures/Command';
+import InputGesture from '../js/app/domains/Entities/InputGesture';
+import MousePoint from '../js/app/domains/ValueObjects/MousePoint';
+import lang from '../js/app/lang';
+import LibOption from '../js/app/lib_option';
 
 const inputGesture = new InputGesture();
 const option = new LibOption();
