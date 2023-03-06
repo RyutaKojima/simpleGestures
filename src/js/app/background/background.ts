@@ -1,6 +1,7 @@
 import {SendMessageParameter} from '../types/common';
 import actionOpenOptionPage from './Action/open_option_page';
 import MessageSender = chrome.runtime.MessageSender;
+import {backgroundResponse} from '../types/backgroundResponse';
 import {backgroundActions} from './backgroundActions';
 
 let nextMenuSkip = false;
@@ -9,22 +10,22 @@ let nextMenuSkip = false;
  * フロントからのメッセージリクエストに対する処理
  */
 const requestFunction = {
-  executeAction(request: SendMessageParameter) {
+  executeAction(request: SendMessageParameter): backgroundResponse {
     const wasExecuted = backgroundActions(request.event, request.href);
 
     return {
       wasExecuted,
     };
   },
-  nextMenuSkipGet() {
+  nextMenuSkipGet(): backgroundResponse {
     return {
       nextMenuSkip,
     };
   },
-  nextMenuSkipOff() {
+  nextMenuSkipOff(): backgroundResponse {
     nextMenuSkip = false;
   },
-  nextMenuSkipOn() {
+  nextMenuSkipOn(): backgroundResponse {
     nextMenuSkip = true;
   },
 };

@@ -5,16 +5,17 @@ import InputGesture from '../domains/Entities/InputGesture';
 import MousePoint from '../domains/ValueObjects/MousePoint';
 import Keyboard from '../keyboard';
 import Mouse, {HTMLChildElement, HTMLElementEvent} from '../mouse';
+import {backgroundResponse} from '../types/backgroundResponse';
 import {LineParameter, SendMessageParameter} from '../types/common';
 import ContentScripts from './content_scripts';
 
 const scrollTop = (): number =>
   (document.documentElement && document.documentElement.scrollTop) ||
-    (document.body && document.body.scrollTop);
+  (document.body && document.body.scrollTop);
 
 const scrollLeft = (): number =>
   (document.documentElement && document.documentElement.scrollLeft) ||
-    (document.body && document.body.scrollLeft);
+  (document.body && document.body.scrollLeft);
 
 (function() {
   const inputMouse: Mouse = new Mouse();
@@ -23,17 +24,21 @@ const scrollLeft = (): number =>
   const trailCanvas: TrailCanvas = new TrailCanvas('gestureTrailCanvas', '1000000');
   const contentScripts: ContentScripts = new ContentScripts(trailCanvas);
   let nextMenuSkip = false;
+  let startTarget: Element | null = null;
 
   /**
    * content_scripts->backgroundへのデータ送信
    * @param {SendMessageParameter} param
    * @return {Promise}
    */
-  const sendMessageToBackground = (param: SendMessageParameter): Promise<any> => {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage(param, (response) => resolve(response));
-    });
-  };
+  const sendMessageToBackground =
+    (param: SendMessageParameter): Promise<backgroundResponse> => {
+      return new Promise((resolve) => {
+        chrome.runtime.sendMessage(param, (response) => {
+          resolve(response);
+        });
+      });
+    };
 
   /**
    * 画面表示をすべてクリア
@@ -57,10 +62,14 @@ const scrollLeft = (): number =>
   };
 
   trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
-  contentScripts.loadOption();
+  contentScripts.loadOption().then(null);
 
   (async () => {
-    const initialNextMenuSkip = await sendMessageToBackground({msg: 'nextMenuSkipGet'});
+    const initialNextMenuSkip =
+      await sendMessageToBackground({
+        msg: 'nextMenuSkipGet',
+      }) as { nextMenuSkip: boolean };
+
     if (initialNextMenuSkip.nextMenuSkip) {
       nextMenuSkip = true;
     }
@@ -76,25 +85,25 @@ const scrollLeft = (): number =>
     inputKeyboard.reset();
     inputGesture.clear();
 
-    contentScripts.loadOption();
+    await contentScripts.loadOption();
   });
 
   window.addEventListener('resize', () => {
     trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
   });
 
-  document.addEventListener('keydown', async (event: KeyboardEvent): Promise<any> => {
+  document.addEventListener('keydown', (event: KeyboardEvent): void => {
     if (!event.repeat) {
       inputKeyboard.setOn(event.key);
     }
   });
 
-  document.addEventListener('keyup', async (event: KeyboardEvent): Promise<any> => {
+  document.addEventListener('keyup', (event: KeyboardEvent): void => {
     inputKeyboard.setOff(event.key);
   });
 
   document.addEventListener('mousedown', async (event: HTMLElementEvent<HTMLChildElement>) => {
-    if ( ! contentScripts.option.getEnabled()) {
+    if (!contentScripts.option.getEnabled()) {
       return;
     }
 
@@ -109,6 +118,8 @@ const scrollLeft = (): number =>
       return;
     }
 
+    startTarget = event.target;
+
     inputGesture
         .setLinkUrl(Mouse.getHref(event))
         .addPoint(new MousePoint(event.pageX - scrollLeft(), event.pageY - scrollTop()));
@@ -121,7 +132,7 @@ const scrollLeft = (): number =>
   });
 
   document.addEventListener('mousemove', async (event: MouseEvent) => {
-    if ( ! contentScripts.option.getEnabled()) {
+    if (!contentScripts.option.getEnabled()) {
       return;
     }
 
@@ -165,25 +176,26 @@ const scrollLeft = (): number =>
   document.addEventListener('mouseup', (event: MouseEvent) => {
     inputMouse.setOff(event.which);
 
-    if ( ! contentScripts.option.getEnabled()) {
+    if (!contentScripts.option.getEnabled()) {
       return;
     }
 
     if (inputGesture.gestureCommands.rawString) {
       nextMenuSkip = true;
-      sendMessageToBackground({msg: 'nextMenuSkipOn'});
+      sendMessageToBackground({msg: 'nextMenuSkipOn'}).then();
 
       if (inputGesture.gestureActionCode) {
-        if (!contentScripts.exeAction(inputGesture.gestureActionCode)) {
+        if (!contentScripts.exeAction(inputGesture.gestureActionCode, startTarget)) {
           sendMessageToBackground({
             event: inputGesture.gestureActionCode,
             href: inputGesture.linkUrl,
             msg: 'executeAction',
-          });
+          }).then();
         }
       }
     }
 
+    startTarget = null;
     inputGesture.clear();
     clearAllDisplay();
   });
@@ -194,7 +206,7 @@ const scrollLeft = (): number =>
    * falseを返すと、コンテキストメニューを無効にする。
    */
   document.addEventListener('contextmenu', (event: MouseEvent) => {
-    if ( ! contentScripts.option.getEnabled()) {
+    if (!contentScripts.option.getEnabled()) {
       return;
     }
 
@@ -220,6 +232,6 @@ const scrollLeft = (): number =>
     }
 
     nextMenuSkip = false;
-    sendMessageToBackground({msg: 'nextMenuSkipOff'});
+    sendMessageToBackground({msg: 'nextMenuSkipOff'}).then();
   });
 })();

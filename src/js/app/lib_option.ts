@@ -78,7 +78,7 @@ class LibOption {
   reset(): void {
     this.storage.clear();
 
-    this.load();
+    this.load().then();
   }
 
   /**
@@ -95,6 +95,7 @@ class LibOption {
     this.setRawStorageData(this.storageData);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * 永続化したデータのままを取得
    * @return {null|string}
@@ -204,6 +205,7 @@ class LibOption {
     return (this.getLanguage() === 'Japanese');
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * 言語設定が「英語」か？
    *

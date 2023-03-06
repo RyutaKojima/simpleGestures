@@ -70,9 +70,9 @@ class Option {
   }
 
   /**
-     * @return {Object}
+     * @return {object}
      */
-  public serialize(): any {
+  public serialize(): object {
     return {
       action_text_on: this.actionTextOn,
       color_code: this.colorCode,
