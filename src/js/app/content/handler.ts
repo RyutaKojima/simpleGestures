@@ -26,6 +26,45 @@ const scrollLeft = (): number =>
   let nextMenuSkip = false;
   let startTarget: Element | null = null;
 
+  const versionUp = {
+    confirmText: [
+      'simpleGesturesが更新されました。',
+      '画面をリロードするまで一時的に機能がOFFになります。',
+      '',
+      '画面をリロードしますか？',
+    ].join('\n'),
+    isAlreadyConfirmed: false,
+    isUpdated: false,
+    updateCheckAndNotify: (error:Error): boolean => {
+      if (error.message !== 'Extension context invalidated.') {
+        return false;
+      }
+
+      versionUp.isUpdated = true;
+
+      if (!versionUp.isAlreadyConfirmed) {
+        if (window.confirm(versionUp.confirmText)) {
+          location.reload();
+        }
+
+        versionUp.isAlreadyConfirmed = true;
+      }
+
+      return true;
+    },
+  };
+
+  const isExtensionDisabled = ():boolean => {
+    if (!contentScripts.option.getEnabled()) {
+      return true;
+    }
+    if (versionUp.isAlreadyConfirmed) {
+      return true;
+    }
+
+    return false;
+  };
+
   /**
    * content_scripts->backgroundへのデータ送信
    * @param {SendMessageParameter} param
@@ -34,9 +73,15 @@ const scrollLeft = (): number =>
   const sendMessageToBackground =
     (param: SendMessageParameter): Promise<backgroundResponse> => {
       return new Promise((resolve) => {
-        chrome.runtime.sendMessage(param, (response) => {
-          resolve(response);
-        });
+        try {
+          chrome.runtime.sendMessage(param, (response) => {
+            resolve(response);
+          });
+        } catch (e) {
+          if (!versionUp.updateCheckAndNotify(e)) {
+            console.error(e);
+          }
+        }
       });
     };
 
@@ -48,15 +93,18 @@ const scrollLeft = (): number =>
       trailCanvas.clearCanvas();
 
       const canvasId = trailCanvas.getCanvasId();
-      if (canvasId && document.getElementById(canvasId)) {
-        document.body.removeChild(document.getElementById(canvasId));
+      const canvasElementId = document.getElementById(canvasId);
+      if (canvasId && canvasElementId) {
+        document.body.removeChild(canvasElementId);
       }
     }
 
     if (contentScripts.infoDiv) {
-      if (document.getElementById(contentScripts.infoDiv.id)) {
-        document.body.removeChild(
-            document.getElementById(contentScripts.infoDiv.id));
+      contentScripts.clearText();
+
+      const infoElementId = document.getElementById(contentScripts.infoDiv.id);
+      if (infoElementId) {
+        document.body.removeChild(infoElementId);
       }
     }
   };
@@ -103,9 +151,11 @@ const scrollLeft = (): number =>
   });
 
   document.addEventListener('mousedown', async (event: HTMLElementEvent<HTMLChildElement>) => {
-    if (!contentScripts.option.getEnabled()) {
+    if (isExtensionDisabled()) {
       return;
     }
+
+    contentScripts.loadOption().then();
 
     // Ctrlが押された状態だと、マウスジェスチャ無効な仕様
     if (inputKeyboard.isOn(Keyboard.KEY_CTRL)) {
@@ -132,7 +182,7 @@ const scrollLeft = (): number =>
   });
 
   document.addEventListener('mousemove', async (event: MouseEvent) => {
-    if (!contentScripts.option.getEnabled()) {
+    if (isExtensionDisabled()) {
       return;
     }
 
@@ -151,6 +201,14 @@ const scrollLeft = (): number =>
     if (inputGesture.isUpdateLine) {
       inputGesture.updateAction(contentScripts.option);
 
+      if (trailCanvas.getCanvas()) {
+        document.body.appendChild(trailCanvas.getCanvas());
+      }
+
+      if (contentScripts.infoDiv) {
+        document.body.appendChild(contentScripts.infoDiv);
+      }
+
       const listParam: LineParameter = {
         fromX: inputGesture.newLineFrom.x,
         fromY: inputGesture.newLineFrom.y,
@@ -162,21 +220,13 @@ const scrollLeft = (): number =>
           inputGesture.gestureCommands.displayString,
           inputGesture.gestureActionName(contentScripts.option),
       );
-
-      if (trailCanvas.getCanvas()) {
-        document.body.appendChild(trailCanvas.getCanvas());
-      }
-
-      if (contentScripts.infoDiv) {
-        document.body.appendChild(contentScripts.infoDiv);
-      }
     }
   });
 
   document.addEventListener('mouseup', (event: MouseEvent) => {
     inputMouse.setOff(event.which);
 
-    if (!contentScripts.option.getEnabled()) {
+    if (isExtensionDisabled()) {
       return;
     }
 
@@ -206,7 +256,7 @@ const scrollLeft = (): number =>
    * falseを返すと、コンテキストメニューを無効にする。
    */
   document.addEventListener('contextmenu', (event: MouseEvent) => {
-    if (!contentScripts.option.getEnabled()) {
+    if (isExtensionDisabled()) {
       return;
     }
 

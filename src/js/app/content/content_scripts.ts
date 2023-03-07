@@ -30,7 +30,7 @@ class ContentScripts {
    * Load option values.
    */
   async loadOption(): Promise<void> {
-    const Threshold = (5 * 1000);
+    const Threshold = (1000);
     const elapseMilliSec = Date.now() - this.latestOptionLoadedAt;
 
     this.latestOptionLoadedAt = Date.now();
@@ -39,7 +39,9 @@ class ContentScripts {
       return;
     }
 
-    await this.option.load();
+    try {
+      await this.option.load();
+    } catch (e) {}
 
     // reload setting for canvas.
     this.setCanvasStyle();
@@ -184,6 +186,13 @@ class ContentScripts {
     } else {
       divCommand.innerHTML = '';
     }
+  }
+
+  /**
+   * テキスト要素の描画を消す
+   */
+  clearText(): void {
+    this.drawText('', '');
   }
 
   /**
