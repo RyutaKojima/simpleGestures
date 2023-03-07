@@ -30,7 +30,7 @@ class ContentScripts {
    * Load option values.
    */
   async loadOption(): Promise<void> {
-    const Threshold = (5 * 1000);
+    const Threshold = (1000);
     const elapseMilliSec = Date.now() - this.latestOptionLoadedAt;
 
     this.latestOptionLoadedAt = Date.now();

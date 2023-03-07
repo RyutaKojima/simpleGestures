@@ -107,6 +107,8 @@ const scrollLeft = (): number =>
       return;
     }
 
+    contentScripts.loadOption().then();
+
     // Ctrlが押された状態だと、マウスジェスチャ無効な仕様
     if (inputKeyboard.isOn(Keyboard.KEY_CTRL)) {
       return;
