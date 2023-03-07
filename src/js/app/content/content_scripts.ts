@@ -189,6 +189,13 @@ class ContentScripts {
   }
 
   /**
+   * テキスト要素の描画を消す
+   */
+  clearText(): void {
+    this.drawText('', '');
+  }
+
+  /**
    * Run the selected action.
    *
    * @param {string} actionName

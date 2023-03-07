@@ -93,15 +93,18 @@ const scrollLeft = (): number =>
       trailCanvas.clearCanvas();
 
       const canvasId = trailCanvas.getCanvasId();
-      if (canvasId && document.getElementById(canvasId)) {
-        document.body.removeChild(document.getElementById(canvasId));
+      const canvasElementId = document.getElementById(canvasId);
+      if (canvasId && canvasElementId) {
+        document.body.removeChild(canvasElementId);
       }
     }
 
     if (contentScripts.infoDiv) {
-      if (document.getElementById(contentScripts.infoDiv.id)) {
-        document.body.removeChild(
-            document.getElementById(contentScripts.infoDiv.id));
+      contentScripts.clearText();
+
+      const infoElementId = document.getElementById(contentScripts.infoDiv.id);
+      if (infoElementId) {
+        document.body.removeChild(infoElementId);
       }
     }
   };
@@ -198,6 +201,14 @@ const scrollLeft = (): number =>
     if (inputGesture.isUpdateLine) {
       inputGesture.updateAction(contentScripts.option);
 
+      if (trailCanvas.getCanvas()) {
+        document.body.appendChild(trailCanvas.getCanvas());
+      }
+
+      if (contentScripts.infoDiv) {
+        document.body.appendChild(contentScripts.infoDiv);
+      }
+
       const listParam: LineParameter = {
         fromX: inputGesture.newLineFrom.x,
         fromY: inputGesture.newLineFrom.y,
@@ -209,14 +220,6 @@ const scrollLeft = (): number =>
           inputGesture.gestureCommands.displayString,
           inputGesture.gestureActionName(contentScripts.option),
       );
-
-      if (trailCanvas.getCanvas()) {
-        document.body.appendChild(trailCanvas.getCanvas());
-      }
-
-      if (contentScripts.infoDiv) {
-        document.body.appendChild(contentScripts.infoDiv);
-      }
     }
   });
 
