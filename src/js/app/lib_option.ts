@@ -89,10 +89,11 @@ class LibOption {
       this.storageData = await this.storage.load(this.LOCAL_STORAGE_KEY);
     } catch (e) {
       this.storageData = null;
-      console.error(e);
-    }
 
-    this.setRawStorageData(this.storageData);
+      throw e;
+    } finally {
+      this.setRawStorageData(this.storageData);
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols

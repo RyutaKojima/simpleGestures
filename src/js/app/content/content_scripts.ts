@@ -39,7 +39,9 @@ class ContentScripts {
       return;
     }
 
-    await this.option.load();
+    try {
+      await this.option.load();
+    } catch (e) {}
 
     // reload setting for canvas.
     this.setCanvasStyle();

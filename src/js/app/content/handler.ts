@@ -26,6 +26,45 @@ const scrollLeft = (): number =>
   let nextMenuSkip = false;
   let startTarget: Element | null = null;
 
+  const versionUp = {
+    confirmText: [
+      'simpleGesturesが更新されました。',
+      '画面をリロードするまで一時的に機能がOFFになります。',
+      '',
+      '画面をリロードしますか？',
+    ].join('\n'),
+    isAlreadyConfirmed: false,
+    isUpdated: false,
+    updateCheckAndNotify: (error:Error): boolean => {
+      if (error.message !== 'Extension context invalidated.') {
+        return false;
+      }
+
+      versionUp.isUpdated = true;
+
+      if (!versionUp.isAlreadyConfirmed) {
+        if (window.confirm(versionUp.confirmText)) {
+          location.reload();
+        }
+
+        versionUp.isAlreadyConfirmed = true;
+      }
+
+      return true;
+    },
+  };
+
+  const isExtensionDisabled = ():boolean => {
+    if (!contentScripts.option.getEnabled()) {
+      return true;
+    }
+    if (versionUp.isAlreadyConfirmed) {
+      return true;
+    }
+
+    return false;
+  };
+
   /**
    * content_scripts->backgroundへのデータ送信
    * @param {SendMessageParameter} param
@@ -34,9 +73,15 @@ const scrollLeft = (): number =>
   const sendMessageToBackground =
     (param: SendMessageParameter): Promise<backgroundResponse> => {
       return new Promise((resolve) => {
-        chrome.runtime.sendMessage(param, (response) => {
-          resolve(response);
-        });
+        try {
+          chrome.runtime.sendMessage(param, (response) => {
+            resolve(response);
+          });
+        } catch (e) {
+          if (!versionUp.updateCheckAndNotify(e)) {
+            console.error(e);
+          }
+        }
       });
     };
 
@@ -103,7 +148,7 @@ const scrollLeft = (): number =>
   });
 
   document.addEventListener('mousedown', async (event: HTMLElementEvent<HTMLChildElement>) => {
-    if (!contentScripts.option.getEnabled()) {
+    if (isExtensionDisabled()) {
       return;
     }
 
@@ -134,7 +179,7 @@ const scrollLeft = (): number =>
   });
 
   document.addEventListener('mousemove', async (event: MouseEvent) => {
-    if (!contentScripts.option.getEnabled()) {
+    if (isExtensionDisabled()) {
       return;
     }
 
@@ -178,7 +223,7 @@ const scrollLeft = (): number =>
   document.addEventListener('mouseup', (event: MouseEvent) => {
     inputMouse.setOff(event.which);
 
-    if (!contentScripts.option.getEnabled()) {
+    if (isExtensionDisabled()) {
       return;
     }
 
@@ -208,7 +253,7 @@ const scrollLeft = (): number =>
    * falseを返すと、コンテキストメニューを無効にする。
    */
   document.addEventListener('contextmenu', (event: MouseEvent) => {
-    if (!contentScripts.option.getEnabled()) {
+    if (isExtensionDisabled()) {
       return;
     }
 
