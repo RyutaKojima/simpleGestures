@@ -10,8 +10,6 @@
 
 	<link rel="stylesheet" type="text/css" href="./options_page.css">
 	<script src="./vendor/jquery-1.11.3.min.js"></script>
-	<script src="./vendor/raphael-min.2.1.4.js"></script>
-	<script src="./vendor/colorwheel.js"></script>
 	<script src="./index.js"></script>
 </head>
 <body>
@@ -87,12 +85,8 @@
 								<span class="class_Japanese">ラインの色</span>
 							</th>
 							<td>
-								<div class="field">
-									<div class="control">
-										<input class="input" type="text" id="color_code" />
-									</div>
-								</div>
-								<div id="input_example" class="colorwheel" style="margin-right:20px; width:300px; text-align:left;"></div>
+								<label for="color_code"></label>
+								<input type="color" id="color_code" style="width: 100%; height: 2.5rem;"/>
 							</td>
 						</tr>
 						<tr>
