@@ -1,9 +1,9 @@
-import TrailCanvas from '../content/trail_canvas';
-import Command from '../domains/Entities/Gestures/Command';
-import InputGesture from '../domains/Entities/InputGesture';
-import MousePoint from '../domains/ValueObjects/MousePoint';
-import lang from '../lang';
-import LibOption from '../lib_option';
+import TrailCanvas from '../js/app/content/trail_canvas';
+import Command from '../js/app/domains/Entities/Gestures/Command';
+import InputGesture from '../js/app/domains/Entities/InputGesture';
+import MousePoint from '../js/app/domains/ValueObjects/MousePoint';
+import lang from '../js/app/lang';
+import LibOption from '../js/app/lib_option';
 
 const inputGesture = new InputGesture();
 const option = new LibOption();
@@ -26,10 +26,10 @@ const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
     setCanvasStyle(canvasForOption);
 
     // オプションデータの表示
-    // type: テキスト
+    // type: テキスト & color
     option.OPTION_ID_LIST.forEach((idName) => {
       $('#' + idName).on('change', (event) => {
-        option.setParam(idName, $(event.target).val());
+        option.setParam(idName, $(event.currentTarget).val());
         saveOptions();
       });
     });
@@ -38,7 +38,7 @@ const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
     const checkIds = ['enabled', 'command_text_on', 'action_text_on', 'trail_on'];
     checkIds.forEach((idName) => {
       $('#' + idName).on('change', (event) => {
-        option.setParam(idName, $(event.target).prop('checked'));
+        option.setParam(idName, $(event.currentTarget).prop('checked'));
         saveOptions();
       });
     });
@@ -181,7 +181,7 @@ const reflectSelectedLanguageToScreen = () => {
 
   switch (currentLanguage) {
     default:
-      // no break;
+    // no break;
     case 'English':
       $langEn.show();
       $langJa.hide();
@@ -252,7 +252,6 @@ const createGestureInputComponent = ($input) => {
               inputGesture.newLineFrom.y,
               inputGesture.newLineTo.x,
               inputGesture.newLineTo.y,
-
           );
         }
         return false;
@@ -311,7 +310,7 @@ const registerEventForGesture = () => {
         const registeredAction = option.isGestureAlreadyExist(inputGestureForm);
         if (registeredAction !== false && registeredAction !== targetActionName) {
           const gestureLabel = lang.gesture[registeredAction][option.getLanguage()];
-          if ( ! window.confirm('すでに「' + gestureLabel + '」に設定されています。入れ替えますか？')) {
+          if (!window.confirm('すでに「' + gestureLabel + '」に設定されています。入れ替えますか？')) {
             setGestureInputComponent($input, $input.data('prevValue'));
             return;
           }
@@ -344,12 +343,7 @@ const registerEventForAllReset = () => {
 };
 
 const setupColorWheel = () => {
-  const colorWheel = Raphael.colorwheel($('#input_example')[0], 100);
-  colorWheel.input($('#color_code')[0]);
-  colorWheel.color(option.getColorCode());
-  colorWheel.onchange(() => {
-    $('#color_code').triggerHandler('change');
-  });
+  $('#color_code').val(option.getColorCode());
 };
 
 const saveOptions = () => {
