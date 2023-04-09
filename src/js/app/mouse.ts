@@ -43,15 +43,16 @@ class Mouse {
    */
   static getHref(mouseevent: HTMLElementEvent<HTMLChildElement>): null|string {
     const target: HTMLChildElement = mouseevent.target;
-    const parent: HTMLLinkElement = target.parentElement;
+    const parentLinkElement = target.closest('a');
 
     if (target.href) {
       return target.href;
     }
 
-    if (parent && parent.href) {
-      return parent.href;
+    if (parentLinkElement && parentLinkElement.href) {
+      return parentLinkElement.href;
     }
+
     return null;
   }
 
