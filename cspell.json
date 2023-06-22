@@ -1,0 +1,41 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "dictionaryDefinitions": [
+    {
+      "name": "project-words",
+      "path": "./spelling.dic",
+      "addWords": true
+    }
+  ],
+  "words": [
+  ],
+  "dictionaries": [
+    "project-words",
+    "en_US",
+    "companies",
+    "softwareTerms",
+    "misc",
+    "php",
+    "sql",
+    "aws",
+    "typescript",
+    "node",
+    "html",
+    "css",
+    "fonts",
+    "filetypes",
+    "npm"
+  ],
+  "ignorePaths": [
+    "**/vendor/**",
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/.idea/**",
+    "**/.vscode/**",
+    "**/.next/**",
+    "**/package.json",
+    "**/yarn-error.log",
+    "**/yarn.lock"
+  ]
+}
