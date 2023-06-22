@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Always OK\" && exit 0",
+    "spell-check": "cspell lint -c ./cspell.json --no-progress --show-suggestions \"src/**/*.ts\" \"src/**/*.js\" \"src/**/*.json\" \"**/*.md\"",
     "eslint": "eslint \"src/js/app/**\" --ext .js,.jsx,.ts,.tsx",
     "stylelint": "stylelint \"src/**/*.css\"",
     "lint": "yarn eslint & yarn stylelint",
@@ -29,6 +30,7 @@
     "@typescript-eslint/eslint-plugin": "5.60.0",
     "@typescript-eslint/parser": "5.60.0",
     "copy-webpack-plugin": "11.0.0",
+    "cspell": "^6.31.1",
     "css-loader": "6.8.1",
     "eslint": "8.43.0",
     "eslint-config-google": "0.14.0",

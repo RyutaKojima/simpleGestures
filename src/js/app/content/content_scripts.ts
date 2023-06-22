@@ -31,11 +31,11 @@ class ContentScripts {
    */
   async loadOption(): Promise<void> {
     const Threshold = (1000);
-    const elapseMilliSec = Date.now() - this.latestOptionLoadedAt;
+    const elapseMillisecond = Date.now() - this.latestOptionLoadedAt;
 
     this.latestOptionLoadedAt = Date.now();
 
-    if (elapseMilliSec < Threshold) {
+    if (elapseMillisecond < Threshold) {
       return;
     }
 

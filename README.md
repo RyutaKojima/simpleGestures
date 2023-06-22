@@ -12,7 +12,7 @@
 ### Overview (概要)
 
 シンプルな動作とオプション設定を目指したGoogleChrome拡張機能のマウスジェスチャです。  
-simpleGestures is GoogleChorome extension that adds a simple mouse gesture.
+simpleGestures is GoogleChrome extension that adds a simple mouse gesture.
 
 ### Install (インストール)
 

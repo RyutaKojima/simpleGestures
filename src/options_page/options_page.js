@@ -302,7 +302,7 @@ const registerEventForGesture = () => {
         const inputGestureForm = $input.val();
         const targetActionName = $input.attr('id');
 
-        if (!inputGestureForm.match(/^[DLUR]*$/)) {
+        if (!inputGestureForm.match(/^[RDLU]*$/)) {
           setGestureInputComponent($input, $input.data('prevValue'));
           return;
         }
