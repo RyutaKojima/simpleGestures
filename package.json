@@ -30,7 +30,7 @@
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "copy-webpack-plugin": "11.0.0",
-    "cspell": "^6.31.1",
+    "cspell": "^7.0.0",
     "css-loader": "6.8.1",
     "eslint": "8.46.0",
     "eslint-config-google": "0.14.0",
