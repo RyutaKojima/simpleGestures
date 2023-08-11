@@ -52,6 +52,6 @@
   },
   "dependencies": {
     "bowser": "^2.11.0",
-    "camelcase": "^7.0.0"
+    "camelcase": "^8.0.0"
   }
 }
