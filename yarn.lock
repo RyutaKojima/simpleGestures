@@ -566,10 +566,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@types/chrome@0.0.246":
-  version "0.0.246"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.246.tgz#412ee1b162a67d1cfebe413887b9aa0c28998ef1"
-  integrity sha512-MxGxEomGxsJiL9xe/7ZwVgwdn8XVKWbPvxpVQl3nWOjrS0Ce63JsfzxUc4aU3GvRcUPYsfufHmJ17BFyKxeA4g==
+"@types/chrome@0.0.247":
+  version "0.0.247"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.247.tgz#e79abb81da21cc0fff6f9184dace6685ada81d65"
+  integrity sha512-EkdN6gcGPsFtx7Hu8dfJeMYTg+N9k6aPt5H9RJNYrTvJaJE64tP9ptQbxJDuxaBnf+RWh0Q9ug8JZgNv4Jg+Hg==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
