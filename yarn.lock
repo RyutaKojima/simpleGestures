@@ -1745,10 +1745,10 @@ eslint-plugin-simple-import-sort@12.1.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-simple-import-sort/-/eslint-plugin-simple-import-sort-12.1.0.tgz#8186ad55474d2f5c986a2f1bf70625a981e30d05"
   integrity sha512-Y2fqAfC11TcG/WP3TrI1Gi3p3nc8XJyEOJYHyEPEGI/UAgNx6akxxlX74p7SbAQdLcgASKhj8M0GKvH3vq/+ig==
 
-eslint-plugin-sort-destructure-keys@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-sort-destructure-keys/-/eslint-plugin-sort-destructure-keys-1.5.0.tgz#dc45ff119b6886d4e72d3e0ff8a528af83b89388"
-  integrity sha512-xGLyqHtbFXZNXQSvAiQ4ISBYokrbUywEhmaA50fKtSKgceCv5y3zjoNuZwcnajdM6q29Nxj+oXC9KcqfMsAPrg==
+eslint-plugin-sort-destructure-keys@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-sort-destructure-keys/-/eslint-plugin-sort-destructure-keys-1.6.0.tgz#237837aebf7cd4a6780b5a06331a66bb0832631d"
+  integrity sha512-cdjR/+D6RlMSgOcDA48nXOF5S+fMKhVFgJs9n59PZVH7dv5xzeCReujM9Qkwcz4jiHt5GPti5wjCJpM58CMmkg==
   dependencies:
     natural-compare-lite "^1.4.0"
 
