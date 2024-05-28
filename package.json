@@ -42,7 +42,7 @@
     "node-sass": "9.0.0",
     "sass-loader": "14.2.1",
     "style-loader": "4.0.0",
-    "stylelint": "16.6.0",
+    "stylelint": "16.6.1",
     "stylelint-config-standard": "36.0.0",
     "terser-webpack-plugin": "5.3.10",
     "ts-loader": "9.5.1",
