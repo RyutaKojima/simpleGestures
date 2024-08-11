@@ -80,13 +80,12 @@ class LibOption {
 
 
   /**
-   *
-   * @return {undefined}
+   * 設定のリセット
    */
-  reset(): void {
+  async reset(): Promise<void> {
     this.storage.clear();
 
-    this.load().then();
+    await this.load();
   }
 
   /**
