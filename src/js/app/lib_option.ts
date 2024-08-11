@@ -5,6 +5,34 @@ import camelcase from 'camelcase';
 import Option from './domains/ValueObjects/option';
 import MyStorage from './storage';
 
+const GESTURE_ID_LIST = [
+  'gesture_close_tab',
+  'gesture_new_tab',
+  'gesture_new_tab_background',
+  'gesture_pin_tab',
+  'gesture_reload',
+  'gesture_forward',
+  'gesture_back',
+  'gesture_scroll_top',
+  'gesture_scroll_bottom',
+  'gesture_last_tab',
+  'gesture_reload_all',
+  'gesture_next_tab',
+  'gesture_prev_tab',
+  'gesture_close_right_tab_without_pinned',
+  'gesture_close_right_tab',
+  'gesture_close_left_tab_without_pinned',
+  'gesture_close_left_tab',
+  'gesture_close_all_background',
+  'gesture_close_all',
+  'gesture_open_option',
+  'gesture_open_extension',
+  // "gesture_restart"
+  'gesture_window_maximize',
+  'gesture_window_minimize',
+  'gesture_window_normalize',
+];
+
 /**
  * オプション情報管理
  */
@@ -42,30 +70,7 @@ class LibOption {
     /**
      * @const
      */
-    this.GESTURE_ID_LIST = [
-      'gesture_close_tab',
-      'gesture_new_tab',
-      'gesture_new_tab_background',
-      'gesture_pin_tab',
-      'gesture_reload',
-      'gesture_forward',
-      'gesture_back',
-      'gesture_scroll_top',
-      'gesture_scroll_bottom',
-      'gesture_last_tab',
-      'gesture_reload_all',
-      'gesture_next_tab',
-      'gesture_prev_tab',
-      'gesture_close_right_tab_without_pinned',
-      'gesture_close_right_tab',
-      'gesture_close_left_tab_without_pinned',
-      'gesture_close_left_tab',
-      'gesture_close_all_background',
-      'gesture_close_all',
-      'gesture_open_option',
-      'gesture_open_extension',
-      // "gesture_restart"
-    ];
+    this.GESTURE_ID_LIST = GESTURE_ID_LIST;
 
     this.storageData = null;
     this.optionsInstance = null;

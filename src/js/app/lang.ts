@@ -106,6 +106,18 @@ const lang: LanguageConfig = {
       'English': 'scroll top',
       'Japanese': 'ページの先頭までスクロール',
     },
+    'gesture_window_maximize': {
+      'English': 'current window maximize',
+      'Japanese': 'ウィンドウを最大化',
+    },
+    'gesture_window_minimize': {
+      'English': 'current window minimize',
+      'Japanese': 'ウィンドウを最小化',
+    },
+    'gesture_window_normalize': {
+      'English': 'current window size to normal',
+      'Japanese': 'ウィンドウを通常サイズにする',
+    },
   },
 };
 
