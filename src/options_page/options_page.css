@@ -1,4 +1,9 @@
 /* -- Renewal --  */
+
+body {
+  background-color: white;
+}
+
 .tabs.is-boxed li.is-active a.color-lightblue,
 .color-lightblue {
   border: solid 3px cornflowerblue;
