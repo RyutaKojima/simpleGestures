@@ -1,3 +1,5 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 import camelcase from 'camelcase';
 
 import Option from './domains/ValueObjects/option';
