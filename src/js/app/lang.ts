@@ -68,7 +68,7 @@ const lang: LanguageConfig = {
     },
     'gesture_next_tab': {
       'English': 'Go to right tab',
-      'Japanese': '次のタブ',
+      'Japanese': '右のタブへ',
     },
     'gesture_open_extension': {
       'English': 'Open chrome extension page',
@@ -84,7 +84,7 @@ const lang: LanguageConfig = {
     },
     'gesture_prev_tab': {
       'English': 'Go to left tab',
-      'Japanese': '前のタブ',
+      'Japanese': '左のタブへ',
     },
     'gesture_reload': {
       'English': 'Reload',
