@@ -16,12 +16,15 @@ import actionReload from './Action/reload';
 import actionReloadAll from './Action/reload_all';
 import actionRestoreLastTab from './Action/restore_last_tab';
 import actionTogglePinTab from './Action/toggle_pin_tab';
+import actionWindowMaximize from './Action/window_maximize';
+import actionWindowMinimize from './Action/window_minimize';
+import actionWindowNormalize from './Action/window_normalize';
 
 
 /**
  * 各マウスジェスチャの処理
  */
-const gestureFunction: { [key: string]: (GestureOptions?) => void|Promise<void> } = {
+const gestureFunction: { [key: string]: (GestureOptions?) => void | Promise<void> } = {
   'close_all': actionCloseAllTab,
   'close_all_background': actionCloseAllBackgroundTab,
   'close_left_tab': actionCloseLeftTab,
@@ -40,6 +43,9 @@ const gestureFunction: { [key: string]: (GestureOptions?) => void|Promise<void> 
   'reload': actionReload,
   'reload_all': actionReloadAll,
   'restart': actionBrowserRestart,
+  'window_maximize': actionWindowMaximize,
+  'window_minimize': actionWindowMinimize,
+  'window_normalize': actionWindowNormalize,
 };
 
 /**
@@ -50,8 +56,8 @@ const gestureFunction: { [key: string]: (GestureOptions?) => void|Promise<void> 
  * @return {boolean}
  */
 export const backgroundActions = (
-    actionName: string,
-    href: null|string = null,
+  actionName: string,
+  href: null | string = null,
 ): boolean => {
   if (!gestureFunction.hasOwnProperty(actionName)) {
     return false;
@@ -60,7 +66,7 @@ export const backgroundActions = (
     return false;
   }
 
-  const optionParams: { href: null|string; } = {
+  const optionParams: { href: null | string; } = {
     href,
   };
   gestureFunction[actionName](optionParams);

@@ -32,6 +32,9 @@ class Option {
   public readonly gestureOpenOption: string;
   public readonly gestureOpenExtension: string;
   // public readonly gestureRestart: string;
+  public readonly gestureWindowMaximize: string;
+  public readonly gestureWindowMinimize: string;
+  public readonly gestureWindowNormalize: string;
 
   /**
      *
@@ -67,6 +70,10 @@ class Option {
     this.gestureCloseAll = value.gesture_close_all ?? '';
     this.gestureOpenOption = value.gesture_open_option ?? 'RDLU';
     this.gestureOpenExtension = value.gesture_open_extension ?? 'RDL';
+
+    this.gestureWindowMaximize = value.gesture_window_maximize ?? '';
+    this.gestureWindowMinimize = value.gesture_window_minimize ?? '';
+    this.gestureWindowNormalize = value.gesture_window_normalize ?? '';
   }
 
   /**
@@ -100,6 +107,10 @@ class Option {
       gesture_reload_all: this.gestureReloadAll,
       gesture_scroll_bottom: this.gestureScrollBottom,
       gesture_scroll_top: this.gestureScrollTop,
+      gesture_window_maximize: this.gestureWindowMaximize,
+      gesture_window_minimize: this.gestureWindowMinimize,
+      gesture_window_normalize: this.gestureWindowNormalize,
+
       language: this.language,
       line_width: this.lineWidth,
       trail_on: this.trailOn,
