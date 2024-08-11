@@ -331,10 +331,10 @@ const registerEventForGesture = () => {
 };
 
 const registerEventForAllReset = () => {
-  $('#reset_all').on('click', () => {
+  $('#reset_all').on('click', async () => {
     const confirmOk = window.confirm(lang.confirmOptionReset[option.getLanguage()]);
     if (confirmOk) {
-      option.reset();
+      await option.reset();
 
       reflectOptionSettingsOnScreen();
       reflectSelectedLanguageToScreen();
