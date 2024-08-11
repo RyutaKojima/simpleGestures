@@ -7,6 +7,7 @@ import actionCloseLeftTabWithoutPinned from './Action/close_left_tab_without_pin
 import actionCloseRightTab from './Action/close_right_tab';
 import actionCloseRightTabWithoutPinned from './Action/close_right_tab_without_pinned';
 import actionNextTab from './Action/next_tab';
+import actionDuplicateTab from './Action/open_duplicate_tab';
 import actionOpenExtensionPage from './Action/open_extension_page';
 import actionOpenNewTab from './Action/open_new_tab';
 import actionOpenNewTabBackGround from './Action/open_new_tab_background';
@@ -32,6 +33,7 @@ const gestureFunction: { [key: string]: (GestureOptions?) => void | Promise<void
   'close_right_tab': actionCloseRightTab,
   'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
   'close_tab': actionCloseActiveTab,
+  'duplicate_tab': actionDuplicateTab,
   'last_tab': actionRestoreLastTab,
   'new_tab': actionOpenNewTab,
   'new_tab_background': actionOpenNewTabBackGround,

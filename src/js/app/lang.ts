@@ -50,6 +50,10 @@ const lang: LanguageConfig = {
       'English': 'Close tab',
       'Japanese': 'タブを閉じる',
     },
+    'gesture_duplicate_tab': {
+      'English': 'Duplicate Tab',
+      'Japanese': 'タブを複製する',
+    },
     'gesture_forward': {
       'English': 'Forward',
       'Japanese': '進む',

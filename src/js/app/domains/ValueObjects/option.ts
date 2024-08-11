@@ -13,6 +13,7 @@ class Option {
   public readonly gestureCloseTab: string;
   public readonly gestureNewTab: string;
   public readonly gestureNewTabBackground: string;
+  public readonly gestureDuplicateTab: string;
   public readonly gesturePinTab: string;
   public readonly gestureReload: string;
   public readonly gestureForward: string;
@@ -52,6 +53,7 @@ class Option {
     this.gestureCloseTab = value.gesture_close_tab ?? 'DR';
     this.gestureNewTab = value.gesture_new_tab ?? 'D';
     this.gestureNewTabBackground = value.gesture_new_tab_background ?? '';
+    this.gestureDuplicateTab = value.gesture_duplicate_tab ?? '';
     this.gesturePinTab = value.gesture_pin_tab ?? '';
     this.gestureReload = value.gesture_reload ?? 'DU';
     this.gestureForward = value.gesture_forward ?? 'R';
@@ -94,6 +96,7 @@ class Option {
       gesture_close_right_tab: this.gestureCloseRightTab,
       gesture_close_right_tab_without_pinned: this.gestureCloseRightTabWithoutPinned,
       gesture_close_tab: this.gestureCloseTab,
+      gesture_duplicate_tab: this.gestureDuplicateTab,
       gesture_forward: this.gestureForward,
       gesture_last_tab: this.gestureLastTab,
       gesture_new_tab: this.gestureNewTab,

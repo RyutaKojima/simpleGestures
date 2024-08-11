@@ -4,8 +4,8 @@ export const chromeTabs = {
   activate(tab: Tab): void {
     chrome.tabs.update(tab.id, {active: true});
   },
-  async activateOrCreate(url: null|string = null) {
-    const extensionTab: null|Tab = await chromeTabs.findSameUrlInCurrentWindow(url);
+  async activateOrCreate(url: null | string = null) {
+    const extensionTab: null | Tab = await chromeTabs.findSameUrlInCurrentWindow(url);
 
     if (extensionTab) {
       chromeTabs.activate(extensionTab);
@@ -13,7 +13,7 @@ export const chromeTabs = {
       await chromeTabs.createLast(url);
     }
   },
-  close(tab: Tab|Tab[]): void {
+  close(tab: Tab | Tab[]): void {
     if (Array.isArray(tab)) {
       const removeTabIds: number[] = tab.map((tab) => tab.id);
       chrome.tabs.remove(removeTabIds);
@@ -21,7 +21,7 @@ export const chromeTabs = {
       chrome.tabs.remove(tab.id);
     }
   },
-  async createActiveRight(url: null|string = null, active = true) {
+  async createActiveRight(url: null | string = null, active = true) {
     const activeTab: Tab = await chromeTabs.getActiveTab();
     const indexOfAppendingTab: number = activeTab.index + 1;
 
@@ -32,7 +32,7 @@ export const chromeTabs = {
       url: url,
     });
   },
-  async createLast(url: null|string = null, active = true) {
+  async createLast(url: null | string = null, active = true) {
     const activeTab: Tab = await chromeTabs.getActiveTab();
 
     await chrome.tabs.create({
@@ -41,7 +41,12 @@ export const chromeTabs = {
       url: url,
     });
   },
-  async findSameUrlInCurrentWindow(url: string): Promise<Tab|undefined> {
+  async duplicate() {
+    const activeTab: Tab = await chromeTabs.getActiveTab();
+
+    await chrome.tabs.duplicate(activeTab.id);
+  },
+  async findSameUrlInCurrentWindow(url: string): Promise<Tab | undefined> {
     const tabsInCurrentWindow: Tab[] = await chromeTabs.getCurrentWindowTabs();
     return tabsInCurrentWindow.find((tab) => tab.url === url);
   },
