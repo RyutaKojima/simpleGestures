@@ -19,15 +19,15 @@ const lang: LanguageConfig = {
   },
   'gesture': {
     'gesture_back': {
-      'English': 'back',
+      'English': 'Back',
       'Japanese': '戻る',
     },
     'gesture_close_all': {
-      'English': 'close all tab',
+      'English': 'Close all tabs',
       'Japanese': '同一ウィンドウの全てのタブを閉じる',
     },
     'gesture_close_all_background': {
-      'English': 'close all background tab',
+      'English': 'Close all background tabs',
       'Japanese': '同一ウィンドウの他のタブを閉じる',
     },
     'gesture_close_left_tab': {
@@ -47,15 +47,15 @@ const lang: LanguageConfig = {
       'Japanese': '右のタブを閉じる(固定されたタブを除く）',
     },
     'gesture_close_tab': {
-      'English': 'tab close',
+      'English': 'Close tab',
       'Japanese': 'タブを閉じる',
     },
     'gesture_forward': {
-      'English': 'forward',
+      'English': 'Forward',
       'Japanese': '進む',
     },
     'gesture_last_tab': {
-      'English': 'open last tab',
+      'English': 'Open last tab',
       'Japanese': '閉じたタブを開く',
     },
     'gesture_new_tab': {
@@ -67,55 +67,55 @@ const lang: LanguageConfig = {
       'Japanese': '新しいタブ/新しいタブでリンクを開く(バックグラウンドで開く)',
     },
     'gesture_next_tab': {
-      'English': 'next tab',
+      'English': 'Go to right tab',
       'Japanese': '次のタブ',
     },
     'gesture_open_extension': {
-      'English': 'open chrome extension page',
+      'English': 'Open chrome extension page',
       'Japanese': 'Google Chromeの「拡張機能」ページを開く',
     },
     'gesture_open_option': {
-      'English': 'open simpleGesture option page',
+      'English': 'Open simpleGesture option page',
       'Japanese': 'simpleGestureの設定を開く',
     },
     'gesture_pin_tab': {
-      'English': 'pin the tabs',
+      'English': 'Pin the tab',
       'Japanese': 'タブを固定/解除',
     },
     'gesture_prev_tab': {
-      'English': 'prev tab',
+      'English': 'Go to left tab',
       'Japanese': '前のタブ',
     },
     'gesture_reload': {
-      'English': 'reload',
+      'English': 'Reload',
       'Japanese': 'ページを再読み込み',
     },
     'gesture_reload_all': {
-      'English': 'reload all',
+      'English': 'Reload all tabs',
       'Japanese': '全てのページを再読み込み',
     },
     'gesture_restart': {
-      'English': 'restart google chrome',
+      'English': 'Restart google chrome',
       'Japanese': 'Google Chromeを再起動する',
     },
     'gesture_scroll_bottom': {
-      'English': 'scroll bottom',
+      'English': 'Scroll to bottom',
       'Japanese': 'ページの最後までスクロール',
     },
     'gesture_scroll_top': {
-      'English': 'scroll top',
+      'English': 'Scroll to top',
       'Japanese': 'ページの先頭までスクロール',
     },
     'gesture_window_maximize': {
-      'English': 'current window maximize',
+      'English': 'Window maximize',
       'Japanese': 'ウィンドウを最大化',
     },
     'gesture_window_minimize': {
-      'English': 'current window minimize',
+      'English': 'Window minimize',
       'Japanese': 'ウィンドウを最小化',
     },
     'gesture_window_normalize': {
-      'English': 'current window size to normal',
+      'English': 'Window size to normal',
       'Japanese': 'ウィンドウを通常サイズにする',
     },
   },
