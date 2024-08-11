@@ -10,7 +10,7 @@ export const chromeTabs = {
     if (extensionTab) {
       chromeTabs.activate(extensionTab);
     } else {
-      chromeTabs.createLast(url);
+      await chromeTabs.createLast(url);
     }
   },
   close(tab: Tab|Tab[]): void {
@@ -25,15 +25,19 @@ export const chromeTabs = {
     const activeTab: Tab = await chromeTabs.getActiveTab();
     const indexOfAppendingTab: number = activeTab.index + 1;
 
-    chrome.tabs.create({
+    await chrome.tabs.create({
       active: active,
       index: indexOfAppendingTab,
+      openerTabId: activeTab.id,
       url: url,
     });
   },
-  createLast(url: null|string = null, active = true) {
-    chrome.tabs.create({
+  async createLast(url: null|string = null, active = true) {
+    const activeTab: Tab = await chromeTabs.getActiveTab();
+
+    await chrome.tabs.create({
       active: active,
+      openerTabId: activeTab.id,
       url: url,
     });
   },
