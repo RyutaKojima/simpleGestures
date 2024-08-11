@@ -9,6 +9,7 @@ const GESTURE_ID_LIST = [
   'gesture_close_tab',
   'gesture_new_tab',
   'gesture_new_tab_background',
+  'gesture_duplicate_tab',
   'gesture_pin_tab',
   'gesture_reload',
   'gesture_forward',
