@@ -11,6 +11,7 @@ class Option {
   public readonly trailOn: boolean;
 
   public readonly gestureCloseTab: string;
+  public readonly gestureCloseTabWithoutPinned: string;
   public readonly gestureNewTab: string;
   public readonly gestureNewTabBackground: string;
   public readonly gestureDuplicateTab: string;
@@ -50,7 +51,8 @@ class Option {
     this.actionTextOn = value.action_text_on ?? true;
     this.trailOn = value.trail_on ?? true;
 
-    this.gestureCloseTab = value.gesture_close_tab ?? 'DR';
+    this.gestureCloseTab = value.gesture_close_tab ?? '';
+    this.gestureCloseTabWithoutPinned = value.gesture_close_tab_without_pinned ?? 'DR';
     this.gestureNewTab = value.gesture_new_tab ?? 'D';
     this.gestureNewTabBackground = value.gesture_new_tab_background ?? '';
     this.gestureDuplicateTab = value.gesture_duplicate_tab ?? '';
@@ -96,6 +98,7 @@ class Option {
       gesture_close_right_tab: this.gestureCloseRightTab,
       gesture_close_right_tab_without_pinned: this.gestureCloseRightTabWithoutPinned,
       gesture_close_tab: this.gestureCloseTab,
+      gesture_close_tab_without_pinned: this.gestureCloseTabWithoutPinned,
       gesture_duplicate_tab: this.gestureDuplicateTab,
       gesture_forward: this.gestureForward,
       gesture_last_tab: this.gestureLastTab,

@@ -7,6 +7,9 @@ export default async (): Promise<void> => {
   if (!activeTab) {
     return;
   }
+  if (activeTab.pinned) {
+    return;
+  }
 
   chromeTabs.close(activeTab);
 };
