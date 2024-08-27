@@ -1,5 +1,6 @@
 import actionBrowserRestart from './Action/browser_restart';
 import actionCloseActiveTab from './Action/close_active_tab';
+import actionCloseActiveTabWithoutPinned from './Action/close_active_tab_without_pinned';
 import actionCloseAllBackgroundTab from './Action/close_all_background_tab';
 import actionCloseAllTab from './Action/close_all_tab';
 import actionCloseLeftTab from './Action/close_left_tab';
@@ -33,6 +34,7 @@ const gestureFunction: { [key: string]: (GestureOptions?) => void | Promise<void
   'close_right_tab': actionCloseRightTab,
   'close_right_tab_without_pinned': actionCloseRightTabWithoutPinned,
   'close_tab': actionCloseActiveTab,
+  'close_tab_without_pinned': actionCloseActiveTabWithoutPinned,
   'duplicate_tab': actionDuplicateTab,
   'last_tab': actionRestoreLastTab,
   'new_tab': actionOpenNewTab,
