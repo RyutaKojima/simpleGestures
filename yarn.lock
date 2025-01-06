@@ -733,10 +733,10 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/merge-streams/-/merge-streams-1.0.0.tgz#9cd84cc15bc865a5ca35fcaae198eb899f7b5c90"
   integrity sha512-rUV5WyJrJLoloD4NDN1V1+LDMDWOa4OTsT4yYJwQNpTU6FWxkxHpL7eu4w+DmiH8x/EAM1otkPE1+LaspIbplw==
 
-"@types/chrome@0.0.289":
-  version "0.0.289"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.289.tgz#c44e156fdd7e535b56aa5ca2ee73b09387846665"
-  integrity sha512-JQifH2d4TFeIZ+ySBSQxCd4D+J6W0jIAyQipAzG1up4O7WApTYrBqnmpNbMqFR5f70wJ1FE6+axqtpfTtPzy/g==
+"@types/chrome@0.0.290":
+  version "0.0.290"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.290.tgz#570e511360d1b92cf24773af0c3b23b6e1f13152"
+  integrity sha512-N92vsAdlwoWameDQ8D4K0EZXXvxsJ1+gJg+4TWjUUsZ6gpontVmwl1XVtysA3mso45Fcn5UPiX/yqiT8GcBV3A==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
