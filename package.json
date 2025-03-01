@@ -29,7 +29,7 @@
     "@types/chrome": "0.0.307",
     "@typescript-eslint/eslint-plugin": "8.25.0",
     "@typescript-eslint/parser": "8.25.0",
-    "copy-webpack-plugin": "12.0.2",
+    "copy-webpack-plugin": "13.0.0",
     "cspell": "^8.0.0",
     "css-loader": "7.1.2",
     "eslint": "9.21.0",
