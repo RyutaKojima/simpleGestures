@@ -7,6 +7,7 @@ import MyStorage from './storage';
 
 const GESTURE_ID_LIST = [
   'gesture_close_tab',
+  'gesture_close_tab_without_pinned',
   'gesture_new_tab',
   'gesture_new_tab_background',
   'gesture_duplicate_tab',
