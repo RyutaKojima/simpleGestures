@@ -35,7 +35,7 @@ const scrollLeft = (): number =>
     ].join('\n'),
     isAlreadyConfirmed: false,
     isUpdated: false,
-    updateCheckAndNotify: (error:Error): boolean => {
+    updateCheckAndNotify: (error: Error): boolean => {
       if (error.message !== 'Extension context invalidated.') {
         return false;
       }
@@ -54,7 +54,7 @@ const scrollLeft = (): number =>
     },
   };
 
-  const isExtensionDisabled = ():boolean => {
+  const isExtensionDisabled = (): boolean => {
     if (!contentScripts.option.getEnabled()) {
       return true;
     }
@@ -90,26 +90,22 @@ const scrollLeft = (): number =>
    */
   const clearAllDisplay = (): void => {
     if (trailCanvas) {
-      trailCanvas.clearCanvas();
-
-      const canvasId = trailCanvas.getCanvasId();
-      const canvasElementId = document.getElementById(canvasId);
-      if (canvasId && canvasElementId) {
+      const canvasElementId = document.getElementById(trailCanvas.getCanvasId());
+      if (canvasElementId) {
+        trailCanvas.clearCanvas();
         document.body.removeChild(canvasElementId);
       }
     }
 
     if (contentScripts.infoDiv) {
-      contentScripts.clearText();
-
       const infoElementId = document.getElementById(contentScripts.infoDiv.id);
       if (infoElementId) {
+        contentScripts.clearText();
         document.body.removeChild(infoElementId);
       }
     }
   };
 
-  trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
   contentScripts.loadOption().then(null);
 
   (async () => {
@@ -134,10 +130,6 @@ const scrollLeft = (): number =>
     inputGesture.clear();
 
     await contentScripts.loadOption();
-  });
-
-  window.addEventListener('resize', () => {
-    trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
   });
 
   document.addEventListener('keydown', (event: KeyboardEvent): void => {
@@ -171,8 +163,8 @@ const scrollLeft = (): number =>
     startTarget = event.target;
 
     inputGesture
-        .setLinkUrl(Mouse.getHref(event))
-        .addPoint(new MousePoint(event.pageX - scrollLeft(), event.pageY - scrollTop()));
+      .setLinkUrl(Mouse.getHref(event))
+      .addPoint(new MousePoint(event.pageX - scrollLeft(), event.pageY - scrollTop()));
 
     if (inputGesture.isUpdateLine) {
       inputGesture.updateAction(contentScripts.option);
@@ -196,16 +188,23 @@ const scrollLeft = (): number =>
     }
 
     inputGesture
-        .addPoint(new MousePoint(event.pageX - scrollLeft(), event.pageY - scrollTop()));
+      .addPoint(new MousePoint(event.pageX - scrollLeft(), event.pageY - scrollTop()));
 
     if (inputGesture.isUpdateLine) {
       inputGesture.updateAction(contentScripts.option);
 
-      if (trailCanvas.getCanvas()) {
-        document.body.appendChild(trailCanvas.getCanvas());
+      if (trailCanvas.getCanvasId() && contentScripts.option.isTrailOn()) {
+        const canvasElementId = document.getElementById(trailCanvas.getCanvasId());
+        if (!canvasElementId) {
+          document.body.appendChild(trailCanvas.getCanvas());
+          trailCanvas.setCanvasSize(window.innerWidth, window.innerHeight);
+          contentScripts.setCanvasStyle();
+        }
       }
 
-      if (contentScripts.infoDiv) {
+      if (contentScripts.infoDiv
+        && (contentScripts.option.isActionTextOn()) || contentScripts.option.isCommandTextOn()
+      ) {
         document.body.appendChild(contentScripts.infoDiv);
       }
 
@@ -216,9 +215,9 @@ const scrollLeft = (): number =>
         toY: inputGesture.newLineTo.y,
       };
       contentScripts.draw(
-          listParam,
-          inputGesture.gestureCommands.displayString,
-          inputGesture.gestureActionName(contentScripts.option),
+        listParam,
+        inputGesture.gestureCommands.displayString,
+        inputGesture.gestureActionName(contentScripts.option),
       );
     }
   });
