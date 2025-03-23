@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Always OK\" && exit 0",
+    "security-check": "yarn audit",
+    "type-check": "tsc --noEmit",
     "spell-check": "cspell lint -c ./cspell.json --no-progress --show-suggestions \"src/**/*.ts\" \"src/**/*.js\" \"src/**/*.json\" \"**/*.md\"",
     "eslint": "eslint \"src/js/app/**\"",
     "stylelint": "stylelint \"src/**/*.css\"",
-    "lint": "yarn eslint & yarn stylelint",
+    "lint:all": "yarn type-check && yarn eslint && yarn stylelint",
     "dev": "yarn build --watch",
     "build": "webpack",
     "build:clean": "rm -rf dist && yarn build",

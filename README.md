@@ -9,14 +9,16 @@
 [![codebeat badge](https://codebeat.co/badges/56ecd007-3c77-4e5e-8494-71a98599c99d)](https://codebeat.co/projects/github-com-ryutakojima-simplegestures-master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4876517adbac48fcaa149e28614cbe07)](https://app.codacy.com/app/RyutaKojima/simpleGestures?utm_source=github.com&utm_medium=referral&utm_content=RyutaKojima/simpleGestures&utm_campaign=Badge_Grade_Settings)
 
-### Overview (概要)
+# Overview (概要)
 
 シンプルな動作とオプション設定を目指したGoogleChrome拡張機能のマウスジェスチャです。  
 simpleGestures is GoogleChrome extension that adds a simple mouse gesture.
 
-### Install (インストール)
+# Install (インストール)
 
 [公開版をGoogleChromeにインストール](https://chrome.google.com/webstore/detail/simplegestures/flfminafiamnggnldfpilnfnmbgmiegn)
+
+# For Developer (開発者向け)
 
 ## How to build
 
@@ -29,26 +31,26 @@ git clone git@github.com:RyutaKojima/simpleGestures.git
 2. package install
 
 ```
-yarn
+yarn install
 ```
 
-3. Build
+3. Check Style Guide
 
 ```
-yarn build
+yarn lint:all
 ```
 
-4. Check Style Guide
+4. Build
 
 ```
-yarn lint
+yarn build:clean
 ```
 
-### License (ライセンス)
+## License (ライセンス)
 
 The MIT License
 
-### Style Guide(コーディング規約)
+## Style Guide(コーディング規約)
 
 Google JavaScript Style Guide に準拠します。
 英語：https://google.github.io/styleguide/jsguide.html

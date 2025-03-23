@@ -20,7 +20,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
+  "include": [
+    "src/js/app/**/*.ts"  // 対象フォルダーを指定
+  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }
