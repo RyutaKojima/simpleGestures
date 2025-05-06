@@ -2441,10 +2441,10 @@ http-errors@2.0.0, http-errors@^2.0.0:
     statuses "2.0.1"
     toidentifier "1.0.1"
 
-i18next@25.0.2:
-  version "25.0.2"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-25.0.2.tgz#3bfd51d11603e130cc4a88ff37038393dc560951"
-  integrity sha512-xWxgK8GAaPYkV9ia2tdgbtdM+qiC+ysVTBPvXhpCORU/+QkeQe3BSI7Crr+c4ZXULN1PfnXG/HY2n7HGx4KKBg==
+i18next@25.1.1:
+  version "25.1.1"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-25.1.1.tgz#113e7773697d300e7e824185f766362eceb8dc61"
+  integrity sha512-FZcp3vk3PXc8onasbsWYahfeDIWX4LkKr4vd01xeXrmqyNXlVNtVecEIw2K1o8z3xYrHMcd1bwYQub+3g7zqCw==
   dependencies:
     "@babel/runtime" "^7.26.10"
 
