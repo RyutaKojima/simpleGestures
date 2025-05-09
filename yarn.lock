@@ -773,10 +773,10 @@
     "@parcel/watcher-win32-ia32" "2.5.1"
     "@parcel/watcher-win32-x64" "2.5.1"
 
-"@types/chrome@0.0.320":
-  version "0.0.320"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.320.tgz#dc872550a5860d8ca1260bb5d209ebc4c2c4b9dc"
-  integrity sha512-LD0O6hqayM4/InMUB2fOGSh7lFkUlusa40mk6iUAxs0RHfvRYjjsDoRGsDh2DEJWP4Ckccf00FVhkhDHHIqy7g==
+"@types/chrome@0.0.321":
+  version "0.0.321"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.321.tgz#5847601ed12446218631f04a8135376a33e494d9"
+  integrity sha512-SJhZSr5Xcj0rHXSKm/UTp4iIFtlxMADpa45UVCgWPemz/MdJA7ej0gvqUb+wqAX5COpA1FgPKPEoEw2L8SDVGQ==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
