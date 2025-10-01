@@ -760,10 +760,10 @@
     "@parcel/watcher-win32-ia32" "2.5.1"
     "@parcel/watcher-win32-x64" "2.5.1"
 
-"@types/chrome@0.1.14":
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.1.14.tgz#9e14a614b78aeb9269355e9b43bb719179e696b7"
-  integrity sha512-uUX1f0zVFq9WhI1E9u0CSZFgqmoFxSqS0WgfjSWOdFSf3JXIHYXvhN5XyLQGovRUhhWQZgYIYw8ugSZ3EJ1mJw==
+"@types/chrome@0.1.16":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.1.16.tgz#4f93e351966f65b44db2caad088724e40646e2dd"
+  integrity sha512-GvK2s58ElQ/1hJEHcdRj798VhVgBV1Xt0u8fOBG1dILV3ATTOc2qabr3P2SG39l3ISiWWFG6Glt4IkOXz6eDCw==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
