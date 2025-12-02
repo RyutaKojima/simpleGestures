@@ -39,7 +39,7 @@
     "eslint-plugin-sort-destructure-keys": "2.0.0",
     "eslint-plugin-sort-keys-fix": "1.1.2",
     "eslint-plugin-typescript-sort-keys": "3.3.0",
-    "i18next": "25.7.0",
+    "i18next": "25.7.1",
     "sass": "^1.77.8",
     "sass-loader": "16.0.6",
     "style-loader": "4.0.0",
