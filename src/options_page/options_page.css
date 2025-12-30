@@ -21,7 +21,7 @@ body {
 .content-gesture .views-gesture {
   width: 250px;
   display: inline-block;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   cursor: pointer;
   background-color: beige;
 }
