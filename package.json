@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/RyutaKojima/simpleGestures#readme",
   "devDependencies": {
-    "@types/chrome": "0.1.28",
+    "@types/chrome": "0.1.32",
     "@typescript-eslint/eslint-plugin": "8.51.0",
     "@typescript-eslint/parser": "8.51.0",
     "copy-webpack-plugin": "13.0.1",
@@ -44,7 +44,7 @@
     "sass-loader": "16.0.6",
     "style-loader": "4.0.0",
     "stylelint": "16.26.1",
-    "stylelint-config-standard": "38.0.0",
+    "stylelint-config-standard": "39.0.1",
     "terser-webpack-plugin": "5.3.16",
     "ts-loader": "9.5.4",
     "typescript": "5.9.3",

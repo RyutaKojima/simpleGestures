@@ -89,13 +89,13 @@ export default class MyStorage {
       switch (this.storageType) {
         case MyStorage.CHROME_STORAGE_LOCAL:
           chrome.storage.local.get(key, (value) => {
-            resolve(value[key]);
+            resolve((value[key] as string) || '');
           });
           break;
 
         case MyStorage.CHROME_STORAGE_SYNC:
           chrome.storage.sync.get(key, (value) => {
-            resolve(value[key]);
+            resolve((value[key] as string) || '');
           });
           break;
 
