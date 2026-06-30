@@ -125,7 +125,10 @@ const scrollLeft = (): number =>
   /**
    * ジェスチャ中にキーボードショートカットでタブ切り替えされると、'mouseup' が取れずに停止してしまうのでフォーカス戻ってきたときにいったんクリアする。
    */
-  window.addEventListener('focus', async () => {
+  window.addEventListener('focus', async (event: FocusEvent) => {
+    if (!event.isTrusted) {
+      return;
+    }
     inputKeyboard.reset();
     inputGesture.clear();
 
@@ -133,16 +136,25 @@ const scrollLeft = (): number =>
   });
 
   document.addEventListener('keydown', (event: KeyboardEvent): void => {
+    if (!event.isTrusted) {
+      return;
+    }
     if (!event.repeat) {
       inputKeyboard.setOn(event.key);
     }
   });
 
   document.addEventListener('keyup', (event: KeyboardEvent): void => {
+    if (!event.isTrusted) {
+      return;
+    }
     inputKeyboard.setOff(event.key);
   });
 
   document.addEventListener('mousedown', async (event: HTMLElementEvent<HTMLChildElement>) => {
+    if (!event.isTrusted) {
+      return;
+    }
     if (isExtensionDisabled()) {
       return;
     }
@@ -174,6 +186,9 @@ const scrollLeft = (): number =>
   });
 
   document.addEventListener('mousemove', async (event: MouseEvent) => {
+    if (!event.isTrusted) {
+      return;
+    }
     if (isExtensionDisabled()) {
       return;
     }
@@ -223,6 +238,9 @@ const scrollLeft = (): number =>
   });
 
   document.addEventListener('mouseup', (event: MouseEvent) => {
+    if (!event.isTrusted) {
+      return;
+    }
     inputMouse.setOff(event.which);
 
     if (isExtensionDisabled()) {
@@ -255,6 +273,9 @@ const scrollLeft = (): number =>
    * falseを返すと、コンテキストメニューを無効にする。
    */
   document.addEventListener('contextmenu', (event: MouseEvent) => {
+    if (!event.isTrusted) {
+      return;
+    }
     if (isExtensionDisabled()) {
       return;
     }
