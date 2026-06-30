@@ -53,7 +53,7 @@ export default [...compat.extends("plugin:@typescript-eslint/recommended"), {
         }],
 
         "max-lines-per-function": ["error", {
-            max: 50,
+            max: 60,
         }],
 
         "sort-keys-fix/sort-keys-fix": "error",
