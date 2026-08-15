@@ -47,19 +47,7 @@ const baseWebpackConfig = {
         },
       },
     })],
-    splitChunks: {
-      cacheGroups: {
-        vendors: {
-          chunks: 'all',
-          test: /[\\/]node_modules[\\/]/,
-        },
-      },
 
-      chunks: 'async',
-      minChunks: 1,
-      minSize: 30000,
-      name: false,
-    },
   },
 
   output: {
