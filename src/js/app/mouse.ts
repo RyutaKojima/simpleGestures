@@ -25,14 +25,14 @@ class Mouse {
    * @return {number}
    */
   static get LEFT_BUTTON(): number {
-    return 1;
+    return 0;
   }
 
   /**
    * @return {number}
    */
   static get RIGHT_BUTTON(): number {
-    return 3;
+    return 2;
   }
 
   /**

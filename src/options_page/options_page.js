@@ -237,7 +237,7 @@ const createGestureInputComponent = ($input) => {
         return false;
       })
       .on('mousemove', (event) => {
-        if (event.which === 0) {
+        if (event.buttons === 0) {
           return;
         }
 

@@ -166,9 +166,9 @@ const scrollLeft = (): number =>
       return;
     }
 
-    inputMouse.setOn(event.which);
+    inputMouse.setOn(event.button);
 
-    if (event.which !== Mouse.RIGHT_BUTTON) {
+    if (event.button !== Mouse.RIGHT_BUTTON) {
       return;
     }
 
@@ -198,7 +198,7 @@ const scrollLeft = (): number =>
       return;
     }
 
-    if (event.which !== Mouse.RIGHT_BUTTON) {
+    if (event.button !== Mouse.RIGHT_BUTTON) {
       return;
     }
 
@@ -241,7 +241,7 @@ const scrollLeft = (): number =>
     if (!event.isTrusted) {
       return;
     }
-    inputMouse.setOff(event.which);
+    inputMouse.setOff(event.button);
 
     if (isExtensionDisabled()) {
       return;
