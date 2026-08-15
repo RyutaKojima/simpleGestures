@@ -25,6 +25,8 @@ const scrollLeft = (): number =>
   const contentScripts: ContentScripts = new ContentScripts(trailCanvas);
   let nextMenuSkip = false;
   let startTarget: Element | null = null;
+  // Map event.button to event.which format
+  const buttonMap: { [key: number]: number } = {0: 1, 1: 2, 2: 3, 3: 8, 4: 9};
 
   const versionUp = {
     confirmText: [
@@ -166,9 +168,10 @@ const scrollLeft = (): number =>
       return;
     }
 
-    inputMouse.setOn(event.which);
+    const buttonId = buttonMap[event.button] || event.button;
+    inputMouse.setOn(buttonId);
 
-    if (event.which !== Mouse.RIGHT_BUTTON) {
+    if (buttonId !== Mouse.RIGHT_BUTTON) {
       return;
     }
 
@@ -198,7 +201,7 @@ const scrollLeft = (): number =>
       return;
     }
 
-    if (event.which !== Mouse.RIGHT_BUTTON) {
+    if ((event.buttons & 2) !== 2) {
       return;
     }
 
@@ -241,7 +244,8 @@ const scrollLeft = (): number =>
     if (!event.isTrusted) {
       return;
     }
-    inputMouse.setOff(event.which);
+    const buttonId = buttonMap[event.button] || event.button;
+    inputMouse.setOff(buttonId);
 
     if (isExtensionDisabled()) {
       return;
