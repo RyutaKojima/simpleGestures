@@ -33,25 +33,31 @@ export default class MyStorage {
   }
 
   /**
+   * @return {chrome.storage.StorageArea | Storage | null}
+   */
+  private getStorage(): chrome.storage.StorageArea | Storage | null {
+    switch (this.storageType) {
+      case MyStorage.CHROME_STORAGE_LOCAL:
+        return chrome.storage.local;
+      case MyStorage.CHROME_STORAGE_SYNC:
+        return chrome.storage.sync;
+      case MyStorage.LOCAL_STORAGE:
+        return localStorage;
+      default:
+        console.error('error: invalid storageType');
+        return null;
+    }
+  }
+
+  /**
    * Removes all items from storage.
    */
   clear(): void {
-    switch (this.storageType) {
-      case MyStorage.CHROME_STORAGE_LOCAL:
-        chrome.storage.local.clear();
-        break;
+    const storage = this.getStorage();
+    if (!storage) return;
 
-      case MyStorage.CHROME_STORAGE_SYNC:
-        chrome.storage.sync.clear();
-        break;
-
-      case MyStorage.LOCAL_STORAGE:
-        localStorage.clear();
-        break;
-
-      default:
-        console.error('error');
-        break;
+    if ('clear' in storage && typeof storage.clear === 'function') {
+      storage.clear();
     }
   }
 
@@ -61,22 +67,13 @@ export default class MyStorage {
    * @param {string} key
    */
   remove(key: string): void {
-    switch (this.storageType) {
-      case MyStorage.CHROME_STORAGE_LOCAL:
-        chrome.storage.local.remove(key);
-        break;
+    const storage = this.getStorage();
+    if (!storage) return;
 
-      case MyStorage.CHROME_STORAGE_SYNC:
-        chrome.storage.sync.remove(key);
-        break;
-
-      case MyStorage.LOCAL_STORAGE:
-        localStorage.removeItem(key);
-        break;
-
-      default:
-        console.error('error');
-        break;
+    if (this.storageType === MyStorage.LOCAL_STORAGE) {
+      (storage as Storage).removeItem(key);
+    } else {
+      (storage as chrome.storage.StorageArea).remove(key);
     }
   }
 
@@ -86,27 +83,19 @@ export default class MyStorage {
    */
   load(key: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      switch (this.storageType) {
-        case MyStorage.CHROME_STORAGE_LOCAL:
-          chrome.storage.local.get(key, (value) => {
-            resolve((value[key] as string) || '');
-          });
-          break;
+      const storage = this.getStorage();
+      if (!storage) {
+        reject(new Error('error'));
+        return;
+      }
 
-        case MyStorage.CHROME_STORAGE_SYNC:
-          chrome.storage.sync.get(key, (value) => {
-            resolve((value[key] as string) || '');
-          });
-          break;
-
-        case MyStorage.LOCAL_STORAGE:
-          const loadData = localStorage.getItem(key);
-          resolve(loadData);
-          break;
-
-        default:
-          reject(new Error('error'));
-          break;
+      if (this.storageType === MyStorage.LOCAL_STORAGE) {
+        const loadData = (storage as Storage).getItem(key);
+        resolve(loadData || '');
+      } else {
+        (storage as chrome.storage.StorageArea).get(key, (value) => {
+          resolve((value[key] as string) || '');
+        });
       }
     });
   }
@@ -116,25 +105,16 @@ export default class MyStorage {
    * @param {string} saveData
    */
   save(key: string, saveData: string): void {
-    const saveParam: { [key:string]: string } = {
-      [key]: saveData,
-    };
-    switch (this.storageType) {
-      case MyStorage.CHROME_STORAGE_LOCAL:
-        chrome.storage.local.set(saveParam);
-        break;
+    const storage = this.getStorage();
+    if (!storage) return;
 
-      case MyStorage.CHROME_STORAGE_SYNC:
-        chrome.storage.sync.set(saveParam);
-        break;
-
-      case MyStorage.LOCAL_STORAGE:
-        localStorage.setItem(key, saveData);
-        break;
-
-      default:
-        console.error('error');
-        break;
+    if (this.storageType === MyStorage.LOCAL_STORAGE) {
+      (storage as Storage).setItem(key, saveData);
+    } else {
+      const saveParam: { [key:string]: string } = {
+        [key]: saveData,
+      };
+      (storage as chrome.storage.StorageArea).set(saveParam);
     }
   }
 }
