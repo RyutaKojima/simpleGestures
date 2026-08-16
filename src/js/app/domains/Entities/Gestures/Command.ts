@@ -80,9 +80,9 @@ export default class Command {
       return '';
     }
 
-    return commandString.replace(/U/g, '<i class="flaticon-up-arrow"></i>').
-        replace(/L/g, '<i class="flaticon-left-arrow"></i>').
-        replace(/R/g, '<i class="flaticon-right-arrow"></i>').
-        replace(/D/g, '<i class="flaticon-down-arrow"></i>');
+    return commandString.replace(/U/g, '↑').
+        replace(/L/g, '←').
+        replace(/R/g, '→').
+        replace(/D/g, '↓');
   }
 }
