@@ -66,11 +66,6 @@ const baseWebpackConfig = {
           to: path.join(__dirname, 'dist', 'img'),
         },
         {
-          context: 'src/font',
-          from: '**/*.*',
-          to: path.join(__dirname, 'dist', 'font'),
-        },
-        {
           context: 'src/options_page',
           from: path.join('**', '*.*'),
           globOptions: {
