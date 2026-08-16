@@ -281,10 +281,10 @@ const createGestureInputComponent = ($input) => {
 };
 
 const setGestureInputComponent = ($input, gestureText) => {
-  const setGestureText = gestureText ? Command.replaceCommandToDisplay(gestureText) : '&nbsp;';
+  const setGestureText = gestureText ? Command.replaceCommandToDisplay(gestureText) : '\u00A0';
 
   $input.val(gestureText);
-  $input.siblings('.views-gesture').html(setGestureText);
+  $input.siblings('.views-gesture').text(setGestureText);
 };
 
 // eslint-disable-next-line

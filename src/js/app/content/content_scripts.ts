@@ -76,6 +76,7 @@ class ContentScripts {
 
     if (!this.commandDiv) {
       this.commandDiv = createDivElement('gestureCommandDiv');
+      this.commandDiv.style.fontFamily = 'Flaticon';
     }
     if (!this.actionNameDiv) {
       this.actionNameDiv = createDivElement('gestureActionNameDiv');
