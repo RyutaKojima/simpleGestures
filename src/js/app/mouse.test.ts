@@ -27,7 +27,7 @@ describe('Mouse', () => {
   });
 
   describe('getHref', () => {
-    it('should return target or closest anchor href if present', () => {
+    it('should return target or closest anchor href if present and http/https', () => {
       const link = document.createElement('a') as unknown as HTMLChildElement;
       link.href = 'https://example.com/link';
 
@@ -35,12 +35,20 @@ describe('Mouse', () => {
       expect(Mouse.getHref(event)).toBe('https://example.com/link');
 
       const parentLink = document.createElement('a');
-      parentLink.href = 'https://example.com/parent';
+      parentLink.href = 'http://example.com/parent';
       const childSpan = document.createElement('span') as unknown as HTMLChildElement;
       childSpan.closest = jest.fn().mockReturnValue(parentLink);
 
       const event2 = { target: childSpan } as HTMLElementEvent<HTMLChildElement>;
-      expect(Mouse.getHref(event2)).toBe('https://example.com/parent');
+      expect(Mouse.getHref(event2)).toBe('http://example.com/parent');
+    });
+
+    it('should filter out unsafe schemes like javascript:', () => {
+      const link = document.createElement('a') as unknown as HTMLChildElement;
+      link.href = 'javascript:alert(1)';
+
+      const event = { target: link } as HTMLElementEvent<HTMLChildElement>;
+      expect(Mouse.getHref(event)).toBeNull();
     });
 
     it('should return null if neither target nor closest anchor has href', () => {

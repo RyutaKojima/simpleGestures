@@ -45,12 +45,24 @@ class Mouse {
     const target: HTMLChildElement = mouseevent.target;
     const parentLinkElement = target.closest('a');
 
+    let rawHref: string | null = null;
     if (target.href) {
-      return target.href;
+      rawHref = target.href;
+    } else if (parentLinkElement && parentLinkElement.href) {
+      rawHref = parentLinkElement.href;
     }
 
-    if (parentLinkElement && parentLinkElement.href) {
-      return parentLinkElement.href;
+    if (!rawHref) {
+      return null;
+    }
+
+    try {
+      const parsedUrl = new URL(rawHref);
+      if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+        return rawHref;
+      }
+    } catch {
+      // Invalid URL
     }
 
     return null;
