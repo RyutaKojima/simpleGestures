@@ -120,7 +120,7 @@ class LibOption {
   setRawStorageData(rawStorageData: string|null) {
     this.storageData = rawStorageData;
 
-    if (this.storageData == null) {
+    if (!this.storageData) {
       this.optionsInstance = new Option({});
     } else {
       this.optionsInstance = new Option(JSON.parse(this.storageData));
