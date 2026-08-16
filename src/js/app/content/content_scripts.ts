@@ -173,16 +173,16 @@ class ContentScripts {
 
     const divAction = document.getElementById(this.actionNameDiv.id);
     if (this.option.isActionTextOn()) {
-      divAction.innerHTML = actionName ? actionName : '';
+      divAction.textContent = actionName ? actionName : '';
     } else {
-      divAction.innerHTML = '';
+      divAction.textContent = '';
     }
 
     const divCommand = document.getElementById(this.commandDiv.id);
     if (this.option.isCommandTextOn()) {
-      divCommand.innerHTML = commandName;
+      divCommand.textContent = commandName;
     } else {
-      divCommand.innerHTML = '';
+      divCommand.textContent = '';
     }
   }
 
