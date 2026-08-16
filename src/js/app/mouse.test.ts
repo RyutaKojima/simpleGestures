@@ -1,6 +1,6 @@
 import Mouse, { HTMLChildElement, HTMLElementEvent } from './mouse';
 
-describe('Mouse', () => {
+describe('Mouse - button state', () => {
   let mouse: Mouse;
 
   beforeEach(() => {
@@ -25,38 +25,47 @@ describe('Mouse', () => {
     mouse.reset();
     expect(mouse.isLeft()).toBeFalsy();
   });
+});
 
-  describe('getHref', () => {
-    it('should return target or closest anchor href if present and http/https', () => {
-      const link = document.createElement('a') as unknown as HTMLChildElement;
-      link.href = 'https://example.com/link';
+describe('Mouse - getHref', () => {
+  const createMockEvent = (
+    targetHref?: string,
+    parentHref?: string,
+  ): HTMLElementEvent<HTMLChildElement> => {
+    const parentLink = parentHref
+      ? ({ href: parentHref } as unknown as HTMLLinkElement)
+      : null;
 
-      const event = { target: link } as HTMLElementEvent<HTMLChildElement>;
-      expect(Mouse.getHref(event)).toBe('https://example.com/link');
+    const target = {
+      closest: (selector: string) => (selector === 'a' ? parentLink : null),
+      href: targetHref || '',
+    } as unknown as HTMLChildElement;
 
-      const parentLink = document.createElement('a');
-      parentLink.href = 'http://example.com/parent';
-      const childSpan = document.createElement('span') as unknown as HTMLChildElement;
-      childSpan.closest = jest.fn().mockReturnValue(parentLink);
+    return { target } as unknown as HTMLElementEvent<HTMLChildElement>;
+  };
 
-      const event2 = { target: childSpan } as HTMLElementEvent<HTMLChildElement>;
-      expect(Mouse.getHref(event2)).toBe('http://example.com/parent');
-    });
+  it('returns http and https URLs', () => {
+    const httpEvent = createMockEvent('http://example.com/test');
+    expect(Mouse.getHref(httpEvent)).toBe('http://example.com/test');
 
-    it('should filter out unsafe schemes like javascript:', () => {
-      const link = document.createElement('a') as unknown as HTMLChildElement;
-      link.href = 'javascript:alert(1)';
+    const httpsEvent = createMockEvent('https://example.com/test');
+    expect(Mouse.getHref(httpsEvent)).toBe('https://example.com/test');
 
-      const event = { target: link } as HTMLElementEvent<HTMLChildElement>;
-      expect(Mouse.getHref(event)).toBeNull();
-    });
+    const parentEvent = createMockEvent('', 'https://example.com/parent');
+    expect(Mouse.getHref(parentEvent)).toBe('https://example.com/parent');
+  });
 
-    it('should return null if neither target nor closest anchor has href', () => {
-      const div = document.createElement('div') as unknown as HTMLChildElement;
-      div.closest = jest.fn().mockReturnValue(null);
+  it('rejects unsafe URLs (javascript, data, file) and empty href', () => {
+    const jsEvent = createMockEvent('javascript:alert(1)');
+    expect(Mouse.getHref(jsEvent)).toBeNull();
 
-      const event = { target: div } as HTMLElementEvent<HTMLChildElement>;
-      expect(Mouse.getHref(event)).toBeNull();
-    });
+    const dataEvent = createMockEvent('data:text/html,<script>alert(1)</script>');
+    expect(Mouse.getHref(dataEvent)).toBeNull();
+
+    const fileEvent = createMockEvent('file:///etc/passwd');
+    expect(Mouse.getHref(fileEvent)).toBeNull();
+
+    const emptyEvent = createMockEvent('');
+    expect(Mouse.getHref(emptyEvent)).toBeNull();
   });
 });
