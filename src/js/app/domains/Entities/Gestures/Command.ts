@@ -80,9 +80,9 @@ export default class Command {
       return '';
     }
 
-    return commandString.replace(/U/g, '↑').
-        replace(/L/g, '←').
-        replace(/R/g, '→').
-        replace(/D/g, '↓');
+    return commandString.replace(/U/g, '\uf100').
+        replace(/L/g, '\uf102').
+        replace(/R/g, '\uf103').
+        replace(/D/g, '\uf101');
   }
 }

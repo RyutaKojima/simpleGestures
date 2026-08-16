@@ -1,5 +1,7 @@
 ![logo](src/img/icon_512.png)
 
+<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
 ====
 
 [![Lint pass](https://github.com/RyutaKojima/simpleGestures/workflows/Lint%20check%20CI/badge.svg)](https://github.com/RyutaKojima/simpleGestures/actions?query=workflow%3A%22Lint+check+CI%22)
