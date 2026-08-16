@@ -65,6 +65,9 @@ const canvasForOption = new TrailCanvas('gestureOptionCanvas', '10002');
  * falseを返すと、コンテキストメニューを無効にする。
  */
 document.addEventListener('contextmenu', (event) => {
+  if (!event.isTrusted) {
+    return;
+  }
   event.preventDefault();
 });
 
@@ -231,12 +234,18 @@ const createGestureInputComponent = ($input) => {
   $canvas.off();
   $canvas
       .on('mousedown', (event) => {
+        if (!event.originalEvent.isTrusted) {
+          return false;
+        }
         const tmpX = event.pageX - $canvas.offset().left;
         const tmpY = event.pageY - $canvas.offset().top;
         inputGesture.addPoint(new MousePoint(tmpX, tmpY));
         return false;
       })
       .on('mousemove', (event) => {
+        if (!event.originalEvent.isTrusted) {
+          return false;
+        }
         if (event.buttons === 0) {
           return;
         }
@@ -256,7 +265,10 @@ const createGestureInputComponent = ($input) => {
         }
         return false;
       })
-      .on('mouseup', () => {
+      .on('mouseup', (event) => {
+        if (!event.originalEvent.isTrusted) {
+          return false;
+        }
         const removeCanvas = document.getElementById(drawCanvas.id);
         if (removeCanvas) {
           document.body.removeChild(removeCanvas);

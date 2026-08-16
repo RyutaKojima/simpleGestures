@@ -3,9 +3,9 @@
     "outDir": "./dist/js/",
     "noImplicitAny": false,
     "module": "es2020",
-    "target": "es5",
+    "target": "es2020",
     "jsx": "react",
-    "types": ["chrome"],
+    "types": ["chrome", "jest"],
     "typeRoots": ["node_modules/@types"],
     "sourceMap": true,
     "allowJs": true,
@@ -21,7 +21,7 @@
     "isolatedModules": true
   },
   "include": [
-    "src/js/app/**/*.ts"  // 対象フォルダーを指定
+    "src/js/app/**/*.ts"
   ],
   "exclude": [
     "node_modules",
