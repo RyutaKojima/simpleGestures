@@ -21,7 +21,10 @@ export default class MousePoint {
      * @return {number}
      */
   public euclideanDistance(newPoint: MousePoint): number {
-    return Math.sqrt(Math.pow(newPoint.x - this.x, 2) + Math.pow(newPoint.y - this.y, 2));
+    // Avoid Math.pow for squared difference calculation on hot mousemove path
+    const dx = newPoint.x - this.x;
+    const dy = newPoint.y - this.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
   /**

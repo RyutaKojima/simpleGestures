@@ -272,6 +272,9 @@ const scrollLeft = (): number =>
   });
 
   let timerId = null;
+  // Cache user agent OS check to avoid re-parsing on every contextmenu event
+  const isWindows = Bowser.getParser(window.navigator.userAgent).is('Windows');
+
   /**
    * コンテキストメニューの呼び出しをされたときに実行されるイベント。
    * falseを返すと、コンテキストメニューを無効にする。
@@ -286,8 +289,7 @@ const scrollLeft = (): number =>
 
     // NOTE: Windows以外のOSだとイベントがマウスダウンで発生してしまいジェスチャ操作と衝突するので
     //       ダブルクリック時にメニューイベントとして扱う
-    const bowser = Bowser.getParser(window.navigator.userAgent);
-    if (!bowser.is('Windows')) {
+    if (!isWindows) {
       if (timerId) {
         clearTimeout(timerId);
         timerId = null;
