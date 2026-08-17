@@ -56,7 +56,7 @@ describe('URL Validation and Sanitization', () => {
     expect(isSafeUrl('')).toBe(false);
   });
 
-  it('should sanitize unsafe hrefs when calling backgroundActions', async () => {
+  it('should sanitize unsafe href parameters when calling backgroundActions', async () => {
     backgroundActions('new_tab', 'javascript:alert(1)');
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(chrome.tabs.create).toHaveBeenCalledWith(
