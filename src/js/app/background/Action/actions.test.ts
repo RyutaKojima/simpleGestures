@@ -179,6 +179,12 @@ describe('Tab Navigation and Creation Actions', () => {
     expect(chrome.tabs.create).toHaveBeenCalledWith(
       expect.objectContaining({ active: false, url: 'https://example.com' }),
     );
+
+    (chrome.tabs.create as jest.Mock).mockClear();
+    await actionOpenNewTab({ href: 'javascript:alert(1)' });
+    expect(chrome.tabs.create).toHaveBeenCalledWith(
+      expect.objectContaining({ active: true, url: null }),
+    );
   });
 });
 
