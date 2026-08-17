@@ -40,13 +40,19 @@ chrome.runtime.onMessage.addListener((
     sender: MessageSender,
     sendResponse,
 ) => {
-  const reqFunc = requestFunction[request.msg];
-
-  if (typeof reqFunc === 'function') {
-    sendResponse(reqFunc(request, sender));
-  } else {
-    sendResponse({message: 'unknown command'});
+  if (
+    request &&
+    typeof request.msg === 'string' &&
+    Object.prototype.hasOwnProperty.call(requestFunction, request.msg)
+  ) {
+    const reqFunc = requestFunction[request.msg];
+    if (typeof reqFunc === 'function') {
+      sendResponse(reqFunc(request, sender));
+      return;
+    }
   }
+
+  sendResponse({message: 'unknown command'});
 });
 
 /**

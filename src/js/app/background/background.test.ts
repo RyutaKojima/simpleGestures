@@ -76,6 +76,24 @@ describe('background script - message handlers', () => {
     onMessageListener({ msg: 'unknown' }, {}, sendResponse);
     expect(sendResponse).toHaveBeenCalledWith({ message: 'unknown command' });
   });
+
+  it('should safely handle prototype properties and invalid requests', () => {
+    const sendResponse = jest.fn();
+
+    // Prototype properties
+    ['toString', 'constructor', 'hasOwnProperty', '__proto__'].forEach((prop) => {
+      sendResponse.mockClear();
+      onMessageListener({ msg: prop }, {}, sendResponse);
+      expect(sendResponse).toHaveBeenCalledWith({ message: 'unknown command' });
+    });
+
+    // Null/undefined/invalid requests
+    [null, undefined, {}, { msg: 123 }].forEach((req) => {
+      sendResponse.mockClear();
+      expect(() => onMessageListener(req, {}, sendResponse)).not.toThrow();
+      expect(sendResponse).toHaveBeenCalledWith({ message: 'unknown command' });
+    });
+  });
 });
 
 describe('background script - install handler', () => {
