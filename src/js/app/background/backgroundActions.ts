@@ -22,6 +22,23 @@ import actionWindowMaximize from './Action/window_maximize';
 import actionWindowMinimize from './Action/window_minimize';
 import actionWindowNormalize from './Action/window_normalize';
 
+/**
+ * Restrict extracted/passed URLs to safe protocols (http: and https:)
+ * to prevent executing unsafe URI schemes.
+ */
+export const isSafeUrl = (
+  url: null | string,
+): boolean => {
+  if (!url) {
+    return false;
+  }
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
 
 /**
  * 各マウスジェスチャの処理
@@ -70,8 +87,9 @@ export const backgroundActions = (
     return false;
   }
 
+  const safeHref = isSafeUrl(href) ? href : null;
   const optionParams: { href: null | string; } = {
-    href,
+    href: safeHref,
   };
   gestureFunction[actionName](optionParams);
 
