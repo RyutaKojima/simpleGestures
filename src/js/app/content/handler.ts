@@ -271,9 +271,9 @@ const scrollLeft = (): number =>
     clearAllDisplay();
   });
 
-  let timerId = null;
+  let timerId: ReturnType<typeof setTimeout> | null = null;
   // Cache user agent OS check to avoid re-parsing on every contextmenu event
-  const isWindows = Bowser.getParser(window.navigator.userAgent).is('Windows');
+  const isMac = Bowser.getParser(window.navigator.userAgent).is('macOS');
 
   /**
    * コンテキストメニューの呼び出しをされたときに実行されるイベント。
@@ -287,9 +287,9 @@ const scrollLeft = (): number =>
       return;
     }
 
-    // NOTE: Windows以外のOSだとイベントがマウスダウンで発生してしまいジェスチャ操作と衝突するので
+    // NOTE: macOSだとイベントがマウスダウンで発生してしまいジェスチャ操作と衝突するので
     //       ダブルクリック時にメニューイベントとして扱う
-    if (!isWindows) {
+    if (isMac) {
       if (timerId) {
         clearTimeout(timerId);
         timerId = null;
