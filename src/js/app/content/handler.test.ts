@@ -46,6 +46,18 @@ const mockCanvasContext = (): void => {
   } as unknown as CanvasRenderingContext2D);
 };
 
+const createTrustedProxy = (e: Event): Event => {
+  return new Proxy(e, {
+    get(target, prop) {
+      if (prop === 'isTrusted') return true;
+      const val = Reflect.get(target, prop, target);
+      return typeof val === 'function' ?
+        (val as (...args: unknown[]) => unknown).bind(target) :
+        val;
+    },
+  }) as Event;
+};
+
 const mockAddEventListener = (): void => {
   jest
     .spyOn(EventTarget.prototype, 'addEventListener')
@@ -57,15 +69,7 @@ const mockAddEventListener = (): void => {
     ) {
       if (!listener) return;
       const wrappedListener = (e: Event) => {
-        const trustedE = new Proxy(e, {
-          get(target, prop) {
-            if (prop === 'isTrusted') return true;
-            const val = Reflect.get(target, prop, target);
-            return typeof val === 'function' ?
-              (val as (...args: unknown[]) => unknown).bind(target) :
-              val;
-          },
-        }) as Event;
+        const trustedE = createTrustedProxy(e);
         if (typeof listener === 'function') {
           listener.call(this, trustedE);
         } else {
@@ -123,6 +127,38 @@ const setupHandlerMock = async (userAgent?: string): Promise<void> => {
   await import('./handler');
 };
 
+const performGestureSequence = (targetElement: HTMLElement): void => {
+  const mousedown = new MouseEvent('mousedown', {
+    bubbles: true,
+    button: 2,
+    buttons: 2,
+    clientX: 100,
+    clientY: 100,
+  });
+  Object.defineProperty(mousedown, 'pageX', { value: 100 });
+  Object.defineProperty(mousedown, 'pageY', { value: 100 });
+  Object.defineProperty(mousedown, 'target', { value: targetElement });
+  document.dispatchEvent(mousedown);
+
+  const mousemove = new MouseEvent('mousemove', {
+    bubbles: true,
+    button: 2,
+    buttons: 2,
+    clientX: 200,
+    clientY: 100,
+  });
+  Object.defineProperty(mousemove, 'pageX', { value: 200 });
+  Object.defineProperty(mousemove, 'pageY', { value: 100 });
+  document.dispatchEvent(mousemove);
+
+  const mouseup = new MouseEvent('mouseup', {
+    bubbles: true,
+    button: 2,
+    buttons: 0,
+  });
+  document.dispatchEvent(mouseup);
+};
+
 describe('handler.ts - keyboard events', () => {
   beforeEach(async () => {
     await setupHandlerMock();
@@ -161,51 +197,24 @@ describe('handler.ts - mouse events', () => {
 
   it('should handle mousedown, mousemove, mouseup, contextmenu sequence', async () => {
     const link = document.getElementById('testLink')!;
-
-    const mousedown = new MouseEvent('mousedown', {
-      bubbles: true,
-      button: 2,
-      buttons: 2,
-      clientX: 100,
-      clientY: 100,
-    });
-    Object.defineProperty(mousedown, 'pageX', { value: 100 });
-    Object.defineProperty(mousedown, 'pageY', { value: 100 });
-    Object.defineProperty(mousedown, 'target', { value: link });
-    document.dispatchEvent(mousedown);
-
-    const mousemove = new MouseEvent('mousemove', {
-      bubbles: true,
-      button: 2,
-      buttons: 2,
-      clientX: 200,
-      clientY: 100,
-    });
-    Object.defineProperty(mousemove, 'pageX', { value: 200 });
-    Object.defineProperty(mousemove, 'pageY', { value: 100 });
-    document.dispatchEvent(mousemove);
-
-    const mouseup = new MouseEvent('mouseup', {
-      bubbles: true,
-      button: 2,
-      buttons: 0,
-    });
-    document.dispatchEvent(mouseup);
+    performGestureSequence(link);
 
     const contextmenu = new MouseEvent('contextmenu', {
       bubbles: true,
       cancelable: true,
     });
     document.dispatchEvent(contextmenu);
+
+    expect(contextmenu.defaultPrevented).toBe(true);
   });
 });
 
-describe('handler.ts - OS specific contextmenu behavior', () => {
+describe('handler.ts - single/double click contextmenu', () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('should NOT prevent single right click contextmenu on Linux', async () => {
+  it('should prevent single right click on Linux / macOS', async () => {
     await setupHandlerMock(LINUX_UA);
 
     const contextmenu = new MouseEvent('contextmenu', {
@@ -214,7 +223,7 @@ describe('handler.ts - OS specific contextmenu behavior', () => {
     });
     document.dispatchEvent(contextmenu);
 
-    expect(contextmenu.defaultPrevented).toBe(false);
+    expect(contextmenu.defaultPrevented).toBe(true);
   });
 
   it('should NOT prevent single right click contextmenu on Windows', async () => {
@@ -229,7 +238,7 @@ describe('handler.ts - OS specific contextmenu behavior', () => {
     expect(contextmenu.defaultPrevented).toBe(false);
   });
 
-  it('should prevent single right click but allow double right click on macOS', async () => {
+  it('should allow double right click contextmenu on non-Windows', async () => {
     await setupHandlerMock(MAC_UA);
 
     const firstContextmenu = new MouseEvent('contextmenu', {
@@ -245,5 +254,26 @@ describe('handler.ts - OS specific contextmenu behavior', () => {
     });
     document.dispatchEvent(secondContextmenu);
     expect(secondContextmenu.defaultPrevented).toBe(false);
+  });
+});
+
+describe('handler.ts - skip contextmenu after gesture', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('should skip contextmenu after completing a gesture on Linux', async () => {
+    await setupHandlerMock(LINUX_UA);
+
+    const link = document.getElementById('testLink')!;
+    performGestureSequence(link);
+
+    const contextmenu = new MouseEvent('contextmenu', {
+      bubbles: true,
+      cancelable: true,
+    });
+    document.dispatchEvent(contextmenu);
+
+    expect(contextmenu.defaultPrevented).toBe(true);
   });
 });
