@@ -271,7 +271,7 @@ const scrollLeft = (): number =>
     clearAllDisplay();
   });
 
-  let timerId = null;
+  let timerId: ReturnType<typeof setTimeout> | null = null;
   // Cache user agent OS check to avoid re-parsing on every contextmenu event
   const isWindows = Bowser.getParser(window.navigator.userAgent).is('Windows');
 
@@ -287,7 +287,14 @@ const scrollLeft = (): number =>
       return;
     }
 
-    // NOTE: Windows以外のOSだとイベントがマウスダウンで発生してしまいジェスチャ操作と衝突するので
+    if (nextMenuSkip) {
+      event.preventDefault();
+      nextMenuSkip = false;
+      sendMessageToBackground({msg: 'nextMenuSkipOff'}).then();
+      return;
+    }
+
+    // NOTE: Windows以外のOS (Linux, macOS等) だとイベントがマウスダウンで発生してしまいジェスチャ操作と衝突するので
     //       ダブルクリック時にメニューイベントとして扱う
     if (!isWindows) {
       if (timerId) {
@@ -300,10 +307,6 @@ const scrollLeft = (): number =>
         timerId = null;
       }, 500);
 
-      event.preventDefault();
-    }
-
-    if (nextMenuSkip) {
       event.preventDefault();
     }
 
