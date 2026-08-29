@@ -46,13 +46,17 @@ class Mouse {
     const parentLinkElement = target.closest('a');
 
     let rawHref: string | null = null;
-    if (target.href) {
+    if (typeof target.href === 'string' && target.href) {
       rawHref = target.href;
-    } else if (parentLinkElement && parentLinkElement.href) {
+    } else if (
+      parentLinkElement &&
+      typeof parentLinkElement.href === 'string' &&
+      parentLinkElement.href
+    ) {
       rawHref = parentLinkElement.href;
     }
 
-    if (!rawHref) {
+    if (typeof rawHref !== 'string' || !rawHref) {
       return null;
     }
 
