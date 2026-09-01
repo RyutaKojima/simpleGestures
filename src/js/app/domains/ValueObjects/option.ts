@@ -1,4 +1,11 @@
 /**
+ * Validate and sanitize gesture inputs to restrict to allowed gesture directions (R, D, L, U)
+ */
+const sanitizeGesture = (val: unknown, defaultVal: string): string => {
+  return typeof val === 'string' && /^[RDLU]*$/.test(val) ? val : defaultVal;
+};
+
+/**
  *
  */
 class Option {
@@ -44,7 +51,8 @@ class Option {
      */
   constructor(value) {
     this.enabled = value.enabled ?? true;
-    this.language = value.language ?? 'Japanese';
+    const isValidLanguage = value.language === 'Japanese' || value.language === 'English';
+    this.language = isValidLanguage ? value.language : 'Japanese';
     const isHexColor =
       typeof value.color_code === 'string' && /^#([0-9a-fA-F]{3}){1,2}$/.test(value.color_code);
     this.colorCode = isHexColor ? value.color_code : '#FF0000';
@@ -61,33 +69,42 @@ class Option {
     this.actionTextOn = value.action_text_on ?? true;
     this.trailOn = value.trail_on ?? true;
 
-    this.gestureCloseTab = value.gesture_close_tab ?? '';
-    this.gestureCloseTabWithoutPinned = value.gesture_close_tab_without_pinned ?? 'DR';
-    this.gestureNewTab = value.gesture_new_tab ?? 'D';
-    this.gestureNewTabBackground = value.gesture_new_tab_background ?? '';
-    this.gestureDuplicateTab = value.gesture_duplicate_tab ?? '';
-    this.gesturePinTab = value.gesture_pin_tab ?? '';
-    this.gestureReload = value.gesture_reload ?? 'DU';
-    this.gestureForward = value.gesture_forward ?? 'R';
-    this.gestureBack = value.gesture_back ?? 'L';
-    this.gestureScrollTop = value.gesture_scroll_top ?? '';
-    this.gestureScrollBottom = value.gesture_scroll_bottom ?? '';
-    this.gestureLastTab = value.gesture_last_tab ?? '';
-    this.gestureReloadAll = value.gesture_reload_all ?? '';
-    this.gestureNextTab = value.gesture_next_tab ?? '';
-    this.gesturePrevTab = value.gesture_prev_tab ?? '';
-    this.gestureCloseRightTabWithoutPinned = value.gesture_close_right_tab_without_pinned ?? '';
-    this.gestureCloseRightTab = value.gesture_close_right_tab ?? '';
-    this.gestureCloseLeftTabWithoutPinned = value.gesture_close_left_tab_without_pinned ?? '';
-    this.gestureCloseLeftTab = value.gesture_close_left_tab ?? '';
-    this.gestureCloseAllBackground = value.gesture_close_all_background ?? '';
-    this.gestureCloseAll = value.gesture_close_all ?? '';
-    this.gestureOpenOption = value.gesture_open_option ?? 'RDLU';
-    this.gestureOpenExtension = value.gesture_open_extension ?? 'RDL';
+    this.gestureCloseTab = sanitizeGesture(value.gesture_close_tab, '');
+    this.gestureCloseTabWithoutPinned = sanitizeGesture(
+        value.gesture_close_tab_without_pinned,
+        'DR',
+    );
+    this.gestureNewTab = sanitizeGesture(value.gesture_new_tab, 'D');
+    this.gestureNewTabBackground = sanitizeGesture(value.gesture_new_tab_background, '');
+    this.gestureDuplicateTab = sanitizeGesture(value.gesture_duplicate_tab, '');
+    this.gesturePinTab = sanitizeGesture(value.gesture_pin_tab, '');
+    this.gestureReload = sanitizeGesture(value.gesture_reload, 'DU');
+    this.gestureForward = sanitizeGesture(value.gesture_forward, 'R');
+    this.gestureBack = sanitizeGesture(value.gesture_back, 'L');
+    this.gestureScrollTop = sanitizeGesture(value.gesture_scroll_top, '');
+    this.gestureScrollBottom = sanitizeGesture(value.gesture_scroll_bottom, '');
+    this.gestureLastTab = sanitizeGesture(value.gesture_last_tab, '');
+    this.gestureReloadAll = sanitizeGesture(value.gesture_reload_all, '');
+    this.gestureNextTab = sanitizeGesture(value.gesture_next_tab, '');
+    this.gesturePrevTab = sanitizeGesture(value.gesture_prev_tab, '');
+    this.gestureCloseRightTabWithoutPinned = sanitizeGesture(
+        value.gesture_close_right_tab_without_pinned,
+        '',
+    );
+    this.gestureCloseRightTab = sanitizeGesture(value.gesture_close_right_tab, '');
+    this.gestureCloseLeftTabWithoutPinned = sanitizeGesture(
+        value.gesture_close_left_tab_without_pinned,
+        '',
+    );
+    this.gestureCloseLeftTab = sanitizeGesture(value.gesture_close_left_tab, '');
+    this.gestureCloseAllBackground = sanitizeGesture(value.gesture_close_all_background, '');
+    this.gestureCloseAll = sanitizeGesture(value.gesture_close_all, '');
+    this.gestureOpenOption = sanitizeGesture(value.gesture_open_option, 'RDLU');
+    this.gestureOpenExtension = sanitizeGesture(value.gesture_open_extension, 'RDL');
 
-    this.gestureWindowMaximize = value.gesture_window_maximize ?? '';
-    this.gestureWindowMinimize = value.gesture_window_minimize ?? '';
-    this.gestureWindowNormalize = value.gesture_window_normalize ?? '';
+    this.gestureWindowMaximize = sanitizeGesture(value.gesture_window_maximize, '');
+    this.gestureWindowMinimize = sanitizeGesture(value.gesture_window_minimize, '');
+    this.gestureWindowNormalize = sanitizeGesture(value.gesture_window_normalize, '');
   }
 
   /**

@@ -53,3 +53,18 @@ describe('Option', () => {
     expect(validShortHex.lineWidth).toBe(10);
   });
 });
+
+describe('Option - validation & fallback', () => {
+  it('should fallback to default values for invalid language or gesture inputs', () => {
+    const invalidInputs = {
+      gesture_close_tab_without_pinned: 'INVALID_GESTURE_123',
+      gesture_new_tab: '<script>alert(1)</script>',
+      language: 'French',
+    };
+    const opt = new Option(invalidInputs);
+
+    expect(opt.language).toBe('Japanese');
+    expect(opt.gestureCloseTabWithoutPinned).toBe('DR');
+    expect(opt.gestureNewTab).toBe('D');
+  });
+});
