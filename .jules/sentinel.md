@@ -7,3 +7,8 @@
 **Vulnerability:** `LibOption` 内で `this.optionsInstance.hasOwnProperty(...)` や `this.gestureHash.hasOwnProperty(...)` を直接呼び出していたため、プロトタイププロパティの参照（`toString` や `constructor` など）に対する誤判定や、プロパティのオーバーライドによる不具合・セキュリティ上の懸念が存在していた。
 **Learning:** オブジェクトのプロパティ存在チェックを行う際、インスタンスの `.hasOwnProperty` メソッドを直接呼び出すと、プロトタイプチェーン上のメソッド参照やオーバーライドの影響を受ける可能性がある。
 **Prevention:** オブジェクトのプロパティ検証には常に `Object.prototype.hasOwnProperty.call(obj, prop)` を使用して安全に判定を行う。
+
+## 2025-05-18 - [URL Validation Bypass Fix] Reject protocol-relative and root-relative URLs in tab URL validation
+**Vulnerability:** `isSafeTabUrl` において `new URL(url, base)` を使用してプロトコル検証を行っていたため、`//evil.com` や `/path` などの相対URL/プロトコル相対URLがベースURL（`chrome-extension://dummy/`）に解決され、許可されたプロトコルとして検証を通過するリスクが存在していた。
+**Learning:** ベースURLを指定して `new URL` で解析を行う際、プロトコル相対URLやルート相対URLがベースURLのプロトコルを引き継いで安全なURLと誤認される可能性がある。
+**Prevention:** タブ作成URLの検証では、`new URL` 解析前に先頭のトリムおよび `/` や `//` で始まる相対URLのチェックを行い、明示的に拒否する。
