@@ -121,15 +121,20 @@ describe('chromeTabs - create and reload operations', () => {
   });
 });
 
-describe('chromeTabs - safe URL validation', () => {
-  beforeEach(setupChromeTabsMock);
+const mockActiveTabForSafeUrl = () => {
+  const activeTab = { id: 5, index: 2 } as chrome.tabs.Tab;
+  (chrome.tabs.query as jest.Mock).mockImplementation(
+    (queryInfo, callback) => callback([activeTab]),
+  );
+};
+
+describe('chromeTabs - safe URL validation - invalid inputs', () => {
+  beforeEach(() => {
+    setupChromeTabsMock();
+    mockActiveTabForSafeUrl();
+  });
 
   it('should set url to null when creating tab with unsafe URI or non-string inputs', async () => {
-    const activeTab = { id: 5, index: 2 } as chrome.tabs.Tab;
-    (chrome.tabs.query as jest.Mock).mockImplementation(
-      (queryInfo, callback) => callback([activeTab]),
-    );
-
     await chromeTabs.createActiveRight('javascript:alert(1)', true);
     expect(chrome.tabs.create).toHaveBeenCalledWith({
       active: true,
@@ -150,6 +155,45 @@ describe('chromeTabs - safe URL validation', () => {
       active: true,
       openerTabId: 5,
       url: null,
+    });
+
+    await chromeTabs.createLast('   ', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
+  });
+
+  it('should reject protocol-relative and path-relative URLs', async () => {
+    await chromeTabs.createLast('//evil.com', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
+
+    await chromeTabs.createLast('/relative/path', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
+  });
+});
+
+describe('chromeTabs - safe URL validation - trimming', () => {
+  beforeEach(() => {
+    setupChromeTabsMock();
+    mockActiveTabForSafeUrl();
+  });
+
+  it('should trim valid URLs before creating a tab', async () => {
+    await chromeTabs.createLast('  https://example.com/test  ', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: 'https://example.com/test',
     });
   });
 });
