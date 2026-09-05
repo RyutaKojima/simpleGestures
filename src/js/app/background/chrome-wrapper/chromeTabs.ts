@@ -6,11 +6,15 @@ import Tab = chrome.tabs.Tab;
  * unsafe URI schemes like javascript:, data:, or file:.
  */
 const isSafeTabUrl = (url: null | string): boolean => {
-  if (typeof url !== 'string' || !url) {
+  if (typeof url !== 'string' || !url.trim()) {
+    return false;
+  }
+  const trimmedUrl = url.trim();
+  if (trimmedUrl.startsWith('//') || trimmedUrl.startsWith('/')) {
     return false;
   }
   try {
-    const parsedUrl = new URL(url, 'chrome-extension://dummy/');
+    const parsedUrl = new URL(trimmedUrl, 'chrome-extension://dummy/');
     return (
       parsedUrl.protocol === 'http:' ||
       parsedUrl.protocol === 'https:' ||
@@ -27,7 +31,7 @@ export const chromeTabs = {
     chrome.tabs.update(tab.id, {active: true});
   },
   async activateOrCreate(url: null | string = null) {
-    const safeUrl: string | null = isSafeTabUrl(url) ? url : null;
+    const safeUrl: string | null = isSafeTabUrl(url) ? (url as string).trim() : null;
     const extensionTab: null | Tab = safeUrl
       ? await chromeTabs.findSameUrlInCurrentWindow(safeUrl)
       : null;
@@ -49,7 +53,7 @@ export const chromeTabs = {
   async createActiveRight(url: null | string = null, active = true) {
     const activeTab: Tab = await chromeTabs.getActiveTab();
     const indexOfAppendingTab: number = activeTab.index + 1;
-    const targetUrl: string | null = isSafeTabUrl(url) ? url : null;
+    const targetUrl: string | null = isSafeTabUrl(url) ? (url as string).trim() : null;
 
     await chrome.tabs.create({
       active: active,
@@ -60,7 +64,7 @@ export const chromeTabs = {
   },
   async createLast(url: null | string = null, active = true) {
     const activeTab: Tab = await chromeTabs.getActiveTab();
-    const targetUrl: string | null = isSafeTabUrl(url) ? url : null;
+    const targetUrl: string | null = isSafeTabUrl(url) ? (url as string).trim() : null;
 
     await chrome.tabs.create({
       active: active,
