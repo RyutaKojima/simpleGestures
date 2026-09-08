@@ -9,8 +9,14 @@ const isSafeTabUrl = (url: null | string): boolean => {
   if (typeof url !== 'string' || !url) {
     return false;
   }
+  const trimmed = url.trim();
+  // Reject protocol-relative or path-relative URLs starting with / or \ to prevent
+  // resolving against the base URL (chrome-extension://dummy/) and bypassing protocol validation.
+  if (trimmed.startsWith('/') || trimmed.startsWith('\\')) {
+    return false;
+  }
   try {
-    const parsedUrl = new URL(url, 'chrome-extension://dummy/');
+    const parsedUrl = new URL(trimmed, 'chrome-extension://dummy/');
     return (
       parsedUrl.protocol === 'http:' ||
       parsedUrl.protocol === 'https:' ||
