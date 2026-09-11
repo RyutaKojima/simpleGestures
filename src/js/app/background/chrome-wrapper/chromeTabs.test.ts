@@ -1,4 +1,4 @@
-import { chromeTabs } from './chromeTabs';
+import { chromeTabs, isSafeTabUrl } from './chromeTabs';
 
 const setupChromeTabsMock = (): void => {
   globalThis.chrome = {
@@ -124,7 +124,26 @@ describe('chromeTabs - create and reload operations', () => {
 describe('chromeTabs - safe URL validation', () => {
   beforeEach(setupChromeTabsMock);
 
-  it('should set url to null when creating tab with unsafe URI or non-string inputs', async () => {
+  it('should correctly validate safe URLs with isSafeTabUrl', () => {
+    expect(isSafeTabUrl('https://example.com')).toBe(true);
+    expect(isSafeTabUrl('http://example.com/path')).toBe(true);
+    expect(isSafeTabUrl('chrome://extensions')).toBe(true);
+    expect(isSafeTabUrl('chrome-extension://abc/options.html')).toBe(true);
+
+    // Unsafe or relative schemes
+    expect(isSafeTabUrl('javascript:alert(1)')).toBe(false);
+    expect(isSafeTabUrl('file:///etc/passwd')).toBe(false);
+    expect(isSafeTabUrl('data:text/html,test')).toBe(false);
+    expect(isSafeTabUrl('//evil.com')).toBe(false);
+    expect(isSafeTabUrl('  //evil.com  ')).toBe(false);
+    expect(isSafeTabUrl('/path')).toBe(false);
+    expect(isSafeTabUrl('\\path')).toBe(false);
+    expect(isSafeTabUrl(null)).toBe(false);
+    expect(isSafeTabUrl('')).toBe(false);
+    expect(isSafeTabUrl(123 as unknown as string)).toBe(false);
+  });
+
+  it('should set url to null when creating tab with unsafe URI or relative paths', async () => {
     const activeTab = { id: 5, index: 2 } as chrome.tabs.Tab;
     (chrome.tabs.query as jest.Mock).mockImplementation(
       (queryInfo, callback) => callback([activeTab]),
@@ -138,7 +157,7 @@ describe('chromeTabs - safe URL validation', () => {
       url: null,
     });
 
-    await chromeTabs.createLast('javascript:alert(1)', true);
+    await chromeTabs.createLast('//evil.com', true);
     expect(chrome.tabs.create).toHaveBeenCalledWith({
       active: true,
       openerTabId: 5,

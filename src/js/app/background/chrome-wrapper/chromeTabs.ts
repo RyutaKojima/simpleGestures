@@ -4,13 +4,23 @@ import Tab = chrome.tabs.Tab;
  * Validates tab creation URLs against safe protocols
  * (http:, https:, chrome:, chrome-extension:) to prevent executing
  * unsafe URI schemes like javascript:, data:, or file:.
+ * Rejects protocol-relative and path-relative URLs (starting with //, /, \)
+ * to prevent relative URLs from resolving against dummy extension origin.
  */
-const isSafeTabUrl = (url: null | string): boolean => {
+export const isSafeTabUrl = (url: null | string): boolean => {
   if (typeof url !== 'string' || !url) {
     return false;
   }
+  const trimmedUrl = url.trim();
+  if (
+    trimmedUrl.startsWith('//') ||
+    trimmedUrl.startsWith('/') ||
+    trimmedUrl.startsWith('\\')
+  ) {
+    return false;
+  }
   try {
-    const parsedUrl = new URL(url, 'chrome-extension://dummy/');
+    const parsedUrl = new URL(trimmedUrl, 'chrome-extension://dummy/');
     return (
       parsedUrl.protocol === 'http:' ||
       parsedUrl.protocol === 'https:' ||
