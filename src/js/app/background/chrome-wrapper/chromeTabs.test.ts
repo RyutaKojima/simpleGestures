@@ -151,5 +151,26 @@ describe('chromeTabs - safe URL validation', () => {
       openerTabId: 5,
       url: null,
     });
+
+    await chromeTabs.createLast('//evil.com', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
+
+    await chromeTabs.createLast('/path', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
+
+    await chromeTabs.createLast('\\\\path', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
   });
 });
