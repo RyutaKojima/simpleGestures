@@ -6,11 +6,20 @@ import Tab = chrome.tabs.Tab;
  * unsafe URI schemes like javascript:, data:, or file:.
  */
 const isSafeTabUrl = (url: null | string): boolean => {
-  if (typeof url !== 'string' || !url) {
+  if (typeof url !== 'string') {
+    return false;
+  }
+  const trimmedUrl = url.trim();
+  if (
+    !trimmedUrl ||
+    trimmedUrl.startsWith('//') ||
+    trimmedUrl.startsWith('/') ||
+    trimmedUrl.startsWith('\\')
+  ) {
     return false;
   }
   try {
-    const parsedUrl = new URL(url, 'chrome-extension://dummy/');
+    const parsedUrl = new URL(trimmedUrl, 'chrome-extension://dummy/');
     return (
       parsedUrl.protocol === 'http:' ||
       parsedUrl.protocol === 'https:' ||

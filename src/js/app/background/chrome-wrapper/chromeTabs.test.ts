@@ -124,7 +124,7 @@ describe('chromeTabs - create and reload operations', () => {
 describe('chromeTabs - safe URL validation', () => {
   beforeEach(setupChromeTabsMock);
 
-  it('should set url to null when creating tab with unsafe URI or non-string inputs', async () => {
+  it('should set url to null when creating active right tab with unsafe URI', async () => {
     const activeTab = { id: 5, index: 2 } as chrome.tabs.Tab;
     (chrome.tabs.query as jest.Mock).mockImplementation(
       (queryInfo, callback) => callback([activeTab]),
@@ -137,15 +137,22 @@ describe('chromeTabs - safe URL validation', () => {
       openerTabId: 5,
       url: null,
     });
+  });
 
-    await chromeTabs.createLast('javascript:alert(1)', true);
-    expect(chrome.tabs.create).toHaveBeenCalledWith({
-      active: true,
-      openerTabId: 5,
-      url: null,
-    });
+  it.each([
+    'javascript:alert(1)',
+    123 as unknown as string,
+    '//evil.com',
+    '/path/to/page',
+    '\\path\\to\\page',
+    '   //evil.com',
+  ])('should set url to null for invalid URL: %p', async (inputUrl) => {
+    const activeTab = { id: 5, index: 2 } as chrome.tabs.Tab;
+    (chrome.tabs.query as jest.Mock).mockImplementation(
+      (queryInfo, callback) => callback([activeTab]),
+    );
 
-    await chromeTabs.createLast(123 as unknown as string, true);
+    await chromeTabs.createLast(inputUrl, true);
     expect(chrome.tabs.create).toHaveBeenCalledWith({
       active: true,
       openerTabId: 5,
