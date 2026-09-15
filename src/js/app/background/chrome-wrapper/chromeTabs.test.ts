@@ -152,4 +152,32 @@ describe('chromeTabs - safe URL validation', () => {
       url: null,
     });
   });
+
+  it('should reject relative URLs that could resolve to base extension protocol', async () => {
+    const activeTab = { id: 5, index: 2 } as chrome.tabs.Tab;
+    (chrome.tabs.query as jest.Mock).mockImplementation(
+      (queryInfo, callback) => callback([activeTab]),
+    );
+
+    await chromeTabs.createLast('//attacker.com', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
+
+    await chromeTabs.createLast('/relative/path', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
+
+    await chromeTabs.createLast('\\\\attacker.com', true);
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      active: true,
+      openerTabId: 5,
+      url: null,
+    });
+  });
 });
