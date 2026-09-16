@@ -152,4 +152,29 @@ describe('chromeTabs - safe URL validation', () => {
       url: null,
     });
   });
+
+  it('should set url to null when given relative or protocol-relative URLs', async () => {
+    const activeTab = { id: 5, index: 2 } as chrome.tabs.Tab;
+    (chrome.tabs.query as jest.Mock).mockImplementation(
+      (queryInfo, callback) => callback([activeTab]),
+    );
+
+    const relativeUrls = [
+      '//evil.com',
+      '/relative/path',
+      '\\evil.com',
+      '   //evil.com   ',
+      '   /path   ',
+      '   ',
+    ];
+
+    for (const url of relativeUrls) {
+      await chromeTabs.createLast(url, true);
+      expect(chrome.tabs.create).toHaveBeenCalledWith({
+        active: true,
+        openerTabId: 5,
+        url: null,
+      });
+    }
+  });
 });
