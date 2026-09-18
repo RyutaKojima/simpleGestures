@@ -188,51 +188,127 @@ const setupHandlerWithUserAgent = async (userAgent: string): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, 10));
 };
 
-describe('handler.ts - OS specific contextmenu handling', () => {
+const cleanupHandlerMock = (): void => {
+  cleanupDocListeners();
+  jest.restoreAllMocks();
+};
+
+const dispatchRightMouseDown = (): void => {
+  const link = document.getElementById('testLink')!;
+  const event = createTrustedMouseEvent('mousedown', {
+    bubbles: true,
+    button: 2,
+    buttons: 2,
+    clientX: 100,
+    clientY: 100,
+  });
+  Object.defineProperty(event, 'pageX', { value: 100 });
+  Object.defineProperty(event, 'pageY', { value: 100 });
+  Object.defineProperty(event, 'target', { value: link });
+  document.dispatchEvent(event);
+};
+
+const dispatchRightMouseMove = (): void => {
+  const event = createTrustedMouseEvent('mousemove', {
+    bubbles: true,
+    button: 2,
+    buttons: 2,
+    clientX: 200,
+    clientY: 100,
+  });
+  Object.defineProperty(event, 'pageX', { value: 200 });
+  Object.defineProperty(event, 'pageY', { value: 100 });
+  document.dispatchEvent(event);
+};
+
+const dispatchRightMouseUp = (): void => {
+  document.dispatchEvent(createTrustedMouseEvent('mouseup', {
+    bubbles: true,
+    button: 2,
+    buttons: 0,
+  }));
+};
+
+const dispatchContextmenu = (): MouseEvent => {
+  const event = createTrustedMouseEvent('contextmenu', {
+    bubbles: true,
+    cancelable: true,
+  });
+  document.dispatchEvent(event);
+  return event;
+};
+
+describe('handler.ts - Linux contextmenu handling', () => {
   afterEach(() => {
-    cleanupDocListeners();
-    jest.restoreAllMocks();
+    cleanupHandlerMock();
   });
 
-  it('should allow contextmenu on single click in Linux environment', async () => {
+  it(
+    'should suppress contextmenu before mouseup and continue gesture in Linux Chrome',
+    async () => {
+      await setupHandlerWithUserAgent(LINUX_UA);
+
+      dispatchRightMouseDown();
+      const contextmenu = dispatchContextmenu();
+      expect(contextmenu.defaultPrevented).toBe(true);
+
+      dispatchRightMouseMove();
+      dispatchRightMouseUp();
+
+      expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+        { msg: 'nextMenuSkipOn' },
+        expect.any(Function),
+      );
+    },
+  );
+
+  it('should handle double click contextmenu in Linux environment', async () => {
     await setupHandlerWithUserAgent(LINUX_UA);
 
-    const contextmenu = createTrustedMouseEvent('contextmenu', {
-      bubbles: true,
-      cancelable: true,
-    });
-    document.dispatchEvent(contextmenu);
+    const firstContextmenu = dispatchContextmenu();
+    expect(firstContextmenu.defaultPrevented).toBe(true);
 
-    expect(contextmenu.defaultPrevented).toBe(false);
+    const secondContextmenu = dispatchContextmenu();
+    expect(secondContextmenu.defaultPrevented).toBe(false);
   });
+});
+
+describe('handler.ts - Windows contextmenu handling', () => {
+  afterEach(cleanupHandlerMock);
 
   it('should allow contextmenu on single click in Windows environment', async () => {
     await setupHandlerWithUserAgent(WINDOWS_UA);
 
-    const contextmenu = createTrustedMouseEvent('contextmenu', {
-      bubbles: true,
-      cancelable: true,
-    });
-    document.dispatchEvent(contextmenu);
-
+    const contextmenu = dispatchContextmenu();
     expect(contextmenu.defaultPrevented).toBe(false);
   });
+
+  it('should suppress contextmenu after mouseup for a Windows gesture', async () => {
+    await setupHandlerWithUserAgent(WINDOWS_UA);
+
+    dispatchRightMouseDown();
+    dispatchRightMouseMove();
+    dispatchRightMouseUp();
+    const contextmenu = dispatchContextmenu();
+
+    expect(contextmenu.defaultPrevented).toBe(true);
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
+      { msg: 'nextMenuSkipOn' },
+      expect.any(Function),
+    );
+  });
+});
+
+describe('handler.ts - macOS contextmenu handling', () => {
+  afterEach(cleanupHandlerMock);
 
   it('should handle double click contextmenu in macOS environment', async () => {
     await setupHandlerWithUserAgent(MAC_UA);
 
-    const firstContextmenu = createTrustedMouseEvent('contextmenu', {
-      bubbles: true,
-      cancelable: true,
-    });
-    document.dispatchEvent(firstContextmenu);
+    const firstContextmenu = dispatchContextmenu();
     expect(firstContextmenu.defaultPrevented).toBe(true);
 
-    const secondContextmenu = createTrustedMouseEvent('contextmenu', {
-      bubbles: true,
-      cancelable: true,
-    });
-    document.dispatchEvent(secondContextmenu);
+    const secondContextmenu = dispatchContextmenu();
     expect(secondContextmenu.defaultPrevented).toBe(false);
   });
 });

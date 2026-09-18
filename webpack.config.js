@@ -72,7 +72,7 @@ const baseWebpackConfig = {
         },
         {
           context: 'src/options_page',
-          from: path.join('**', '*.*'),
+          from: '**/*.*',
           globOptions: {
             ignore: ['**/options_page.js'],
           },
